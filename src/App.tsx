@@ -1,15 +1,18 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import Login from './pages/Login';
-import SignUp from './pages/SignUp';
-import MainDashboard from './pages/MainDashboard';
+import LoginPage from './pages/Login';
+import SignUpPage from './pages/SignUp';
+import MainDashboardPage from './pages/MainDashboard';
+import MarketingPage from './pages/Marketing';
+import Authenticated from './components/utility/AuthenticatedRoute';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/app" element={<MainDashboard />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
+        <Route path="/" element={<MarketingPage />} />
+        <Route path="/app" element={<Authenticated element={<MainDashboardPage />} />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
       </Routes>
     </Router>
   );

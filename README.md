@@ -1,50 +1,11 @@
-# React + TypeScript + Vite
+# OpenCM
+OpenCM is a simple, lightweight, and easy-to-use open-source community management system. It is designed to help you manage the posts on social media platforms, such as Facebook, Twitter, and Instagram. OpenCM is built using Golang on the backend, you can find it here [OpenCM](https://github.com/pedrodcsjostrom/opencm). This repository contains a simple web interface for OpenCM, built using ReactJS. You can implement other interfaces using the OpenCM API.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Design choices for this frontend
+- **Vite-SWC**: A fast and lightweight frontend build tool.
+- **ReactJS**: Popular and easy-to-use frontend library.
+- **ReactRouter**: Simple and easy-to-use routing library.
+- **Redux**: Global state management library. Some people might argue that Context API is enough, but Redux is more powerful and easier to use (after you set all the tiring boilerplate). For local state management, we could use simple hooks, or even the context API, but for global state management, Redux is very easy to use imo.  
+- **Styled Components**: Easy-to-use CSS-in-JS library. Again, there are a million options I just chose this one because it's popular and easy to use.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+Most of these choices were made mostly on popularity and ease of use. The main goal of this frontend is to provide a simple and easy-to-use interface for OpenCM.It doesn't need to be optimized for CEO since it's a dashboard. There are a thousand ways to skin a cat, so feel free to implement your own frontend using the OpenCM API using your favorite tools.

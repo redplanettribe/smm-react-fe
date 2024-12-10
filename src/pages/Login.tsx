@@ -1,5 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { login } from '../store/user/userSlice';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/root-reducer';
+import { AppDispatch } from '../store/store';
 
 const Container = styled.div`
   display: flex;
@@ -51,6 +57,7 @@ const Input = styled.input`
   margin-bottom: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+  color: #333;
 `;
 
 const Button = styled.button`
@@ -78,22 +85,27 @@ const SecondaryButton = styled(Button)`
   }
 `;
 
-const Login: React.FC = () => {
+const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const dispatch: AppDispatch = useDispatch();
+
+  const isAuthenticated = useSelector((state: RootState) => state.user.IsAuthenticated);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/app');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleLogin = () => {
-    // Mock login logic
-    if (email === 'test@example.com' && password === 'password') {
-      alert('Login successful');
-      // Redirect to home page or dashboard
-    } else {
-      alert('Invalid email or password');
-    }
+    console.log('logging in');
+    dispatch(login(email, password));
   };
 
   const goToSignUp = () => {
-    // Redirect to sign up page
+    navigate('/signup');
   };
 
   return (
@@ -125,4 +137,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default LoginPage;

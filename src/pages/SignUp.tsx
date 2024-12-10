@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -75,11 +76,12 @@ const SecondaryButton = styled(Button)`
   }
 `;
 
-const SignUp: React.FC = () => {
+const SignUpPage: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleSignUp = () => {
     // Mock sign-up logic
@@ -92,7 +94,7 @@ const SignUp: React.FC = () => {
   };
 
   const goToLogin = () => {
-    // Redirect to login page
+    navigate('/login');
   };
 
   return (
@@ -140,4 +142,4 @@ const SignUp: React.FC = () => {
   );
 };
 
-export default SignUp;
+export default SignUpPage;
