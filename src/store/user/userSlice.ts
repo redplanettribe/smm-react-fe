@@ -30,22 +30,7 @@ const userSlice = createSlice({
 
 export const { setUser, clearUser } = userSlice.actions;
 
-export const fetchUser = (): AppThunk => async (dispatch) => {
-  try {
-    const response = await fetch('/api/user');
-    if (!response.ok) {
-      throw new Error('Failed to fetch user');
-    }
-    const data: User = await response.json();
-    dispatch(setUser(data));
-  } catch (error) {
-    console.error('Error fetching user:', error);
-    // Optionally handle the error
-  }
-};
-
 export const login = (email: string, password: string): AppThunk => async (dispatch) => {
-  console.log('calling login endpoint');
   try {
     const loginResponse = await userApi.login({ email, password });
     const user = loginResponse.User;
@@ -53,12 +38,27 @@ export const login = (email: string, password: string): AppThunk => async (dispa
       id: user.id,
       name: user.username,
       email: user.email,
-      AppRoles: user.roles,
+      AppRoles: user.roles?.map((role) => role.Name),
       IsAuthenticated: true,
     }));
   } catch (error) {
     console.error('Failed to login:', error);
     // show an error message to the user
+  }
+};
+
+export const getUser = (): AppThunk => async (dispatch) => {
+  try {
+    const user = await userApi.getUser();
+    dispatch(setUser({
+      id: user.id,
+      name: user.username,
+      email: user.email,
+      AppRoles: user.roles?.map((role) => role.Name),
+      IsAuthenticated: true,
+    }));
+  } catch (error) {
+    
   }
 };
   

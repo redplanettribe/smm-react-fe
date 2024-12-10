@@ -4,13 +4,14 @@ export const config = {
 
 export type EndpointConfig<RequestType, ResponseType> = {
     method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-    url: string;
+    path: string;
+    pathValues?: (keyof RequestType)[];
     requestType?: RequestType;
     responseType?: ResponseType;
   };
   
 export type ApiConfig<Endpoints extends Record<string, EndpointConfig<any, any>>> = {
-  baseUrl: string;
+  basePath: string;
   endpoints: Endpoints;
 };
 
@@ -28,15 +29,34 @@ export function createApi<Endpoints extends { [key: string]: EndpointConfig<any,
   const createApiMethod = <K extends keyof Endpoints>(key: K, endpoint: Endpoints[K]) => {
     return async (params: Endpoints[K] extends EndpointConfig<infer Req, any> ? Req : never) => {
       try {
-        const response = await fetch(config.baseUrl + enpointConfig.baseUrl + endpoint.url, {
-          method: endpoint.method,
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body:
-            endpoint.method !== 'GET' && endpoint.method !== 'DELETE'
-              ? JSON.stringify(params)
-              : undefined,
-        });
+
+        // Replace path values in the URL with the actual values from the params object
+        let url = endpoint.path;
+        if (endpoint.pathValues && params) {
+          for (const param of endpoint.pathValues as (keyof typeof params)[]) {
+            url = url.replace(`{${String(param)}}`, String(params[param]));
+          }
+        }
+
+        // Remove path values from the params object
+        if (endpoint.pathValues) {
+          for (const param of endpoint.pathValues as (keyof typeof params)[]) {
+            delete params[param];
+          }
+        }
+       
+        const response = await fetch(
+          config.baseUrl + enpointConfig.basePath + url,
+          {
+            method: endpoint.method,
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body:
+              endpoint.method !== 'GET' && endpoint.method !== 'DELETE'
+                ? JSON.stringify(params)
+                : undefined,
+          }
+        );
 
         if (!response.ok) {
           const errorText = await response.text();
@@ -46,7 +66,6 @@ export function createApi<Endpoints extends { [key: string]: EndpointConfig<any,
         const contentType = response.headers.get('Content-Type');
         if (endpoint.method !== 'DELETE' && contentType?.includes('application/json')) {
           const data = await response.json();
-          console.log('data:', data);
           return data as Endpoints[K] extends EndpointConfig<any, infer Res> ? Res : never;
         } else {
           return undefined as any;

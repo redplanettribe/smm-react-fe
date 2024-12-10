@@ -9,27 +9,27 @@ const userApiConfig: ApiConfig<{
   updateUser: EndpointConfig<UpdateUserRequest, UserResponse>;
   deleteUser: EndpointConfig<{ id: string }, void>;
 }> = {
-  baseUrl: '/users',
+  basePath: '/users',
   endpoints: {
     login: {
       method: 'POST',
-      url: '/login',
+      path: '/login',
     },
     getUser: {
       method: 'GET',
-      url: '/',
+      path: '/me',
     },
     createUser: {
       method: 'POST',
-      url: '/create',
+      path: '/create',
     },
     updateUser: {
       method: 'PUT',
-      url: '/update',
+      path: '/update',
     },
     deleteUser: {
       method: 'DELETE',
-      url: '/delete',
+      path: '/delete',
     },
   },
 };

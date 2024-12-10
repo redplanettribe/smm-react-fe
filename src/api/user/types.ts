@@ -3,10 +3,15 @@ export interface User {
   id: string;
   username: string;
   email: string;
-  roles: string[];
+  roles: AppRole[];
   createdAt: Date;
   updatedAt: Date;
 };
+
+export interface AppRole {
+  ID: string;
+  Name: string;
+}
 
 export interface Session {
   ID: string;
