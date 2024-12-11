@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "../../features/user/User";
 import {  AppThunk } from "../store";
 import { userApi } from "../../api/user/user-api";
-import { transformUserResponseToUser } from "./utils";
+import { marshallUnauthenticatedUser, marshallUser } from "./utils";
 
 const initialState :User = {
     id: '',
@@ -33,7 +33,7 @@ export const { setUser, clearUser } = userSlice.actions;
 export const login = (email: string, password: string): AppThunk => async (dispatch) => {
   try {
     const loginResponse = await userApi.login({ email, password });
-    const user = transformUserResponseToUser(loginResponse.User);
+    const user = marshallUser(loginResponse.User);
     dispatch(setUser(user));
   } catch (error) {
     console.error('Failed to login:', error);
@@ -43,16 +43,16 @@ export const login = (email: string, password: string): AppThunk => async (dispa
 
 export const getUser = (): AppThunk => async (dispatch) => {
   try {
-    const user = transformUserResponseToUser(await userApi.getUser());
+    const user = marshallUser(await userApi.getUser());
     dispatch(setUser(user));
   } catch (error) {
     
   }
 };
 
-export const signup = (name: string, email: string, password: string): AppThunk => async (dispatch) => {
+export const signup = (username: string, email: string, password: string): AppThunk => async (dispatch) => {
   try {
-    const user = transformUserResponseToUser(await userApi.createUser({ name, email, password }));
+    const user = marshallUnauthenticatedUser(await userApi.createUser({ username, email, password }));
    dispatch(setUser(user));
   } catch (error) {
     console.error('Failed to signup:', error);

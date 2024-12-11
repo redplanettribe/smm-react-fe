@@ -8,6 +8,7 @@ const Input = styled.input`
   box-sizing: border-box;
   font-size: 1rem;
   background-color: #f8f9fa;
+  color: ${(props) => props.theme.textColor.normal};
 
   &:focus {
     border-color: ${(props) => props.theme.colors.primary};

@@ -4,6 +4,10 @@ import styled from 'styled-components';
 import Button from '../components/design-system/Button';
 import Input from '../components/design-system/Input';
 import { H1 } from '../components/design-system/Typography';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../store/store';
+import { signup } from '../store/user/userSlice';
+import RedirectIfLoggedIn from '../components/utility/RedirectIfLoggedIn';
 
 const Container = styled.div`
   display: flex;
@@ -59,8 +63,15 @@ const SignUpPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const navigate = useNavigate();
+  const dispatch: AppDispatch = useDispatch();
 
   const handleSignUp = () => {
+    if (password !== confirmPassword) {
+      alert('Passwords do not match'); //temp
+      return;
+    }
+    dispatch(signup(name, email, password));
+    navigate('/login');
   };
 
   const goToLogin = () => {
@@ -68,7 +79,8 @@ const SignUpPage: React.FC = () => {
   };
 
   return (
-    <Container>
+    <RedirectIfLoggedIn>
+      <Container>
       <Form>
         <Title>Sign Up</Title>
         <InputBox>
@@ -112,6 +124,8 @@ const SignUpPage: React.FC = () => {
 
       </Form>
     </Container>
+    </RedirectIfLoggedIn>
+
   );
 };
 

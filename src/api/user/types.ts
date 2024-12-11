@@ -22,7 +22,7 @@ export interface Session {
 }
   
 export interface CreateUserRequest {
-  name: string;
+  username: string;
   email: string;
   password: string;
 }

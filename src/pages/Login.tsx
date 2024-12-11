@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { login } from '../store/user/userSlice';
 import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
-import { RootState } from '../store/root-reducer';
 import { AppDispatch } from '../store/store';
 import Button from '../components/design-system/Button';
 import Input from '../components/design-system/Input';
 import { H1 } from '../components/design-system/Typography';
+import RedirectIfLoggedIn from '../components/utility/RedirectIfLoggedIn';
 
 const Container = styled.div`
   display: flex;
@@ -63,14 +62,6 @@ const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
 
-  const isAuthenticated = useSelector((state: RootState) => state.user.IsAuthenticated);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      // navigate('/app');
-    }
-  }, [isAuthenticated, navigate]);
-
   const handleLogin = () => {
     console.log('logging in');
     dispatch(login(email, password));
@@ -81,7 +72,8 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <Container>
+    <RedirectIfLoggedIn>
+      <Container>
       <Form>
         <Title>Login</Title>
         <InputBox>
@@ -104,6 +96,8 @@ const LoginPage: React.FC = () => {
         </BtnBox>
       </Form>
     </Container>
+    </RedirectIfLoggedIn>
+
   );
 };
 
