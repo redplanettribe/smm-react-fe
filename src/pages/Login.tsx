@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/root-reducer';
 import { AppDispatch } from '../store/store';
+import Button from '../components/design-system/Button';
 
 const Container = styled.div`
   display: flex;
@@ -60,30 +61,30 @@ const Input = styled.input`
   color: #333;
 `;
 
-const Button = styled.button`
-  width: 100%;
-  padding: 0.75rem;
-  margin-bottom: 0.5rem;
-  border: none;
-  border-radius: 4px;
-  // background-color: #007bff;
-  background-color: #28a745;
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
+// const Button = styled.button`
+//   width: 100%;
+//   padding: 0.75rem;
+//   margin-bottom: 0.5rem;
+//   border: none;
+//   border-radius: 4px;
+//   // background-color: #007bff;
+//   background-color: #28a745;
+//   color: white;
+//   font-size: 1rem;
+//   cursor: pointer;
 
-  &:hover {
-    background-color: #0056b3;
-  }
-`;
+//   &:hover {
+//     background-color: #0056b3;
+//   }
+// `;
 
-const SecondaryButton = styled(Button)`
-  background-color: #6c757d;
+// const SecondaryButton = styled(Button)`
+//   background-color: #6c757d;
 
-  &:hover {
-    background-color: #5a6268;
-  }
-`;
+//   &:hover {
+//     background-color: #5a6268;
+//   }
+// `;
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -131,7 +132,7 @@ const LoginPage: React.FC = () => {
           </div>
         </InputBox>
         <Button onClick={handleLogin}>Login</Button>
-        <SecondaryButton onClick={goToSignUp}>Go to Sign Up</SecondaryButton>
+        <Button variant='secondary' onClick={goToSignUp}>Go to Sign Up</Button>
       </Form>
     </Container>
   );
