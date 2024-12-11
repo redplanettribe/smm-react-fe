@@ -1,5 +1,5 @@
 import { ApiConfig, createApi, EndpointConfig } from "../api";
-import { CreateUserRequest, LoginResponse, UpdateUserRequest, User as UserResponse } from "./types";
+import { CreateUserRequest, LoginResponse, UpdateUserRequest, UserResponse as UserResponse } from "./types";
 
 
 const userApiConfig: ApiConfig<{
@@ -21,7 +21,7 @@ const userApiConfig: ApiConfig<{
     },
     createUser: {
       method: 'POST',
-      path: '/create',
+      path: '',
     },
     updateUser: {
       method: 'PUT',

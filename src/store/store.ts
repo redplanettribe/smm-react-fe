@@ -1,13 +1,33 @@
-import { configureStore, Action } from '@reduxjs/toolkit'
-import { ThunkAction } from 'redux-thunk'
+// store.ts
+import { configureStore, Action } from '@reduxjs/toolkit';
+import { ThunkAction } from 'redux-thunk';
+import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
-import rootReducer, { RootState } from './root-reducer'
+import rootReducer, { RootState } from './root-reducer';
+
+const persistConfig = {
+  key: 'root',
+  version: 1,
+  storage,
+  whitelist: ['user'], // Only persist user reducer
+  // blacklist: ['someReducer'], // Don't persist someReducer
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
-  reducer: rootReducer
-})
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
+});
 
-export type AppDispatch = typeof store.dispatch
+export const persistor = persistStore(store);
+export type AppDispatch = typeof store.dispatch;
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, Action<string>>;
 
-export default store
+export default store;

@@ -1,5 +1,5 @@
 
-export interface User {
+export interface UserResponse {
   id: string;
   username: string;
   email: string;
@@ -24,6 +24,7 @@ export interface Session {
 export interface CreateUserRequest {
   name: string;
   email: string;
+  password: string;
 }
 
 export interface UpdateUserRequest {
@@ -33,7 +34,7 @@ export interface UpdateUserRequest {
 }
 
 export interface LoginResponse {
-  User: User;
+  User: UserResponse;
   Session: Session;
 }
 
