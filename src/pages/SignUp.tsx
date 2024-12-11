@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import Button from '../components/design-system/Button';
+import Input from '../components/design-system/Input';
+import { H1 } from '../components/design-system/Typography';
 
 const Container = styled.div`
   display: flex;
@@ -24,15 +27,15 @@ const Form = styled.div`
   flex-direction: column;
 `;
 
-const Title = styled.h1`
+const Title = styled(H1)`
   margin-bottom: 2rem;
-  color: #333;
 `;
 
 const Label = styled.label`
   display: block;
   margin-bottom: 0.5rem;
   color: #333;
+  margin-top: 1rem;
 `;
 const InputBox = styled.div`
   margin-bottom: 2rem;
@@ -42,38 +45,12 @@ const InputBox = styled.div`
   width: 100%;
 
 `;
-const Input = styled.input`
-  box-sizing: border-box;
-  background-color: #f9f9f9;
-  width: 100%;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-`;
 
-const Button = styled.button`
-  width: 100%;
-  padding: 0.75rem;
-  margin-bottom: 0.5rem;
-  border: none;
-  border-radius: 4px;
-  background-color: #28a745;
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #218838;
-  }
-`;
-
-const SecondaryButton = styled(Button)`
-  background-color: #6c757d;
-
-  &:hover {
-    background-color: #5a6268;
-  }
+const BtnBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: space-between;
 `;
 
 const SignUpPage: React.FC = () => {
@@ -84,13 +61,6 @@ const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
 
   const handleSignUp = () => {
-    // Mock sign-up logic
-    if (password !== confirmPassword) {
-      alert('Passwords do not match');
-    } else {
-      alert('Sign up successful');
-      // Redirect to login page or dashboard
-    }
   };
 
   const goToLogin = () => {
@@ -135,8 +105,11 @@ const SignUpPage: React.FC = () => {
           />
         </div>
         </InputBox>
-        <Button onClick={handleSignUp}>Sign Up</Button>
-        <SecondaryButton onClick={goToLogin}>Back to Login</SecondaryButton>
+        <BtnBox>
+          <Button onClick={handleSignUp}>Sign Up</Button>
+          <Button variant='secondary' onClick={goToLogin}>Back to Login</Button >
+        </BtnBox>
+
       </Form>
     </Container>
   );
