@@ -4,6 +4,7 @@ import { CreateUserRequest, LoginResponse, UpdateUserRequest, UserResponse as Us
 
 const userApiConfig: ApiConfig<{
   login: EndpointConfig<{ email: string; password: string }, LoginResponse>;
+  logout: EndpointConfig<void, void>;
   getUser: EndpointConfig<void, UserResponse>;
   createUser: EndpointConfig<CreateUserRequest, UserResponse>;
   updateUser: EndpointConfig<UpdateUserRequest, UserResponse>;
@@ -14,6 +15,10 @@ const userApiConfig: ApiConfig<{
     login: {
       method: 'POST',
       path: '/login',
+    },
+    logout: {
+      method: 'POST',
+      path: '/logout',
     },
     getUser: {
       method: 'GET',

@@ -1,5 +1,5 @@
 import { UserResponse } from "../../api/user/types";
-import { User } from "../../features/user/User";
+import { User } from "./userSlice";
 
 export const marshallUser = (userResponse: UserResponse): User => {
     return {
@@ -20,4 +20,3 @@ export const marshallUnauthenticatedUser = (userResponse: UserResponse): User =>
         IsAuthenticated: false
     };
 }
-
