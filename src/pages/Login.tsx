@@ -63,7 +63,6 @@ const LoginPage: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
 
   const handleLogin = () => {
-    console.log('logging in');
     dispatch(login(email, password));
   };
 

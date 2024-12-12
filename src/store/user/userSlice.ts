@@ -44,9 +44,9 @@ export const login = (email: string, password: string): AppThunk => async (dispa
     const loginResponse = await userApi.login({ email, password });
     const user = marshallUser(loginResponse.User);
     dispatch(setUser(user));
+    dispatch(showNotification('User logged in', 'success'));
   } catch (error) {
-    console.error('Failed to login:', error);
-    // show an error message to the user
+    dispatch(showNotification('Failed to login', 'error'));
   }
 };
 

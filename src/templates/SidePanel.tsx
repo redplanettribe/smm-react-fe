@@ -56,9 +56,9 @@ const SidePanel: React.FC<SidePanelProps> = ({ activePage }) => {
     const navigate = useNavigate();
 
     const menuItems = [
-        { id: 'project', label: 'Project', path: '/app/project' },
         { id: 'pqueue', label: 'Posts', path: '/app/pqueue' },
         { id: 'iqueue', label: 'Ideas', path: '/app/iqueue' },
+        { id: 'project', label: 'Project Info', path: '/app/project' },
     ];
 
     return (
