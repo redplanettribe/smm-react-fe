@@ -24,6 +24,12 @@ declare module 'styled-components' {
             body: string;
             small: string;
         };
+        toast: {
+            success: string;
+            error: string;
+            warning: string;
+            info: string;
+        };
         fonts: {
             main: string;
         };
@@ -53,6 +59,12 @@ export const theme = {
         text1: '1.25rem',
         body: '1rem',
         small: '0.875rem',
+    },
+    toast: {
+        success: '#28a745',
+        error: '#dc3545',
+        warning: '#ffc107',
+        info: '#17a2b8',
     },
     fonts: {
         main: 'Inter, system-ui, Avenir, Helvetica, Arial, sans-serif',

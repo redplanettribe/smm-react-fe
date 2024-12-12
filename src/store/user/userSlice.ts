@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
 import { userApi } from "../../api/user/user-api";
 import { marshallUnauthenticatedUser, marshallUser } from "./utils";
+import { addNotification, showNotification } from "../notifications/notificationSice";
 
 export interface User {
   id: string
@@ -36,6 +37,7 @@ const userSlice = createSlice({
 })
 
 export const { setUser, clearUser } = userSlice.actions;
+export default userSlice.reducer;
 
 export const login = (email: string, password: string): AppThunk => async (dispatch) => {
   try {
@@ -53,8 +55,7 @@ export const logout = (): AppThunk => async (dispatch) => {
     await userApi.logout();
     dispatch(clearUser());
   } catch (error) {
-    console.error('Failed to logout:', error);
-    // show an error message to the user
+    dispatch(showNotification('Failed to logout', 'error'));
   }
 };
 
@@ -62,8 +63,10 @@ export const getUser = (): AppThunk => async (dispatch) => {
   try {
     const user = marshallUser(await userApi.getUser());
     dispatch(setUser(user));
+    dispatch(showNotification('User loaded', 'success'));
   } catch (error) {
-
+    dispatch(showNotification('Failed to get user', 'error'));
+    dispatch(clearUser());
   }
 };
 
@@ -72,10 +75,6 @@ export const signup = (username: string, email: string, password: string): AppTh
     const user = marshallUnauthenticatedUser(await userApi.createUser({ username, email, password }));
     dispatch(setUser(user));
   } catch (error) {
-    console.error('Failed to signup:', error);
-    // show an error message to the user
+    dispatch(showNotification('Failed to signup', 'error'));
   }
 };
-
-
-export default userSlice.reducer;

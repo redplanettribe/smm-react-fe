@@ -7,6 +7,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 import { ThemeProvider } from 'styled-components'
 import { theme } from './theme.ts'
 import GlobalStyle from './globalStyles.ts'
+import ToastNotification from './components/toast-notification/ToastNotification.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -14,6 +15,7 @@ createRoot(document.getElementById('root')!).render(
       <PersistGate loading={null} persistor={persistor}>
         <ThemeProvider theme={theme}>
           <GlobalStyle />
+          <ToastNotification />
           <App />
         </ThemeProvider>
       </PersistGate>
