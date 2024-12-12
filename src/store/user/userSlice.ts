@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
 import { userApi } from "../../api/user/user-api";
 import { marshallUnauthenticatedUser, marshallUser } from "./utils";
-import { addNotification, showNotification } from "../notifications/notificationSice";
+import { showNotification } from "../notifications/notificationSice";
 
 export interface User {
   id: string

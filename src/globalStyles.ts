@@ -9,6 +9,7 @@ const GlobalStyle = createGlobalStyle`
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
+  box-sizing: border-box;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -19,15 +20,16 @@ const GlobalStyle = createGlobalStyle`
 body {
   margin: 0;
   padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
+  min-width: 100vw;
+  overflow: hidden;
+  width: 100%;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+html, body, #root {
+  height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
 `;

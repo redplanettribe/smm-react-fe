@@ -3,8 +3,17 @@ import react from '@vitejs/plugin-react-swc'
 
 export default defineConfig({
   plugins: [
-    react(
+    react({
+      plugins: [
+        [
+          "@swc/plugin-styled-components",
+          {
+            "displayName": true,
+            "ssr": true
+          }
+        ]
+      ]
+    }),
 
-    ),
   ],
 });

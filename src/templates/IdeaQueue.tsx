@@ -18,7 +18,7 @@ const TestButton = styled(Button)`
   margin-top: 2rem;
 `;
 
-const ProjectInfo: React.FC = () => {
+const MainDashboardPage: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
 
     const handleGetUser = () => {
@@ -27,10 +27,10 @@ const ProjectInfo: React.FC = () => {
 
     return (
         <ContentArea>
-            <Title>Project Info</Title>
+            <Title>IdeaQueue</Title>
             <TestButton onClick={handleGetUser}>Get User</TestButton>
         </ContentArea>
     );
 };
 
-export default ProjectInfo;
+export default MainDashboardPage;
