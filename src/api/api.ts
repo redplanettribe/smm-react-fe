@@ -1,5 +1,5 @@
 export const config = {
-  baseUrl: 'https://localhost:8443'
+  baseUrl: 'http://localhost:8080'
 };
 
 export type EndpointConfig<RequestType, ResponseType> = {
@@ -44,17 +44,19 @@ export function createApi<Endpoints extends { [key: string]: EndpointConfig<any,
             delete params[param];
           }
         }
-       
+
+        const headers: HeadersInit = {
+          ...(endpoint.method === 'POST' || endpoint.method === 'PUT') && { 'Content-Type': 'application/json' },
+        };
+        const body = endpoint.method !== 'GET' ? JSON.stringify(params) : undefined;
+
         const response = await fetch(
           config.baseUrl + enpointConfig.basePath + url,
           {
             method: endpoint.method,
-            headers: { 'Content-Type': 'application/json' },
+            headers,
             credentials: 'include',
-            body:
-              endpoint.method !== 'GET' && endpoint.method !== 'DELETE'
-                ? JSON.stringify(params)
-                : undefined,
+            body,
           }
         );
 

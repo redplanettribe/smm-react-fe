@@ -55,7 +55,7 @@ const NavBar: React.FC = () => {
   return (
     <NavContainer>
       <UserInfo>{user.name || 'Guest'}</UserInfo>
-      <NavButton onClick={() => navigate('/user')}>Profile</NavButton>
+      <NavButton onClick={() => navigate('/user')}>Active Project</NavButton>
       <NavButton onClick={handleLogout}>Logout</NavButton>
     </NavContainer>
   );
