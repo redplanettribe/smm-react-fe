@@ -16,16 +16,16 @@ const PanelContainer = styled.div`
   box-sizing: border-box;
 `;
 
-const SideButton = styled.button<{ active?: boolean }>`
+const SideButton = styled.button<{ $active?: boolean }>`
   width: 100%;
   padding: ${props => props.theme.spacing(2)};
   margin-bottom: ${props => props.theme.spacing(1)};
   border: none;
   border-radius: 4px;
   background-color: ${props =>
-        props.active ? props.theme.colors.primary : 'transparent'};
+    props.$active ? props.theme.colors.primary : 'transparent'};
   color: ${props =>
-        props.active ? 'white' : props.theme.textColor.normal};
+    props.$active ? 'white' : props.theme.textColor.normal};
   font-family: ${props => props.theme.fonts.main};
   font-size: ${props => props.theme.fontSizes.body};
   text-align: left;
@@ -34,7 +34,7 @@ const SideButton = styled.button<{ active?: boolean }>`
 
   &:hover {
     background-color: ${props =>
-        props.active ? props.theme.colors.primary : props.theme.colors.secondary};
+    props.$active ? props.theme.colors.primary : props.theme.colors.secondary};
     color: white;
   }
 
@@ -66,7 +66,7 @@ const SidePanel: React.FC<SidePanelProps> = ({ activePage }) => {
             {menuItems.map((item) => (
                 <SideButton
                     key={item.id}
-                    active={activePage === item.id}
+                    $active={activePage === item.id}
                     onClick={() => navigate(item.path)}
                 >
                     <ButtonText>{item.label}</ButtonText>
