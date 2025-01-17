@@ -1,6 +1,8 @@
 export const config = {
-  baseUrl: 'http://localhost:8080'
+  baseUrl: import.meta.env.VITE_API_URL || 'http://localhost:5555'
 };
+
+console.log('API URL:', config.baseUrl);
 
 export type EndpointConfig<RequestType, ResponseType> = {
     method: 'GET' | 'POST' | 'PUT' | 'DELETE';

@@ -49,31 +49,32 @@ const ButtonText = styled(Text3)`
 `;
 
 interface SidePanelProps {
-    activePage: string;
+  activePage: string;
 }
 
 const SidePanel: React.FC<SidePanelProps> = ({ activePage }) => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const menuItems = [
-        { id: 'pqueue', label: 'Posts', path: '/app/pqueue' },
-        { id: 'iqueue', label: 'Ideas', path: '/app/iqueue' },
-        { id: 'project', label: 'Project Info', path: '/app/project' },
-    ];
+  const menuItems = [
+    { id: 'pqueue', label: 'Posts', path: '/app/pqueue' },
+    { id: 'iqueue', label: 'Ideas', path: '/app/iqueue' },
+    { id: 'project', label: 'Project Info', path: '/app/project' },
+    { id: 'settings', label: 'Settings', path: '/app/settings' },
+  ];
 
-    return (
-        <PanelContainer>
-            {menuItems.map((item) => (
-                <SideButton
-                    key={item.id}
-                    $active={activePage === item.id}
-                    onClick={() => navigate(item.path)}
-                >
-                    <ButtonText>{item.label}</ButtonText>
-                </SideButton>
-            ))}
-        </PanelContainer>
-    );
+  return (
+    <PanelContainer>
+      {menuItems.map((item) => (
+        <SideButton
+          key={item.id}
+          $active={activePage === item.id}
+          onClick={() => navigate(item.path)}
+        >
+          <ButtonText>{item.label}</ButtonText>
+        </SideButton>
+      ))}
+    </PanelContainer>
+  );
 };
 
 export default SidePanel;

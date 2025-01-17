@@ -7,6 +7,8 @@ import DashboardLayout from './templates/DashboardLayout';
 import ProjectInfo from './templates/ProjectInfo';
 import PostQueue from './templates/PostQueue';
 import IdeaQueue from './templates/IdeaQueue';
+import Settings from './templates/Settings';
+import Linkedin from './components/Platforms/Linkedin';
 
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
           <Route path="project" element={<ProjectInfo />} />
           <Route path="pqueue" element={<PostQueue />} />
           <Route path="iqueue" element={<IdeaQueue />} />
+          <Route path='settings' element={<Settings />} />
+          <Route path='settings/linkedin' element={<Linkedin />} />
         </Route>
       </Routes>
     </Router>
