@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Button from "../components/design-system/Button";
 
 const ContentArea = styled.div`
-  padding: ${props => props.theme.spacing(3)};
+  padding: 24px;
 `;
 
 const Title = styled.h1`

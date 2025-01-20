@@ -5,12 +5,12 @@ import styled from "styled-components";
 import Button from "../components/design-system/Button";
 
 const ContentArea = styled.div`
-  padding: ${props => props.theme.spacing(3)};
+  padding: 24px;
 `;
 
 const Title = styled.h1`
     color: ${props => props.theme.textColors.primary};
-    margin-bottom: ${props => props.theme.spacing(1)};
+    margin-bottom: 8px;
 `;
 
 const TestButton = styled(Button)`

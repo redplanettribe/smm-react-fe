@@ -54,14 +54,6 @@ declare module 'styled-components' {
             r_12: Font,
             r: Font,
         }
-        fontSizes: {
-            h1: string;
-            h2: string;
-            h3: string;
-            text1: string;
-            body: string;
-            small: string;
-        };
         toastColors: {
             success: string;
             error: string;
@@ -72,7 +64,6 @@ declare module 'styled-components' {
             main: string;
         };
         type: 'light' | 'dark';
-        spacing: (factor: number) => string;
     }
 }
 
@@ -132,14 +123,6 @@ export const LightTheme: DefaultTheme = {
         primary: colors.text,
         secondary: colors.textSecondary,
     },
-    fontSizes: {
-        h1: '3rem',
-        h2: '1.75rem',
-        h3: '1.5rem',
-        text1: '1.25rem',
-        body: '1rem',
-        small: '0.875rem',
-    },
     bgColors: {
         primary: colors.white,
         secondary: colors.backgroundSecondary,
@@ -149,8 +132,6 @@ export const LightTheme: DefaultTheme = {
     toastColors,
     fontFamily,
     type: 'light',
-    spacing: (factor: number) => `${factor * 8}px`, // 8px grid system
-
 };
 
 
@@ -161,14 +142,6 @@ export const DarkTheme: DefaultTheme = {
         primary: colors.white,
         secondary: colors.textSecondaryDark,
     },
-    fontSizes: {
-        h1: '3rem',
-        h2: '1.75rem',
-        h3: '1.5rem',
-        text1: '1.25rem',
-        body: '1rem',
-        small: '0.875rem',
-    },
     bgColors: {
         primary: colors.black,
         secondary: colors.backgroundDark,
@@ -178,6 +151,4 @@ export const DarkTheme: DefaultTheme = {
     toastColors,
     fontFamily,
     type: 'dark',
-    spacing: (factor: number) => `${factor * 8}px`, // 8px grid system
-    // Include other theme properties like breakpoints for responsiveness
 };

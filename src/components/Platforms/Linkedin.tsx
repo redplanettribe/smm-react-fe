@@ -2,12 +2,12 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 
 const ContentArea = styled.div`
-  padding: ${props => props.theme.spacing(3)};
+  padding: 24px;
 `;
 
 const Title = styled.h1`
     color: ${props => props.theme.textColors.primary};
-    margin-bottom: ${props => props.theme.spacing(1)};
+    margin-bottom: 8px;
 `;
 
 const Linkedin: React.FC = () => {

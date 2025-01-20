@@ -45,7 +45,7 @@ const Form = styled.form`
 const Title = styled.h1`
   ${({ theme }) => `
     color: ${theme.textColors.primary};
-    margin-bottom: ${theme.spacing(1)};
+    margin-bottom: 8px;
   `}
 `;
 

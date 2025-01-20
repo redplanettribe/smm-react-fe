@@ -6,17 +6,17 @@ import { removeNotification } from '../../store/notifications/notificationSice';
 
 const ToastContainer = styled.div`
   position: fixed;
-  top: ${props => props.theme.spacing(2)};
-  right: ${props => props.theme.spacing(2)};
+  top: 16px;
+  right: 16px;
   z-index: 9999;
   display: flex;
   flex-direction: column;
-  gap: ${props => props.theme.spacing(1)};
+  gap: 8px;
 `;
 
 const Toast = styled.div<{ type: 'success' | 'error' | 'warning' | 'info' }>`
   min-width: 300px;
-  padding: ${props => props.theme.spacing(2)};
+  padding: 16px;
   background-color: ${props => props.theme.toast[props.type]};
   color: white;
   border-radius: 4px;
@@ -49,8 +49,8 @@ const CloseButton = styled.button`
   border: none;
   color: white;
   cursor: pointer;
-  padding: ${props => props.theme.spacing(1)};
-  margin-left: ${props => props.theme.spacing(2)};
+  padding: 8px;
+  margin-left: 16px;
   opacity: 0.7;
   transition: opacity 0.2s ease;
 
