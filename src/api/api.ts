@@ -5,13 +5,13 @@ export const config = {
 console.log('API URL:', config.baseUrl);
 
 export type EndpointConfig<RequestType, ResponseType> = {
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-    path: string;
-    pathValues?: (keyof RequestType)[];
-    requestType?: RequestType;
-    responseType?: ResponseType;
-  };
-  
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  path: string;
+  pathValues?: (keyof RequestType)[];
+  requestType?: RequestType;
+  responseType?: ResponseType;
+};
+
 export type ApiConfig<Endpoints extends Record<string, EndpointConfig<any, any>>> = {
   basePath: string;
   endpoints: Endpoints;
@@ -22,8 +22,8 @@ export function createApi<Endpoints extends { [key: string]: EndpointConfig<any,
 ) {
   type ApiMethods = {
     [K in keyof Endpoints]: Endpoints[K] extends EndpointConfig<infer Req, infer Res>
-      ? (params: Req) => Promise<Res>
-      : never;
+    ? (params: Req) => Promise<Res>
+    : never;
   };
 
   const api = {} as ApiMethods;

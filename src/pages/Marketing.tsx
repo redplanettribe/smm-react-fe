@@ -5,29 +5,23 @@ import { healthApi } from "../api/health/health-api";
 const MarketingPage: React.FC = () => {
   const handleTest1 = async () => {
     try {
-      const response = await fetch('http://localhost:8080/health', {
-        method: 'GET',
-        credentials: 'include',
-
-      });
-      console.log('Test 1 Response:', response);
-
+      const response = await healthApi.ok();
+      console.log('Test 1 Response:', response.message);
     } catch (error) {
       console.error('Test 1 Error:', error);
     }
   };
 
   const handleTest2 = async () => {
-    const response = await healthApi.ok();
-    console.log('Test 2 Response:', response);
-
+    const response = await healthApi.okAuthenticated();
+    console.log('Test 2 Response:', response.message);
   };
 
   return (
     <div>
       <h1>Marketing Page</h1>
-      <Button onClick={handleTest1}>Click me</Button>
-      <Button onClick={handleTest2}>Click me 2</Button>
+      <Button onClick={handleTest1}>Health</Button>
+      <Button onClick={handleTest2}>Health Auth</Button>
     </div>
   );
 }
