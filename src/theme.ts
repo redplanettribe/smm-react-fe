@@ -1,12 +1,13 @@
 import 'styled-components';
-import { MyTheme } from 'styled-components';
+import { DefaultTheme } from 'styled-components';
 
 declare module 'styled-components' {
     interface Font {
         size: string;
         lineHeight: string;
+        weight: string;
     }
-    export interface MyTheme {
+    export interface DefaultTheme {
         colors: {
             primary: string;
             primary_80: string;
@@ -33,7 +34,13 @@ declare module 'styled-components' {
             primary: string;
             secondary: string;
         };
+        bgColors: {
+            primary: string;
+            secondary: string;
+        };
+        dividerColor: string;
         fonts: {
+            sb_24: Font,
             sb_18: Font,
             sb: Font,
             m_22: Font,
@@ -64,6 +71,7 @@ declare module 'styled-components' {
         fontFamily: {
             main: string;
         };
+        type: 'light' | 'dark';
         spacing: (factor: number) => string;
     }
 }
@@ -78,32 +86,33 @@ const colors = {
     secondary: '#F7F7F7',
     text: '#000103',
     textSecondary: '#6D6F78',
-    white: '#FFFFFF',
+    textSecondaryDark: '#A6AFB4',
     divider: '#F2F2F2',
     warning: '#FE6E66',
-    backgroundSecondary: '#FDFDFD',
     support: '#ED4956',
     active: '#3ACB70',
     warningSecondary: '#FD5E5A',
-    backgroundDark: '#1E1E2D',
-    textSecondaryDark: '#A6AFB4',
+    white: '#FFFFFF',
+    backgroundSecondary: '#FDFDFD',
     black: '#161622',
+    backgroundDark: '#1E1E2D',
     dividerDark: '#252633',
 };
 
-const fonts = {
-    sb_18: { size: '18px', lineHeight: '38px' },
-    sb: { size: '14px', lineHeight: '20px' },
-    m_22: { size: '22px', lineHeight: 'Auto' },
-    m_18: { size: '18px', lineHeight: '26px' },
-    m_16: { size: '16px', lineHeight: '24px' },
-    m_14: { size: '14px', lineHeight: '20px' },
-    m_12: { size: '12px', lineHeight: 'Auto' },
-    r_22: { size: '22px', lineHeight: 'Auto' },
-    r_16: { size: '16px', lineHeight: '20px' },
-    r_14: { size: '14px', lineHeight: '20px' },
-    r_12: { size: '12px', lineHeight: 'Auto' },
-    r: { size: '16px', lineHeight: '18px' },
+export const fonts = {
+    sb_24: { size: '24px', lineHeight: '36px', weight: '600' },
+    sb_18: { size: '18px', lineHeight: '38px', weight: '600' },
+    sb: { size: '14px', lineHeight: '20px', weight: '600' },
+    m_22: { size: '22px', lineHeight: 'Auto', weight: '500' },
+    m_18: { size: '18px', lineHeight: '26px', weight: '500' },
+    m_16: { size: '16px', lineHeight: '24px', weight: '500' },
+    m_14: { size: '14px', lineHeight: '20px', weight: '500' },
+    m_12: { size: '12px', lineHeight: 'Auto', weight: '500' },
+    r_22: { size: '22px', lineHeight: 'Auto', weight: '400' },
+    r_16: { size: '16px', lineHeight: '20px', weight: '400' },
+    r_14: { size: '14px', lineHeight: '20px', weight: '400' },
+    r_12: { size: '12px', lineHeight: 'Auto', weight: '400' },
+    r: { size: '16px', lineHeight: '18px', weight: '600' },
 };
 
 const fontFamily = {
@@ -117,7 +126,7 @@ const toastColors = {
     info: '#17a2b8',
 };
 
-export const LightTheme: MyTheme = {
+export const LightTheme: DefaultTheme = {
     colors: colors,
     textColors: {
         primary: colors.text,
@@ -131,16 +140,22 @@ export const LightTheme: MyTheme = {
         body: '1rem',
         small: '0.875rem',
     },
+    bgColors: {
+        primary: colors.white,
+        secondary: colors.backgroundSecondary,
+    },
+    dividerColor: colors.divider,
     fonts,
     toastColors,
     fontFamily,
+    type: 'light',
     spacing: (factor: number) => `${factor * 8}px`, // 8px grid system
-    // Include other theme properties like breakpoints for responsiveness
+
 };
 
 
 
-export const DarkTheme: MyTheme = {
+export const DarkTheme: DefaultTheme = {
     colors: colors,
     textColors: {
         primary: colors.white,
@@ -154,9 +169,15 @@ export const DarkTheme: MyTheme = {
         body: '1rem',
         small: '0.875rem',
     },
+    bgColors: {
+        primary: colors.black,
+        secondary: colors.backgroundDark,
+    },
+    dividerColor: colors.dividerDark,
     fonts,
     toastColors,
     fontFamily,
+    type: 'dark',
     spacing: (factor: number) => `${factor * 8}px`, // 8px grid system
     // Include other theme properties like breakpoints for responsiveness
 };

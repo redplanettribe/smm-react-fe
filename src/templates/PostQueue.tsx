@@ -2,16 +2,15 @@ import { useDispatch } from "react-redux";
 import { getUser } from "../store/user/userSlice";
 import { AppDispatch } from "../store/store";
 import styled from "styled-components";
-import { H1 } from "../components/design-system/Typography";
 import Button from "../components/design-system/Button";
 
 const ContentArea = styled.div`
   padding: ${props => props.theme.spacing(3)};
 `;
 
-const Title = styled(H1)`
-  margin-bottom: 2rem;
-  color: ${props => props.theme.colors.text};
+const Title = styled.h1`
+    color: ${props => props.theme.textColors.primary};
+    margin-bottom: ${props => props.theme.spacing(1)};
 `;
 
 const TestButton = styled(Button)`

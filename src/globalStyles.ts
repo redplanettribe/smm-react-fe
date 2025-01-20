@@ -2,13 +2,8 @@ import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
 :root {
-  font-family: ${props => props.theme.fonts.main};
-  line-height: 1.5;
-  font-weight: 400;
-
+  font-family: ${props => props.theme.fontFamily.main};
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
   box-sizing: border-box;
 
   font-synthesis: none;

@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { Text3 } from '../components/design-system/Typography';
 import { useNavigate } from 'react-router-dom';
 
 const PanelContainer = styled.div`
@@ -8,7 +7,7 @@ const PanelContainer = styled.div`
   top: ${props => props.theme.spacing(8)}; // Start below NavBar
   bottom: 0;
   width: ${props => props.theme.spacing(30)}; // 240px
-  background-color: ${props => props.theme.colors.background};
+  background-color: ${props => props.theme.bgColors.primary};
   box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
@@ -26,7 +25,7 @@ const SideButton = styled.button<{ $active?: boolean }>`
     props.$active ? props.theme.colors.primary : 'transparent'};
   color: ${props =>
     props.$active ? 'white' : props.theme.textColor.normal};
-  font-family: ${props => props.theme.fonts.main};
+  font-family: ${props => props.theme.fontFamily.main};
   font-size: ${props => props.theme.fontSizes.body};
   text-align: left;
   cursor: pointer;
@@ -43,7 +42,7 @@ const SideButton = styled.button<{ $active?: boolean }>`
   gap: ${props => props.theme.spacing(2)};
 `;
 
-const ButtonText = styled(Text3)`
+const ButtonText = styled.p`
   margin: 0;
   font-size: ${props => props.theme.fontSizes.body};
 `;

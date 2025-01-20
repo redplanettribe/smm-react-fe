@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Button from '../components/design-system/Button';
 import Input from '../components/design-system/Input';
-import { H1 } from '../components/design-system/Typography';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store';
 import { signup } from '../store/user/userSlice';
@@ -31,7 +30,7 @@ const Form = styled.div`
   flex-direction: column;
 `;
 
-const Title = styled(H1)`
+const Title = styled.h1`
   margin-bottom: 2rem;
 `;
 
@@ -81,49 +80,18 @@ const SignUpPage: React.FC = () => {
   return (
     <RedirectIfLoggedIn>
       <Container>
-      <Form>
-        <Title>Sign Up</Title>
-        <InputBox>
-        <div>
-          <Label>Name:</Label>
-          <Input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-        <div>
-          <Label>Email:</Label>
-          <Input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div>
-          <Label>Password:</Label>
-          <Input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <div>
-          <Label>Confirm Password:</Label>
-          <Input
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </div>
-        </InputBox>
-        <BtnBox>
-          <Button onClick={handleSignUp}>Sign Up</Button>
-          <Button variant='secondary' onClick={goToLogin}>Back to Login</Button >
-        </BtnBox>
+        <Form>
+          <Title>Sign Up</Title>
+          <InputBox>
 
-      </Form>
-    </Container>
+          </InputBox>
+          <BtnBox>
+            <Button onClick={handleSignUp}>Sign Up</Button>
+            <Button onClick={goToLogin}>Back to Login</Button >
+          </BtnBox>
+
+        </Form>
+      </Container>
     </RedirectIfLoggedIn>
 
   );

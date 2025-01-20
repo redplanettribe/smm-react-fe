@@ -1,23 +1,47 @@
 import styled from 'styled-components';
 
 interface ButtonProps {
-    variant?: 'primary' | 'secondary' | 'success' | 'danger';
+  variant?: 'on' | 'off';
+  fontSize?: string;
 }
 
 const Button = styled.button<ButtonProps>`
-  padding: ${(props) => props.theme.spacing(2)} ${(props) => props.theme.spacing(2)};
+  padding: 9px 10px;
   border: none;
-  border-radius: 4px;
-  background-color: ${(props) =>
-        props.theme.colors[props.variant || 'primary']};
-  color: #fff;
-  font-size: 1rem;
-  font-weight: 500;
+  border-radius: 5px;
+  font-size: ${({ fontSize, theme }) => fontSize || theme.fonts.m_16.size};
+  font-family: ${({ theme }) => theme.fontFamily.main};
+  color: ${({ theme }) => theme.textColors.primary};
+  background-color: ${({ theme }) => theme.colors.primary};
   cursor: pointer;
-  font-family: ${(props) => props.theme.fonts.main};
+  
   &:hover {
-    opacity: 0.9;
+   background-color: ${({ theme }) => theme.colors.primary_60};
   }
+  &:focus {
+    outline: none;
+  }
+
+  ${({ theme, variant = 'on' }) => {
+    switch (theme.type) {
+      case 'light':
+        if (variant === 'off') {
+          return `
+            background-color: ${theme.bgColors.secondary};
+            color: ${theme.textColors.secondary};
+          `;
+        }
+        break;
+      case 'dark':
+        if (variant === 'off') {
+          return `
+            background-color: ${theme.bgColors.primary};
+            color: ${theme.textColors.secondary};
+          `;
+        }
+        break;
+    }
+}}
 `;
 
 export default Button;

@@ -4,7 +4,6 @@ import { RootState } from '../store/root-reducer';
 import { logout } from '../store/user/userSlice';
 import { AppDispatch } from '../store/store';
 import { useNavigate } from 'react-router-dom';
-import { Text3 } from '../components/design-system/Typography';
 
 const NavContainer = styled.nav`
   position: fixed;
@@ -12,7 +11,7 @@ const NavContainer = styled.nav`
   left: 0;
   right: 0;
   height: ${props => props.theme.spacing(8)}; // 64px
-  background-color: ${props => props.theme.colors.background};
+  background-color: ${props => props.theme.bgColors.primary};
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: flex-end;
@@ -27,7 +26,6 @@ const NavButton = styled.button`
   padding: ${props => props.theme.spacing(1)} ${props => props.theme.spacing(2)};
   margin-left: ${props => props.theme.spacing(2)};
   cursor: pointer;
-  font-family: ${props => props.theme.fonts.main};
   font-size: ${props => props.theme.fontSizes.body};
   color: ${props => props.theme.textColor.normal};
   transition: color 0.2s ease;
@@ -37,9 +35,10 @@ const NavButton = styled.button`
   }
 `;
 
-const UserInfo = styled(Text3)`
+const UserInfo = styled.span`
+  margin-right: auto;
+  font-size: ${props => props.theme.fontSizes.body};
   color: ${props => props.theme.textColor.normal};
-  margin-right: auto; // pushes it to the left
 `;
 
 const NavBar: React.FC = () => {

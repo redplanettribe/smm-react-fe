@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/root-reducer';
-import { Text3 } from '../design-system/Typography';
 import { useDispatch } from 'react-redux';
 import { removeNotification } from '../../store/notifications/notificationSice';
 
@@ -39,7 +38,7 @@ const Toast = styled.div<{ type: 'success' | 'error' | 'warning' | 'info' }>`
   }
 `;
 
-const ToastMessage = styled(Text3)`
+const ToastMessage = styled.p`
   color: white;
   margin: 0;
   font-size: ${props => props.theme.fontSizes.body};

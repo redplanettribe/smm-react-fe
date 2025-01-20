@@ -1,52 +1,62 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { login } from '../store/user/userSlice';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store';
 import Button from '../components/design-system/Button';
 import Input from '../components/design-system/Input';
-import { H1 } from '../components/design-system/Typography';
 import RedirectIfLoggedIn from '../components/utility/RedirectIfLoggedIn';
+import { getFontStyles } from '../components/design-system/Typography';
 
-const Container = styled.div`
+const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
   width: 100vw;
-  background-color: #f0f0f0;
+  background: ${({ theme }) => theme.bgColors.secondary};
 `;
 
-const Form = styled.div`
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-sizing: border-box;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  min-width: 300px;
-  max-width: 400px;
-  width: 30%;
+const BoxContainer = styled.div`
+  ${({ theme }) => `
+    background: ${theme.bgColors.primary};
+    padding: 40px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    min-width: 375px;
+    max-width: 540px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  `}
+
+`;
+const Form = styled.form`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+`;
+
+const Title = styled.h1`
+  ${({ theme }) => `
+    color: ${theme.textColors.primary};
+    margin-bottom: ${theme.spacing(1)};
+  `}
+`;
+
+const TitleBox = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
 `;
 
-const Title = styled(H1)`
-  margin-bottom: 2rem;
-`;
-const Label = styled.label`
-  display: block;
-  margin-bottom: 0.5rem;
-  color: ${(props) => props.theme.textColor.normal};
-  margin-top: 1rem;
-`;
-
-const InputBox = styled.div`
-  margin-bottom: 2rem;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
+const SubTitle = styled.h2`
+  ${({ theme }) => getFontStyles('r_14')(theme)};
+  color: ${({ theme }) => theme.textColors.secondary};
 `;
 
 const BtnBox = styled.div`
@@ -56,47 +66,67 @@ const BtnBox = styled.div`
   justify-content: space-between;
 `;
 
+const SignUpLink = styled.a`
+  ${({ theme }) => `
+    color: ${theme.textColors.primary};
+    text-align: center;
+    margin-top: 20px;
+    cursor: pointer;
+  `}
+`;
+
+const LinkText = styled.span`
+  ${({ theme }) => `
+    color: ${theme.colors.support};
+    cursor: pointer;
+  `}
+`;
+
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
 
   const handleLogin = () => {
     dispatch(login(email, password));
   };
 
-  const goToSignUp = () => {
-    navigate('/signup');
-  };
-
   return (
     <RedirectIfLoggedIn>
-      <Container>
-      <Form>
-        <Title>Login</Title>
-        <InputBox>
-          <Label>Email:</Label>
-          <Input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <Label>Password:</Label>
-          <Input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </InputBox>
-        <BtnBox>
-        <Button onClick={handleLogin}>Login</Button>
-        <Button variant='secondary' onClick={goToSignUp}>Go to Sign Up</Button>
-        </BtnBox>
-      </Form>
-    </Container>
-    </RedirectIfLoggedIn>
+      <PageContainer>
+        <BoxContainer>
+          <Form>
+            <TitleBox>
+              <Title>Sign In</Title>
+              <SubTitle>Let's increase your social media reach</SubTitle>
+            </TitleBox>
 
+            <Input
+              label="Email"
+              placeholder="Enter your email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Input
+              label="Password"
+              placeholder="Enter your password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <BtnBox>
+              <Button onClick={handleLogin}>Login</Button>
+            </BtnBox>
+          </Form>
+          <SignUpLink>Don't have an account?{' '}
+            <Link to="/signup">
+              <LinkText>Sign Up</LinkText>
+            </Link>
+          </SignUpLink>
+        </BoxContainer>
+      </PageContainer>
+    </RedirectIfLoggedIn>
   );
 };
 

@@ -10,9 +10,10 @@ import { selectIsDarkTheme } from './store/theme/themeSlice.ts'
 
 function App() {
   const isDarkTheme = useSelector(selectIsDarkTheme);
+  const theme = isDarkTheme ? DarkTheme : LightTheme;
   return (
-    <ThemeProvider theme={isDarkTheme ? DarkTheme : LightTheme}>
-      <GlobalStyle />
+    <ThemeProvider theme={theme}>
+      <GlobalStyle theme={theme} />
       <ToastNotification />
       <MyRouter />
     </ThemeProvider>
