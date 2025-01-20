@@ -1,34 +1,22 @@
-import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import LoginPage from './pages/Login';
-import SignUpPage from './pages/SignUp';
-import MarketingPage from './pages/Marketing';
-import Authenticated from './components/utility/AuthenticatedRoute';
-import DashboardLayout from './templates/DashboardLayout';
-import ProjectInfo from './templates/ProjectInfo';
-import PostQueue from './templates/PostQueue';
-import IdeaQueue from './templates/IdeaQueue';
-import Settings from './templates/Settings';
-import Linkedin from './components/Platforms/Linkedin';
+
+
+import { ThemeProvider } from 'styled-components'
+import { DarkTheme, LightTheme } from './theme.ts'
+import GlobalStyle from './globalStyles.ts'
+import ToastNotification from './components/toast-notification/ToastNotification.tsx'
+import { MyRouter } from './routes.tsx'
+import { useSelector } from 'react-redux'
+import { selectIsDarkTheme } from './store/theme/themeSlice.ts'
 
 function App() {
+  const isDarkTheme = useSelector(selectIsDarkTheme);
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<MarketingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
+    <ThemeProvider theme={isDarkTheme ? DarkTheme : LightTheme}>
+      <GlobalStyle />
+      <ToastNotification />
+      <MyRouter />
+    </ThemeProvider>
 
-        {/* Protected dashboard routes */}
-        <Route path="/app" element={<Authenticated element={<DashboardLayout />} />}>
-          <Route index element={<Navigate to="/app/pqueue" replace />} />
-          <Route path="project" element={<ProjectInfo />} />
-          <Route path="pqueue" element={<PostQueue />} />
-          <Route path="iqueue" element={<IdeaQueue />} />
-          <Route path='settings' element={<Settings />} />
-          <Route path='settings/linkedin' element={<Linkedin />} />
-        </Route>
-      </Routes>
-    </Router>
   );
 }
 
