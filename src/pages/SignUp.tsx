@@ -65,6 +65,7 @@ const BtnBox = styled.div`
   flex-direction: column;
   gap: 1rem;
   justify-content: space-between;
+  margin-top: 20px;
 `;
 
 const TwoColumn = styled.div`
