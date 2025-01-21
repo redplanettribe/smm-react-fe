@@ -3,9 +3,9 @@ import LoginPage from './pages/Login';
 import SignUpPage from './pages/SignUp';
 import MarketingPage from './pages/Marketing';
 import Authenticated from './components/utility/AuthenticatedRoute';
-import DashboardLayout from './templates/DashboardLayout';
-import ProjectInfo from './templates/ProjectInfo';
-import PostQueue from './templates/Publish';
+import DashboardLayout from './modules/DashboardLayout';
+import ProjectInfo from './modules/ProjectInfo';
+import PostQueue from './modules/Publish';
 
 
 export const MyRouter: React.FC = () => {

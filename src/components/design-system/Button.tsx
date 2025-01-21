@@ -50,6 +50,12 @@ const StyledButton = styled.button<ButtonProps>`
             color: ${theme.textColors.secondary};
           `;
         }
+        if (variant === 'on') {
+          return `
+            background-color: ${theme.colors.primary};
+            color: ${theme.colors.black};
+          `;
+        }
         break;
     }
 }}

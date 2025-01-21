@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import ProjectSelector from './ProjectSelector';
-import UserMenu from './UserMenu/UserMenu';
 import LogoIcon from '../../assets/icons/Logo';
+import UserMenu from './UserMenu/UserMenu';
 
 const NavContainer = styled.nav`
   ${({ theme }) => `
