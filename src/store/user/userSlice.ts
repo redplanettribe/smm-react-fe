@@ -73,7 +73,8 @@ export const getUser = (): AppThunk => async (dispatch) => {
 export const signup = (username: string, email: string, password: string): AppThunk => async (dispatch) => {
   try {
     const user = marshallUnauthenticatedUser(await userApi.createUser({ username, email, password }));
-    dispatch(setUser(user));
+    dispatch(showNotification(`User ${user.name} succesfully registered`, 'success'));
+    window.location.href = '/login';
   } catch (error) {
     dispatch(showNotification('Failed to signup', 'error'));
   }

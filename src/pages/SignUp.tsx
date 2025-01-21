@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Button from '../components/design-system/Button';
 import Input from '../components/design-system/Input';
@@ -74,7 +74,7 @@ const TwoColumn = styled.div`
   gap: 1rem;
 `;
 
-const SignInLink = styled.a`
+const SignInLink = styled.div`
   ${({ theme }) => `
     color: ${theme.textColors.primary};
     text-align: center;

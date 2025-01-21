@@ -66,7 +66,7 @@ const BtnBox = styled.div`
   margin-top: 20px;
 `;
 
-const SignUpLink = styled.a`
+const SignUpLink = styled.div`
   ${({ theme }) => `
     color: ${theme.textColors.primary};
     text-align: center;
@@ -87,7 +87,8 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const dispatch: AppDispatch = useDispatch();
 
-  const handleLogin = () => {
+  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     dispatch(login(email, password));
   };
 
@@ -95,7 +96,12 @@ const LoginPage: React.FC = () => {
     <RedirectIfLoggedIn>
       <PageContainer>
         <BoxContainer>
-          <Form>
+          <Form
+            onSubmit={(e) => {
+              handleLogin(e);
+            }
+            }
+          >
             <TitleBox>
               <Title>Sign In</Title>
               <SubTitle>Let's increase your social media reach</SubTitle>
@@ -116,7 +122,7 @@ const LoginPage: React.FC = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
             <BtnBox>
-              <Button onClick={handleLogin}>Login</Button>
+              <Button type="submit">Login</Button>
             </BtnBox>
           </Form>
           <SignUpLink>Don't have an account?{' '}

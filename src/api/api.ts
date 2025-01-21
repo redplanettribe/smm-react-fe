@@ -1,3 +1,6 @@
+import store from "../store/store";
+import { clearUser } from "../store/user/userSlice";
+
 export const config = {
   baseUrl: import.meta.env.VITE_API_URL || 'http://localhost:5555'
 };
@@ -63,8 +66,13 @@ export function createApi<Endpoints extends { [key: string]: EndpointConfig<any,
         );
 
         if (!response.ok) {
+          if (response.status === 401) {
+            store.dispatch(clearUser());
+            window.location.href = '/login';
+            return;
+          }
           const errorText = await response.text();
-          throw new Error(`API request failed with status ${response.status}: ${errorText}`);
+          throw new Error(`${response.status}: ${errorText}`);
         }
 
         const contentType = response.headers.get('Content-Type');

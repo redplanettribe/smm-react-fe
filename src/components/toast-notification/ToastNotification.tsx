@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store/root-reducer';
 import { useDispatch } from 'react-redux';
 import { removeNotification } from '../../store/notifications/notificationSice';
+import { getFontStyles } from '../design-system/Typography';
 
 const ToastContainer = styled.div`
   position: fixed;
@@ -17,7 +18,7 @@ const ToastContainer = styled.div`
 const Toast = styled.div<{ type: 'success' | 'error' | 'warning' | 'info' }>`
   min-width: 300px;
   padding: 16px;
-  background-color: ${props => props.theme.toast[props.type]};
+  background-color: ${props => props.theme.toastColors[props.type]};
   color: white;
   border-radius: 4px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
@@ -41,7 +42,7 @@ const Toast = styled.div<{ type: 'success' | 'error' | 'warning' | 'info' }>`
 const ToastMessage = styled.p`
   color: white;
   margin: 0;
-  font-size: ${props => props.theme.fontSizes.body};
+  ${({ theme }) => getFontStyles('r_16')(theme)};
 `;
 
 const CloseButton = styled.button`

@@ -2,6 +2,15 @@ import { UserResponse } from "../../api/user/types";
 import { User } from "./userSlice";
 
 export const marshallUser = (userResponse: UserResponse): User => {
+    if (!userResponse.id) {
+        return {
+            id: '',
+            name: '',
+            email: '',
+            AppRoles: [],
+            IsAuthenticated: false
+        };
+    }
     return {
         id: userResponse.id,
         name: userResponse.username,

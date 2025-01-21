@@ -8,9 +8,9 @@ const RedirectIfLoggedIn: React.FC<{ children: React.ReactNode }> = ({ children 
     const navigate = useNavigate();
 
     useEffect(() => {
-        // if (isAuthenticated) {
-        //     navigate('/app');
-        // }
+        if (isAuthenticated) {
+            navigate('/app');
+        }
     }, [isAuthenticated, navigate]);
 
     return <>{children}</>;
