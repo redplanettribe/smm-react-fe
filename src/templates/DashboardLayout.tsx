@@ -1,11 +1,11 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import NavBar from './NavigationBar';
+import NavBar from './NavBar/NavigationBar';
 import SidePanel from './SidePanel';
 
 const LayoutContainer = styled.div`
   display: grid;
-  grid-template-rows: 78px auto;
+  grid-template-rows: 77px auto;
   grid-template-columns: 250px auto;
   grid-template-areas:
     "header header"
@@ -24,7 +24,6 @@ const SidebarWrapper = styled.aside`
 const ContentWrapper = styled.main`
   grid-area: content;
   background-color: ${props => props.theme.bgColors.primary};
-  box-sizing: border-box;
 `;
 
 const DashboardLayout = () => {

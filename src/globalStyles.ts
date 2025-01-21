@@ -4,13 +4,17 @@ const GlobalStyle = createGlobalStyle`
 :root {
   font-family: ${props => props.theme.fontFamily.main};
   color-scheme: light dark;
-  box-sizing: border-box;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 
 body {
   margin: 0;

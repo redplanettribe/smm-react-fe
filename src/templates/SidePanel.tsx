@@ -4,8 +4,10 @@ interface SidePanelProps {
 
 const SidePanel: React.FC<SidePanelProps> = ({ activePage }) => {
   return (
-    <div>Side Panel</div>
+    <div>
+      SidePanel
+    </div>
   );
-};
+}
 
 export default SidePanel;
