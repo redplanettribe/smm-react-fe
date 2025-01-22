@@ -1,5 +1,6 @@
 import store from "../store/store";
 import { clearUser } from "../store/user/userSlice";
+import { toCamelCase } from "./utils";
 
 export const config = {
   baseUrl: import.meta.env.VITE_API_URL || 'http://localhost:5555'
@@ -78,7 +79,7 @@ export function createApi<Endpoints extends { [key: string]: EndpointConfig<any,
         const contentType = response.headers.get('Content-Type');
         if (endpoint.method !== 'DELETE' && contentType?.includes('application/json')) {
           const data = await response.json();
-          return data as Endpoints[K] extends EndpointConfig<any, infer Res> ? Res : never;
+          return toCamelCase(data) as Endpoints[K] extends EndpointConfig<any, infer Res> ? Res : never;
         } else {
           return undefined as any;
         }

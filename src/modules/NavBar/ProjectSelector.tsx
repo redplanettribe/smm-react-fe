@@ -5,8 +5,10 @@ import { projectApi } from "../../api/project/project-api";
 import { Project } from "../../api/project/types";
 import { getFontStyles } from "../../components/design-system/Typography";
 import { setSelectedProject } from "../../store/projects/projectSlice";
-import { AppDispatch, AppThunk } from "../../store/store";
+import { AppDispatch } from "../../store/store";
 import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/root-reducer";
 
 const Container = styled.div`
     position: relative;
@@ -67,6 +69,7 @@ const ProjectSelector: React.FC = () => {
     const [projects, setProjects] = useState<Project[]>([]);
     const menuRef = useRef<HTMLDivElement>(null);
     const dispatch: AppDispatch = useDispatch();
+    const projectName = useSelector((state: RootState) => state.project.activeProject.name) || 'Select Project';
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -103,7 +106,7 @@ const ProjectSelector: React.FC = () => {
         <Container ref={menuRef}>
             <ProjectTrigger onClick={handleExpand}>
                 <ChevronDownIcon />
-                <ProjectName>Project Name</ProjectName>
+                <ProjectName>{projectName}</ProjectName>
             </ProjectTrigger>
 
             <DropdownMenu $isOpen={isOpen}>

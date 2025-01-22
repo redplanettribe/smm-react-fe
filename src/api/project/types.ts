@@ -13,9 +13,9 @@ export interface ProjectUser {
     id: string
     name: string
     email: string
-    default_user: boolean
-    added_at: string
-    max_role: number
+    defaultUser: boolean
+    addedAt: string
+    maxRole: number
 }
 
 export interface GetProjectResponse {
