@@ -1,4 +1,3 @@
-// src/components/design-system/Button.tsx
 import React from 'react';
 import styled from 'styled-components';
 import { getFontStyles } from './Typography';
@@ -11,10 +10,15 @@ interface ButtonProps {
   [key: string]: any;
 }
 
-const StyledButton = styled.button<ButtonProps>`
+interface StyledButtonProps {
+  $hasIcon?: boolean;
+  $variant?: 'on' | 'off';
+}
+
+const StyledButton = styled.button<StyledButtonProps>`
   display: inline-flex;
   align-items: center;
-  justify-content: ${({ icon }) => (icon ? 'flex-start' : 'center')};
+  justify-content: ${({ $hasIcon }) => ($hasIcon ? 'flex-start' : 'center')};
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
@@ -33,10 +37,10 @@ const StyledButton = styled.button<ButtonProps>`
     outline: none;
   }
 
-  ${({ theme, variant = 'on' }) => {
+  ${({ theme, $variant = 'on' }) => {
     switch (theme.type) {
       case 'light':
-        if (variant === 'off') {
+        if ($variant === 'off') {
           return `
             background-color: ${theme.bgColors.secondary};
             color: ${theme.textColors.secondary};
@@ -44,13 +48,13 @@ const StyledButton = styled.button<ButtonProps>`
         }
         break;
       case 'dark':
-        if (variant === 'off') {
+        if ($variant === 'off') {
           return `
             background-color: ${theme.bgColors.primary};
             color: ${theme.textColors.secondary};
           `;
         }
-        if (variant === 'on') {
+        if ($variant === 'on') {
           return `
             background-color: ${theme.colors.primary};
             color: ${theme.colors.black};
@@ -71,9 +75,9 @@ const IconWrapper = styled.span`
   }
 `;
 
-const Button: React.FC<ButtonProps> = ({ icon, children, ...rest }) => {
+const Button: React.FC<ButtonProps> = ({ icon, variant, children, ...rest }) => {
   return (
-    <StyledButton icon={icon} {...rest}>
+    <StyledButton $hasIcon={!!icon} $variant={variant} {...rest}>
       {icon && <IconWrapper>{icon}</IconWrapper>}
       {children}
     </StyledButton>

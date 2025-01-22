@@ -32,7 +32,7 @@ const StyledInput = styled.input`
   border-radius: 6px;
   ${({ theme }) => getFontStyles('r_14')(theme)};
   color: ${props => props.theme.textColors.primary};
-  background-color: ${props => props.theme.colors.backgroundSecondary};
+  background-color: ${props => props.theme.bgColors.secondary};
 
   &::placeholder {
     color: ${props => props.theme.textColors.secondary};

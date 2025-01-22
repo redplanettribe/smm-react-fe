@@ -4,7 +4,7 @@ import { userApi } from "../../api/user/user-api";
 import { marshallUnauthenticatedUser, marshallUser } from "./utils";
 import { showNotification } from "../notifications/notificationSice";
 
-export interface User {
+export interface UserState {
   id: string
   name: string
   email: string
@@ -12,7 +12,7 @@ export interface User {
   IsAuthenticated: boolean
 }
 
-const initialState: User = {
+const initialState: UserState = {
   id: '',
   name: '',
   email: '',
@@ -24,7 +24,7 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setUser(_, action: PayloadAction<User>) {
+    setUser(_, action: PayloadAction<UserState>) {
       return action.payload;
     },
     getUser(state) {

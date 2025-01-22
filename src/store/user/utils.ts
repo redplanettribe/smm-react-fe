@@ -1,7 +1,7 @@
 import { UserResponse } from "../../api/user/types";
-import { User } from "./userSlice";
+import { UserState } from "./userSlice";
 
-export const marshallUser = (userResponse: UserResponse): User => {
+export const marshallUser = (userResponse: UserResponse): UserState => {
     if (!userResponse.id) {
         return {
             id: '',
@@ -20,7 +20,7 @@ export const marshallUser = (userResponse: UserResponse): User => {
     };
 }
 
-export const marshallUnauthenticatedUser = (userResponse: UserResponse): User => {
+export const marshallUnauthenticatedUser = (userResponse: UserResponse): UserState => {
     return {
         id: userResponse.id,
         name: userResponse.username,

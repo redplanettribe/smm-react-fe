@@ -45,7 +45,7 @@ const UserEmail = styled.span`
   color: ${props => props.theme.textColors.secondary};
 `;
 
-const DropdownMenu = styled.div<{ isOpen: boolean }>`
+const DropdownMenu = styled.div<{ $isOpen: boolean }>`
   position: absolute;
   top: 100%;
   right: 0;
@@ -55,7 +55,7 @@ const DropdownMenu = styled.div<{ isOpen: boolean }>`
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   min-width: 200px;
-  display: ${props => (props.isOpen ? 'block' : 'none')};
+  display: ${props => (props.$isOpen ? 'block' : 'none')};
   z-index: 1000;
 `;
 
@@ -113,12 +113,12 @@ const UserMenu: React.FC = () => {
                 <ChevronDownIcon />
             </MenuTrigger>
 
-            <DropdownMenu isOpen={isOpen}>
+            <DropdownMenu $isOpen={isOpen}>
                 <MenuItem onClick={() => {
                     setIsOpen(false);
                     handleToggleTheme();
                 }}>
-                    Toggle Dark|Light Mode
+                    Toggle Dark | Light Mode
                 </MenuItem>
                 <MenuItem onClick={() => {
                     setIsOpen(false);

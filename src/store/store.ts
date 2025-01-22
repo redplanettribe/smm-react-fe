@@ -10,8 +10,8 @@ const persistConfig = {
   key: 'root',
   version: 1,
   storage,
-  whitelist: ['user'], // List of reducers to persist
-  blacklist: ['notifications'], // List of reducers to not persist
+  whitelist: ['user', 'theme'], // List of reducers to persist
+  blacklist: ['notifications', 'project'], // List of reducers to not persist
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
