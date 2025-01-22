@@ -5,7 +5,7 @@ import MarketingPage from './pages/Marketing';
 import Authenticated from './components/utility/AuthenticatedRoute';
 import DashboardLayout from './modules/DashboardLayout';
 import ProjectInfo from './modules/ProjectInfo';
-import PostQueue from './modules/Publish';
+import PostQueue from './modules/Publish/Publish';
 
 
 export const MyRouter: React.FC = () => {

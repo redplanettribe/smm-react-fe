@@ -1,13 +1,11 @@
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-import { RootState } from "../store/root-reducer";
-import { getFontStyles } from "../components/design-system/Typography";
+import { getFontStyles } from "../../components/design-system/Typography";
 import { useState } from "react";
-import { Post } from "../api/posts/types";
-import Button from "../components/design-system/Button";
-import IconPlus from "../assets/icons/Plus";
-import { useDispatch } from "react-redux";
-import { openModal } from "../store/modal/modalSlice";
+import Button from "../../components/design-system/Button";
+import IconPlus from "../../assets/icons/Plus";
+import { selectActivePost, selectEnabledPlatforms } from "../../store/projects/projectSlice";
+import PostList from "./PostList";
 
 const Container = styled.div`
   display: grid;
@@ -17,25 +15,7 @@ const Container = styled.div`
   height: 100%;
 `;
 
-const PostsList = styled.div`
-  background: ${props => props.theme.bgColors.secondary};
-  border-radius: 8px;
-  padding: 16px;
-  height: 100%;
-`;
 
-const PostItem = styled.div<{ $isActive: boolean }>`
-  padding: 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  ${({ theme }) => getFontStyles('r_14')(theme)};
-  color: ${props => props.theme.textColors.primary};
-  background: ${props => props.$isActive ? props.theme.bgColors.secondary : 'transparent'};
-
-  &:hover {
-    background: ${props => props.theme.bgColors.secondary};
-  }
-`;
 
 const ContentArea = styled.div`
   display: flex;
@@ -98,9 +78,6 @@ const Tab = styled.div<{ $isActive: boolean }>`
   }
 `;
 
-const ListHeader = styled.div`
-  margin-bottom: 16px;
-`;
 
 const ContentHeader = styled.div`
   display: flex;
@@ -108,43 +85,16 @@ const ContentHeader = styled.div`
   margin-bottom: 16px;
 `;
 
-const CreateButton = styled(Button)`
-    width: 100%;
-`;
 
 const Publish: React.FC = () => {
-  const { posts, enabledPlatforms } = useSelector((state: RootState) => state.project);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [activeTab, setActiveTab] = useState<string | null>(null);
-  const dispatch = useDispatch();
-  const handleCreatePost = () => {
-    dispatch(openModal({ type: 'CREATE_POST' }));
-  };
+  const selectedPost = useSelector(selectActivePost);
+  const enabledPlatforms = useSelector(selectEnabledPlatforms);
 
 
   return (
     <Container>
-      <PostsList>
-        <ListHeader>
-          <CreateButton
-            variant="off"
-            icon={<IconPlus />}
-            onClick={handleCreatePost}
-          >
-            Create Post
-          </CreateButton>
-        </ListHeader>
-        {posts.map(post => (
-          <PostItem
-            key={post.id}
-            $isActive={selectedPost?.id === post.id}
-            onClick={() => setSelectedPost(post)}
-          >
-            {post.title}
-          </PostItem>
-        ))}
-      </PostsList>
-
+      <PostList />
       <ContentArea>
         {selectedPost ? (
           <>
@@ -155,9 +105,7 @@ const Publish: React.FC = () => {
             </ContentHeader>
             <MediaSection>
               {/* Media items would go here */}
-              <Button variant="off" icon={<IconPlus />}>
-                Add Media
-              </Button>
+              <Button variant="off" icon={<IconPlus />} />
             </MediaSection>
 
             <PostInfo>

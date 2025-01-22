@@ -6,6 +6,7 @@ import { addRole } from "./utils";
 import { Publisher } from "../../api/publisher/types";
 import { Post } from "../../api/posts/types";
 import { postApi } from "../../api/posts/postApi";
+import { RootState } from "../root-reducer";
 
 export interface User {
     id: string
@@ -21,6 +22,7 @@ export interface ProjectState {
     team: User[]
     enabledPlatforms: Publisher[]
     posts: Post[]
+    activePost: Post | null
 }
 
 const initialState: ProjectState = {
@@ -37,6 +39,7 @@ const initialState: ProjectState = {
     team: [],
     enabledPlatforms: [],
     posts: [],
+    activePost: null,
 }
 
 const projectSlice = createSlice({
@@ -54,12 +57,17 @@ const projectSlice = createSlice({
         },
         setPosts(state, action: PayloadAction<Post[]>) {
             state.posts = action.payload;
-        }
+        },
+        setActivePost(state, action: PayloadAction<Post | null>) {
+            state.activePost = action.payload;
+        },
     }
 })
 
-export const { setProjectState, getProjectState, setEnabledPlatforms, setPosts } = projectSlice.actions;
+export const { setProjectState, getProjectState, setEnabledPlatforms, setPosts, setActivePost } = projectSlice.actions;
 export default projectSlice.reducer;
+
+/**ASYNC ACTIONS */
 
 export const setSelectedProject = (projectID: string): AppThunk => async (dispatch) => {
     try {
@@ -70,7 +78,7 @@ export const setSelectedProject = (projectID: string): AppThunk => async (dispat
         ]);
         const project = response.project;
         const team = addRole(response.users);
-        dispatch(setProjectState({ activeProject: project, team, enabledPlatforms, posts }));
+        dispatch(setProjectState({ activeProject: project, team, enabledPlatforms, posts, activePost: null }));
     } catch (error) {
         console.error(error);
     }
@@ -120,3 +128,9 @@ export const createPost = (projectID: string, title: string, content: string, ty
         console.error(error);
     }
 }
+
+/**SELECTORS */
+export const selectActivePost = (state: RootState) => state.project.activePost;
+export const selectPosts = (state: RootState) => state.project.posts;
+export const selectTeam = (state: RootState) => state.project.team;
+export const selectEnabledPlatforms = (state: RootState) => state.project.enabledPlatforms;
