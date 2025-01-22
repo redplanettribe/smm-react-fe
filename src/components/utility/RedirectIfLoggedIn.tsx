@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { RootState } from "../../store/root-reducer";
 
 const RedirectIfLoggedIn: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const isAuthenticated = useSelector((state: RootState) => state.user.IsAuthenticated);
+    const isAuthenticated = useSelector((state: RootState) => state.user.isAuthenticated);
     const navigate = useNavigate();
 
     useEffect(() => {

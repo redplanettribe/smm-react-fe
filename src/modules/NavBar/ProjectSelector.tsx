@@ -86,10 +86,8 @@ const ProjectSelector: React.FC = () => {
 
     const handleExpand = async () => {
         try {
-            if (!projects.length) {
-                const projectList = await projectApi.getProjects();
-                setProjects(projectList);
-            }
+            const projectList = await projectApi.getProjects();
+            setProjects(projectList);
             setIsOpen(!isOpen);
         } catch (error) {
             console.error('Failed to fetch projects:', error);
@@ -110,7 +108,7 @@ const ProjectSelector: React.FC = () => {
             </ProjectTrigger>
 
             <DropdownMenu $isOpen={isOpen}>
-                {projects.map(project => (
+                {projects && projects.map(project => (
                     <MenuItem
                         key={project.id}
                         onClick={() => handleSelectProject(project)}

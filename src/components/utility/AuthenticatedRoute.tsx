@@ -7,7 +7,7 @@ interface AuthenthicatedRouteProps {
 }
 
 const Authenticated: React.FC<AuthenthicatedRouteProps> = ({ element }) => {
-    const isAuthenticated = useSelector((state: RootState) => state.user.IsAuthenticated);
+    const isAuthenticated = useSelector((state: RootState) => state.user.isAuthenticated);
     return isAuthenticated ? <>{element}</> : <Navigate to="/login" />;
 };
 

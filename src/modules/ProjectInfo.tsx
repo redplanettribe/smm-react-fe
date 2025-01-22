@@ -8,6 +8,7 @@ import { publisherApi } from "../api/publisher/publisher-api";
 import { Publisher } from "../api/publisher/types";
 import Button from "../components/design-system/Button";
 import IconPaperPlane from "../assets/icons/PaperPlane";
+import { projectApi } from "../api/project/project-api";
 
 const FloatingMenu = styled.div<{ $isOpen: boolean }>`
   position: absolute;
@@ -137,17 +138,20 @@ const ProjectInfo: React.FC = () => {
   const { activeProject, team } = useSelector((state: RootState) => state.project);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [publishers, setPublishers] = useState<Publisher[]>([]);
+  const [enabledPlatforms, setEnabledPlatforms] = useState<Publisher[]>([]);
 
   useEffect(() => {
     const fetchPublishers = async () => {
-      try {
-        const availablePublishers = await publisherApi.getAvailablePublishers();
-        console.log('Available publishers:', availablePublishers);
-        setPublishers(availablePublishers);
-      } catch (error) {
-        console.error('Failed to fetch publishers:', error);
-      }
+      const availablePublishers = await publisherApi.getAvailablePublishers();
+      setPublishers(availablePublishers || []);
     };
+
+    const fetchEnabledPlatforms = async () => {
+      const enabledPlatforms = await projectApi.getEnabledSocialPlatforms({ projectID: activeProject.id });
+      setEnabledPlatforms(enabledPlatforms || []);
+    }
+
+    fetchEnabledPlatforms();
 
     if (isMenuOpen) {
       fetchPublishers();
@@ -200,11 +204,11 @@ const ProjectInfo: React.FC = () => {
         <InfoSection>
           <SectionTitle>Connected Platforms</SectionTitle>
           <PlatformsList>
-            {/* Replace this with actual call to api */}
-            <Platform>
-              <MemberName>LinkedIn</MemberName>
-              <Description>Connected on Jan 1, 2024</Description>
-            </Platform>
+            {enabledPlatforms.map(platform => (
+              <Platform key={platform.id}>
+                <MemberName>{platform.name}</MemberName>
+              </Platform>
+            ))}
           </PlatformsList>
 
           <ButtonWrapper>

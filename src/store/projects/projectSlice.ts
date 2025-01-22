@@ -50,8 +50,8 @@ export default projectSlice.reducer;
 export const setSelectedProject = (projectID: string): AppThunk => async (dispatch) => {
     try {
         const response = await projectApi.getProject({ projectID });
-        const project = response.Project;
-        const team = addRole(response.Users);
+        const project = response.project;
+        const team = addRole(response.users);
         dispatch(setProjectState({ activeProject: project, team }));
     } catch (error) {
         console.error(error);

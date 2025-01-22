@@ -8,16 +8,16 @@ export interface UserState {
   id: string
   name: string
   email: string
-  AppRoles: string[]
-  IsAuthenticated: boolean
+  appRoles: string[]
+  isAuthenticated: boolean
 }
 
 const initialState: UserState = {
   id: '',
   name: '',
   email: '',
-  AppRoles: [],
-  IsAuthenticated: false,
+  appRoles: [],
+  isAuthenticated: false,
 }
 
 const userSlice = createSlice({
@@ -42,11 +42,12 @@ export default userSlice.reducer;
 export const login = (email: string, password: string): AppThunk => async (dispatch) => {
   try {
     const loginResponse = await userApi.login({ email, password });
-    const user = marshallUser(loginResponse.User);
+    const user = marshallUser(loginResponse.user);
     dispatch(setUser(user));
     dispatch(showNotification('User logged in', 'success'));
   } catch (error) {
-    dispatch(showNotification('Failed to login', 'error'));
+    console.error('Failed to login:', error);
+    dispatch(showNotification('Failed to login' + error, 'error'));
   }
 };
 

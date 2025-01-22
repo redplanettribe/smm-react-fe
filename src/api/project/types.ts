@@ -19,6 +19,6 @@ export interface ProjectUser {
 }
 
 export interface GetProjectResponse {
-    Project: Project
-    Users: ProjectUser[]
+    project: Project
+    users: ProjectUser[]
 }

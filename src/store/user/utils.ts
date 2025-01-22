@@ -7,16 +7,16 @@ export const marshallUser = (userResponse: UserResponse): UserState => {
             id: '',
             name: '',
             email: '',
-            AppRoles: [],
-            IsAuthenticated: false
+            appRoles: [],
+            isAuthenticated: false
         };
     }
     return {
         id: userResponse.id,
         name: userResponse.username,
         email: userResponse.email,
-        AppRoles: userResponse.roles?.map((role) => role.Name) ?? [],
-        IsAuthenticated: true
+        appRoles: userResponse.roles?.map((role) => role.name) ?? [],
+        isAuthenticated: true
     };
 }
 
@@ -25,7 +25,7 @@ export const marshallUnauthenticatedUser = (userResponse: UserResponse): UserSta
         id: userResponse.id,
         name: userResponse.username,
         email: userResponse.email,
-        AppRoles: userResponse.roles?.map((role) => role.Name) ?? [],
-        IsAuthenticated: false
+        appRoles: userResponse.roles?.map((role) => role.name) ?? [],
+        isAuthenticated: false
     };
 }

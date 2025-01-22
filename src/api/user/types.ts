@@ -9,16 +9,16 @@ export interface UserResponse {
 };
 
 export interface AppRole {
-  ID: string;
-  Name: string;
+  id: string;
+  name: string;
 }
 
 export interface Session {
-  ID: string;
-  UserId: string;
-  ExpiresAt: Date;
-  CreatedAt: Date;
-  UpdatedAt: Date;
+  id: string;
+  userId: string;
+  expiresAt: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
   
 export interface CreateUserRequest {
@@ -34,7 +34,7 @@ export interface UpdateUserRequest {
 }
 
 export interface LoginResponse {
-  User: UserResponse;
-  Session: Session;
+  user: UserResponse;
+  session: Session;
 }
 
