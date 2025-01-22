@@ -39,15 +39,11 @@ const MenuItem = styled.div`
   }
 `;
 
-const ButtonWrapper = styled.div`
-  position: relative;
-`;
-
 const PlatformsList = styled.div`
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   gap: 16px;
-  margin-top: 16px;
+  flex-wrap: wrap;
 `;
 
 const Platform = styled.div`
@@ -56,6 +52,10 @@ const Platform = styled.div`
   border-radius: 4px;
   padding: 16px;
   min-width: 200px;
+`;
+
+const ButtonWrapper = styled.div`
+  position: relative;
 `;
 
 const ContentArea = styled.div`
@@ -134,16 +134,18 @@ const InlineDescriptions = styled.div`
   ${({ theme }) => getFontStyles('r_14')(theme)};
 `;
 
+
+
 const ProjectInfo: React.FC = () => {
   const { activeProject, team } = useSelector((state: RootState) => state.project);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [publishers, setPublishers] = useState<Publisher[]>([]);
+  const [platforms, setPlatfroms] = useState<Publisher[]>([]);
   const [enabledPlatforms, setEnabledPlatforms] = useState<Publisher[]>([]);
 
   useEffect(() => {
     const fetchPublishers = async () => {
-      const availablePublishers = await publisherApi.getAvailablePublishers();
-      setPublishers(availablePublishers || []);
+      const availablePlatforms = await publisherApi.getAvailablePublishers();
+      setPlatfroms(availablePlatforms || []);
     };
 
     const fetchEnabledPlatforms = async () => {
@@ -202,35 +204,33 @@ const ProjectInfo: React.FC = () => {
 
       <InfoCard>
         <InfoSection>
-          <SectionTitle>Connected Platforms</SectionTitle>
+          <SectionTitle>Enabled Platforms</SectionTitle>
           <PlatformsList>
             {enabledPlatforms.map(platform => (
               <Platform key={platform.id}>
                 <MemberName>{platform.name}</MemberName>
               </Platform>
             ))}
+            <ButtonWrapper>
+              <Button
+                variant="off"
+                icon={<IconPaperPlane />}
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                Enable Platform
+              </Button>
+              <FloatingMenu $isOpen={isMenuOpen}>
+                {platforms.map(publisher => (
+                  <MenuItem
+                    key={publisher.id}
+                    onClick={() => handlePublisherSelect(publisher)}
+                  >
+                    {publisher.name}
+                  </MenuItem>
+                ))}
+              </FloatingMenu>
+            </ButtonWrapper>
           </PlatformsList>
-
-          <ButtonWrapper>
-            <Button
-              variant="off"
-              icon={<IconPaperPlane />}
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              Connect Platform
-            </Button>
-
-            <FloatingMenu $isOpen={isMenuOpen}>
-              {publishers.map(publisher => (
-                <MenuItem
-                  key={publisher.id}
-                  onClick={() => handlePublisherSelect(publisher)}
-                >
-                  {publisher.name}
-                </MenuItem>
-              ))}
-            </FloatingMenu>
-          </ButtonWrapper>
         </InfoSection>
       </InfoCard>
 
