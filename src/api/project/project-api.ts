@@ -8,6 +8,7 @@ const projectApiConfig: ApiConfig<{
     getProjects: EndpointConfig<void, Project[]>;
     getProject: EndpointConfig<{ projectID: string }, GetProjectResponse>;
     getEnabledSocialPlatforms: EndpointConfig<{ projectID: string }, Publisher[]>;
+    enableSocialPlatform: EndpointConfig<{ projectID: string, platformID: string }, void>;
 }> = {
     basePath: '/projects',
     endpoints: {
@@ -29,7 +30,11 @@ const projectApiConfig: ApiConfig<{
             path: '/{projectID}/social-platforms',
             pathValues: ['projectID'],
         },
-
+        enableSocialPlatform: {
+            method: 'POST',
+            path: '/{projectID}/enable-social-platform/{platformID}',
+            pathValues: ['projectID', 'platformID'],
+        },
     },
 }
 

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import ProjectSelector from './ProjectSelector';
 import LogoIcon from '../../assets/icons/Logo';
 import UserMenu from './UserMenu/UserMenu';
@@ -16,12 +16,11 @@ const NavContainer = styled.nav`
  `}
 `;
 
-
-
 const NavBar: React.FC = () => {
+  const theme = useTheme();
   return (
     <NavContainer>
-      <LogoIcon />
+      <LogoIcon color={theme.textColors.primary} />
       <ProjectSelector />
       <UserMenu />
     </NavContainer>

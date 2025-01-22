@@ -50,11 +50,12 @@ export function createApi<Endpoints extends { [key: string]: EndpointConfig<any,
             delete params[param];
           }
         }
-
+        const hasParams = params && Object.keys(params).length > 0;
         const headers: HeadersInit = {
-          ...(endpoint.method === 'POST' || endpoint.method === 'PUT') && { 'Content-Type': 'application/json' },
+          ...(hasParams && (endpoint.method === 'POST' || endpoint.method === 'PUT')) && { 'Content-Type': 'application/json' },
         };
-        const body = endpoint.method !== 'GET' ? JSON.stringify(params) : undefined;
+
+        const body = hasParams && endpoint.method !== 'GET' ? JSON.stringify(params) : undefined;
 
         const response = await fetch(
           config.baseUrl + enpointConfig.basePath + url,

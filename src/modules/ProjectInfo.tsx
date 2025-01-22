@@ -7,8 +7,10 @@ import { useState, useEffect } from "react";
 import { publisherApi } from "../api/publisher/publisher-api";
 import { Publisher } from "../api/publisher/types";
 import Button from "../components/design-system/Button";
-import { projectApi } from "../api/project/project-api";
 import IconPlus from "../assets/icons/Plus";
+import { AppDispatch } from "../store/store";
+import { useDispatch } from "react-redux";
+import { enablePlatform, getEnabledPlatforms, setSelectedProject } from "../store/projects/projectSlice";
 
 const FloatingMenu = styled.div<{ $isOpen: boolean }>`
   position: absolute;
@@ -140,7 +142,8 @@ const ProjectInfo: React.FC = () => {
   const { activeProject, team } = useSelector((state: RootState) => state.project);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [platforms, setPlatfroms] = useState<Publisher[]>([]);
-  const [enabledPlatforms, setEnabledPlatforms] = useState<Publisher[]>([]);
+  const enabledPlatforms = useSelector((state: RootState) => state.project.enabledPlatforms);
+  const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
     const fetchPublishers = async () => {
@@ -153,16 +156,13 @@ const ProjectInfo: React.FC = () => {
   }, [isMenuOpen]);
 
   useEffect(() => {
-    const fetchEnabledPlatforms = async () => {
-      const enabledPlatforms = await projectApi.getEnabledSocialPlatforms({ projectID: activeProject.id });
-      setEnabledPlatforms(enabledPlatforms || []);
+    if (activeProject.id) {
+      dispatch(setSelectedProject(activeProject.id));
     }
-
-    fetchEnabledPlatforms();
   }, [activeProject.id]);
 
   const handlePublisherSelect = (publisher: Publisher) => {
-    console.log('Selected publisher:', publisher);
+    dispatch(enablePlatform(activeProject.id, publisher.id));
     setIsMenuOpen(false);
   };
 
@@ -207,7 +207,7 @@ const ProjectInfo: React.FC = () => {
         <InfoSection>
           <SectionTitle>Enabled Platforms</SectionTitle>
           <PlatformsList>
-            {enabledPlatforms.map(platform => (
+            {enabledPlatforms && enabledPlatforms.map(platform => (
               <Platform key={platform.id}>
                 <MemberName>{platform.name}</MemberName>
               </Platform>

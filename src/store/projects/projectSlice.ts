@@ -1,7 +1,9 @@
-import { Project, ProjectUser } from "../../api/project/types"
+import { Project } from "../../api/project/types"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
 import { projectApi } from "../../api/project/project-api";
+import { addRole } from "./utils";
+import { Publisher } from "../../api/publisher/types";
 
 export interface User {
     id: string
@@ -15,6 +17,7 @@ export interface User {
 export interface ProjectState {
     activeProject: Project
     team: User[]
+    enabledPlatforms: Publisher[]
 }
 
 const initialState: ProjectState = {
@@ -28,7 +31,8 @@ const initialState: ProjectState = {
         updatedAt: '',
         createdBy: '',
     },
-    team: []
+    team: [],
+    enabledPlatforms: []
 }
 
 const projectSlice = createSlice({
@@ -40,43 +44,52 @@ const projectSlice = createSlice({
         },
         getProjectState(state) {
             return state;
-        }
+        },
+        setEnabledPlatforms(state, action: PayloadAction<Publisher[]>) {
+            state.enabledPlatforms = action.payload;
+        },
     }
 })
 
-export const { setProjectState, getProjectState } = projectSlice.actions;
+export const { setProjectState, getProjectState, setEnabledPlatforms } = projectSlice.actions;
 export default projectSlice.reducer;
 
 export const setSelectedProject = (projectID: string): AppThunk => async (dispatch) => {
     try {
-        const response = await projectApi.getProject({ projectID });
+        const [response, enabledPlatforms] = await Promise.all([
+            projectApi.getProject({ projectID }),
+            projectApi.getEnabledSocialPlatforms({ projectID })
+        ]);
         const project = response.project;
         const team = addRole(response.users);
-        dispatch(setProjectState({ activeProject: project, team }));
+        dispatch(setProjectState({ activeProject: project, team, enabledPlatforms }));
     } catch (error) {
         console.error(error);
     }
-}
-
-export const PROJECT_ROLES = {
-    1: 'Member',
-    2: 'Manager',
-    3: 'Owner',
-} as const;
-
-const addRole = (users: ProjectUser[]): User[] => {
-    return users.map(user => {
-        return {
-            ...user,
-            role: PROJECT_ROLES[user.maxRole as keyof typeof PROJECT_ROLES]
-        }
-    })
 }
 
 export const createProject = (name: string, description: string): AppThunk => async (dispatch) => {
     try {
         const proj = await projectApi.createProject({ name, description });
         dispatch(setSelectedProject(proj.id));
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export const getEnabledPlatforms = (projectID: string): AppThunk => async (dispatch) => {
+    try {
+        const enabledPlatforms = await projectApi.getEnabledSocialPlatforms({ projectID });
+        dispatch(setEnabledPlatforms(enabledPlatforms));
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export const enablePlatform = (projectID: string, platformID: string): AppThunk => async (dispatch) => {
+    try {
+        await projectApi.enableSocialPlatform({ projectID, platformID });
+        dispatch(getEnabledPlatforms(projectID));
     } catch (error) {
         console.error(error);
     }
