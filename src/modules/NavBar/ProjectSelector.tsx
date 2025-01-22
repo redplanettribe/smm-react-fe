@@ -9,6 +9,8 @@ import { AppDispatch } from "../../store/store";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/root-reducer";
+import IconPlus from "../../assets/icons/Plus";
+import { openModal } from "../../store/modal/modalSlice";
 
 const Container = styled.div`
     position: relative;
@@ -64,6 +66,13 @@ const MenuItem = styled.div`
     }
 `;
 
+const CreateProjectButton = styled(MenuItem)`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid ${props => props.theme.dividerColor};
+`;
+
 const ProjectSelector: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [projects, setProjects] = useState<Project[]>([]);
@@ -100,6 +109,11 @@ const ProjectSelector: React.FC = () => {
         setIsOpen(false);
     };
 
+    const handleCreateProject = () => {
+        console.log('Create Project clicked');
+        dispatch(openModal({ type: 'CREATE_PROJECT' }));
+    };
+
     return (
         <Container ref={menuRef}>
             <ProjectTrigger onClick={handleExpand}>
@@ -108,6 +122,10 @@ const ProjectSelector: React.FC = () => {
             </ProjectTrigger>
 
             <DropdownMenu $isOpen={isOpen}>
+                <CreateProjectButton onClick={handleCreateProject}>
+                    <IconPlus />
+                    Create Project
+                </CreateProjectButton>
                 {projects && projects.map(project => (
                     <MenuItem
                         key={project.id}

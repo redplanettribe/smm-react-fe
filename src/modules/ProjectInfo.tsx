@@ -7,7 +7,6 @@ import { useState, useEffect } from "react";
 import { publisherApi } from "../api/publisher/publisher-api";
 import { Publisher } from "../api/publisher/types";
 import Button from "../components/design-system/Button";
-import IconPaperPlane from "../assets/icons/PaperPlane";
 import { projectApi } from "../api/project/project-api";
 import IconPlus from "../assets/icons/Plus";
 
