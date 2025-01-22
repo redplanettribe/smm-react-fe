@@ -5,6 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import IconPaperPlane from '../assets/icons/PaperPlane';
 import IconUsers from '../assets/icons/Users';
 
+const MenuButton = styled(Button)`
+  height: 58px;
+`;
+
 interface SidePanelProps {
   activePage: string;
 }
@@ -34,14 +38,14 @@ const SidePanel: React.FC<SidePanelProps> = ({ activePage }) => {
   return (
     <PanelContainer>
       {menuItems.map(item => (
-        <Button
+        <MenuButton
           key={item.id}
           variant={item.id === activePage ? 'on' : 'off'}
           onClick={() => handleItemClick(item.id)}
           icon={item.icon}
         >
           {item.label}
-        </Button>
+        </MenuButton>
       ))}
     </PanelContainer>
   );

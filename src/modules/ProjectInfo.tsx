@@ -9,6 +9,7 @@ import { Publisher } from "../api/publisher/types";
 import Button from "../components/design-system/Button";
 import IconPaperPlane from "../assets/icons/PaperPlane";
 import { projectApi } from "../api/project/project-api";
+import IconPlus from "../assets/icons/Plus";
 
 const FloatingMenu = styled.div<{ $isOpen: boolean }>`
   position: absolute;
@@ -147,18 +148,19 @@ const ProjectInfo: React.FC = () => {
       const availablePlatforms = await publisherApi.getAvailablePublishers();
       setPlatfroms(availablePlatforms || []);
     };
+    if (isMenuOpen) {
+      fetchPublishers();
+    }
+  }, [isMenuOpen]);
 
+  useEffect(() => {
     const fetchEnabledPlatforms = async () => {
       const enabledPlatforms = await projectApi.getEnabledSocialPlatforms({ projectID: activeProject.id });
       setEnabledPlatforms(enabledPlatforms || []);
     }
 
     fetchEnabledPlatforms();
-
-    if (isMenuOpen) {
-      fetchPublishers();
-    }
-  }, [isMenuOpen]);
+  }, [activeProject.id]);
 
   const handlePublisherSelect = (publisher: Publisher) => {
     console.log('Selected publisher:', publisher);
@@ -214,10 +216,9 @@ const ProjectInfo: React.FC = () => {
             <ButtonWrapper>
               <Button
                 variant="off"
-                icon={<IconPaperPlane />}
+                icon={<IconPlus />}
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
-                Enable Platform
               </Button>
               <FloatingMenu $isOpen={isMenuOpen}>
                 {platforms.map(publisher => (

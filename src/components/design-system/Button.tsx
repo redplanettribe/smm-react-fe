@@ -26,7 +26,7 @@ const StyledButton = styled.button<StyledButtonProps>`
   font-family: ${({ theme }) => theme.fontFamily.main};
   color: ${({ theme }) => theme.textColors.primary};
   background-color: ${({ theme }) => theme.colors.primary};
-  height: 58px;
+  height: 100%;
   cursor: pointer;
 
   &:hover {
@@ -65,10 +65,10 @@ const StyledButton = styled.button<StyledButtonProps>`
 }}
 `;
 
-const IconWrapper = styled.span`
+const IconWrapper = styled.span<{ $centered?: boolean }>`
   display: inline-flex;
   align-items: center;
-  margin-right: 20px;
+  margin-right: ${({ $centered }) => ($centered ? '0' : '20px')};
   
   svg {
     stroke: currentColor;
@@ -78,7 +78,7 @@ const IconWrapper = styled.span`
 const Button: React.FC<ButtonProps> = ({ icon, variant, children, ...rest }) => {
   return (
     <StyledButton $hasIcon={!!icon} $variant={variant} {...rest}>
-      {icon && <IconWrapper>{icon}</IconWrapper>}
+      {icon && <IconWrapper $centered={!children}>{icon}</IconWrapper>}
       {children}
     </StyledButton>
   );
