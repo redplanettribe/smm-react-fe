@@ -19,6 +19,7 @@ export function toCamelCase<T>(obj: T): Camelize<T> {
         return Object.keys(obj).reduce((result, key) => {
             const camelKey = key
                 .replace(/^ID/, 'id')
+                .replace(/_id(?=[_]|$)/g, '_ID')
                 .replace(/([-_][a-z])/gi, ($1) => $1.toUpperCase().replace('_', ''))
                 .replace(/^[A-Z]/, c => c.toLowerCase());
             result[camelKey] = toCamelCase((obj as any)[key]);

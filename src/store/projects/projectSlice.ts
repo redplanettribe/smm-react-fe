@@ -4,6 +4,8 @@ import { AppThunk } from "../store";
 import { projectApi } from "../../api/project/project-api";
 import { addRole } from "./utils";
 import { Publisher } from "../../api/publisher/types";
+import { Post } from "../../api/posts/types";
+import { postApi } from "../../api/posts/postApi";
 
 export interface User {
     id: string
@@ -18,6 +20,7 @@ export interface ProjectState {
     activeProject: Project
     team: User[]
     enabledPlatforms: Publisher[]
+    posts: Post[]
 }
 
 const initialState: ProjectState = {
@@ -32,7 +35,8 @@ const initialState: ProjectState = {
         createdBy: '',
     },
     team: [],
-    enabledPlatforms: []
+    enabledPlatforms: [],
+    posts: [],
 }
 
 const projectSlice = createSlice({
@@ -56,13 +60,14 @@ export default projectSlice.reducer;
 
 export const setSelectedProject = (projectID: string): AppThunk => async (dispatch) => {
     try {
-        const [response, enabledPlatforms] = await Promise.all([
+        const [response, enabledPlatforms, posts] = await Promise.all([
             projectApi.getProject({ projectID }),
-            projectApi.getEnabledSocialPlatforms({ projectID })
+            projectApi.getEnabledSocialPlatforms({ projectID }),
+            postApi.getProjectPosts({ projectID }),
         ]);
         const project = response.project;
         const team = addRole(response.users);
-        dispatch(setProjectState({ activeProject: project, team, enabledPlatforms }));
+        dispatch(setProjectState({ activeProject: project, team, enabledPlatforms, posts }));
     } catch (error) {
         console.error(error);
     }

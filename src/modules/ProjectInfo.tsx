@@ -10,7 +10,7 @@ import Button from "../components/design-system/Button";
 import IconPlus from "../assets/icons/Plus";
 import { AppDispatch } from "../store/store";
 import { useDispatch } from "react-redux";
-import { enablePlatform, getEnabledPlatforms, setSelectedProject } from "../store/projects/projectSlice";
+import { enablePlatform, setSelectedProject } from "../store/projects/projectSlice";
 
 const FloatingMenu = styled.div<{ $isOpen: boolean }>`
   position: absolute;

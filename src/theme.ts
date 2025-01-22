@@ -84,7 +84,7 @@ const colors = {
     active: '#3ACB70',
     warningSecondary: '#FD5E5A',
     white: '#FFFFFF',
-    backgroundSecondary: '#FDFDFD',
+    backgroundSecondary: '#F7F7F7',
     black: '#161622',
     backgroundDark: '#1E1E2D',
     dividerDark: '#252633',
