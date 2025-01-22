@@ -112,6 +112,7 @@ const ProjectSelector: React.FC = () => {
     const handleCreateProject = () => {
         console.log('Create Project clicked');
         dispatch(openModal({ type: 'CREATE_PROJECT' }));
+        setIsOpen(false);
     };
 
     return (

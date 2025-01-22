@@ -72,3 +72,12 @@ const addRole = (users: ProjectUser[]): User[] => {
         }
     })
 }
+
+export const createProject = (name: string, description: string): AppThunk => async (dispatch) => {
+    try {
+        const proj = await projectApi.createProject({ name, description });
+        dispatch(setSelectedProject(proj.id));
+    } catch (error) {
+        console.error(error);
+    }
+}

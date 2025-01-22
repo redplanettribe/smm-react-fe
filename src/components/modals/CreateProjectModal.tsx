@@ -5,6 +5,8 @@ import Input from '../design-system/Input';
 import Button from '../design-system/Button';
 import { useDispatch } from 'react-redux';
 import { closeModal } from '../../store/modal/modalSlice';
+import { createProject } from '../../store/projects/projectSlice';
+import { AppDispatch } from '../../store/store';
 
 const Form = styled.form`
   display: flex;
@@ -22,13 +24,12 @@ const ButtonGroup = styled.div`
 const CreateProjectModal: React.FC = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement project creation logic
-    console.log('Creating project:', { name, description });
     dispatch(closeModal());
+    dispatch(createProject(name, description));
   };
 
   return (

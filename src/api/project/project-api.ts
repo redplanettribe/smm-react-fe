@@ -4,12 +4,17 @@ import { GetProjectResponse, Project } from "./types";
 
 
 const projectApiConfig: ApiConfig<{
+    createProject: EndpointConfig<{ name: string, description: string }, Project>;
     getProjects: EndpointConfig<void, Project[]>;
     getProject: EndpointConfig<{ projectID: string }, GetProjectResponse>;
     getEnabledSocialPlatforms: EndpointConfig<{ projectID: string }, Publisher[]>;
 }> = {
     basePath: '/projects',
     endpoints: {
+        createProject: {
+            method: 'POST',
+            path: '',
+        },
         getProjects: {
             method: 'GET',
             path: '',
