@@ -2,9 +2,11 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { selectModal } from '../../store/modal/modalSlice';
 import CreateProjectModal from './CreateProjectModal';
+import CreatePostModal from './CreatePostModal';
 
 const MODAL_COMPONENTS = {
   CREATE_PROJECT: CreateProjectModal,
+  CREATE_POST: CreatePostModal,
 };
 
 const ModalManager: React.FC = () => {

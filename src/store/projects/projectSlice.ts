@@ -52,10 +52,13 @@ const projectSlice = createSlice({
         setEnabledPlatforms(state, action: PayloadAction<Publisher[]>) {
             state.enabledPlatforms = action.payload;
         },
+        setPosts(state, action: PayloadAction<Post[]>) {
+            state.posts = action.payload;
+        }
     }
 })
 
-export const { setProjectState, getProjectState, setEnabledPlatforms } = projectSlice.actions;
+export const { setProjectState, getProjectState, setEnabledPlatforms, setPosts } = projectSlice.actions;
 export default projectSlice.reducer;
 
 export const setSelectedProject = (projectID: string): AppThunk => async (dispatch) => {
@@ -95,6 +98,24 @@ export const enablePlatform = (projectID: string, platformID: string): AppThunk 
     try {
         await projectApi.enableSocialPlatform({ projectID, platformID });
         dispatch(getEnabledPlatforms(projectID));
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export const getPosts = (projectID: string): AppThunk => async (dispatch) => {
+    try {
+        const posts = await postApi.getProjectPosts({ projectID });
+        dispatch(setPosts(posts));
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export const createPost = (projectID: string, title: string, content: string, type: string, isIdea: boolean): AppThunk => async (dispatch) => {
+    try {
+        await postApi.createPost({ projectID, title, text_content: content, type, is_idea: isIdea });
+        dispatch(getPosts(projectID));
     } catch (error) {
         console.error(error);
     }

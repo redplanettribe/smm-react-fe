@@ -6,6 +6,8 @@ import { useState } from "react";
 import { Post } from "../api/posts/types";
 import Button from "../components/design-system/Button";
 import IconPlus from "../assets/icons/Plus";
+import { useDispatch } from "react-redux";
+import { openModal } from "../store/modal/modalSlice";
 
 const Container = styled.div`
   display: grid;
@@ -106,90 +108,102 @@ const ContentHeader = styled.div`
   margin-bottom: 16px;
 `;
 
+const CreateButton = styled(Button)`
+    width: 100%;
+`;
 
 const Publish: React.FC = () => {
-    const { posts, enabledPlatforms } = useSelector((state: RootState) => state.project);
-    const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-    const [activeTab, setActiveTab] = useState<string | null>(null);
+  const { posts, enabledPlatforms } = useSelector((state: RootState) => state.project);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [activeTab, setActiveTab] = useState<string | null>(null);
+  const dispatch = useDispatch();
+  const handleCreatePost = () => {
+    dispatch(openModal({ type: 'CREATE_POST' }));
+  };
 
-    return (
-        <Container>
-            <PostsList>
-                <ListHeader>
-                    <Button variant="off" icon={<IconPlus />}>
-                        Create Post
-                    </Button>
-                </ListHeader>
-                {posts.map(post => (
-                    <PostItem
-                        key={post.id}
-                        $isActive={selectedPost?.id === post.id}
-                        onClick={() => setSelectedPost(post)}
-                    >
-                        {post.title}
-                    </PostItem>
+
+  return (
+    <Container>
+      <PostsList>
+        <ListHeader>
+          <CreateButton
+            variant="off"
+            icon={<IconPlus />}
+            onClick={handleCreatePost}
+          >
+            Create Post
+          </CreateButton>
+        </ListHeader>
+        {posts.map(post => (
+          <PostItem
+            key={post.id}
+            $isActive={selectedPost?.id === post.id}
+            onClick={() => setSelectedPost(post)}
+          >
+            {post.title}
+          </PostItem>
+        ))}
+      </PostsList>
+
+      <ContentArea>
+        {selectedPost ? (
+          <>
+            <ContentHeader>
+              <Button>
+                Publish Post
+              </Button>
+            </ContentHeader>
+            <MediaSection>
+              {/* Media items would go here */}
+              <Button variant="off" icon={<IconPlus />}>
+                Add Media
+              </Button>
+            </MediaSection>
+
+            <PostInfo>
+              <InfoRow>
+                <span>Title:</span>
+                <span>{selectedPost.title}</span>
+              </InfoRow>
+              <InfoRow>
+                <span>Type:</span>
+                <span>{selectedPost.type}</span>
+              </InfoRow>
+              <InfoRow>
+                <span>Content:</span>
+                <span>{selectedPost.textContent}</span>
+              </InfoRow>
+              <InfoRow>
+                <span>Created By:</span>
+                <span>{selectedPost.createdBy}</span>
+              </InfoRow>
+            </PostInfo>
+
+            <Section>
+              <TabsContainer>
+                {enabledPlatforms.map(platform => (
+                  <Tab
+                    key={platform.id}
+                    $isActive={activeTab === platform.id}
+                    onClick={() => setActiveTab(platform.id)}
+                  >
+                    {platform.name}
+                  </Tab>
                 ))}
-            </PostsList>
+                <Tab $isActive={false} onClick={() => setActiveTab('add')}>
+                  <IconPlus />
+                </Tab>
+              </TabsContainer>
 
-            <ContentArea>
-                {selectedPost ? (
-                    <>
-                        <ContentHeader>
-                            <Button>
-                                Publish Post
-                            </Button>
-                        </ContentHeader>
-                        <MediaSection>
-                            {/* Media items would go here */}
-                            <Button variant="off" icon={<IconPlus />}>
-                                Add Media
-                            </Button>
-                        </MediaSection>
-
-                        <PostInfo>
-                            <InfoRow>
-                                <span>Title:</span>
-                                <span>{selectedPost.title}</span>
-                            </InfoRow>
-                            <InfoRow>
-                                <span>Type:</span>
-                                <span>{selectedPost.type}</span>
-                            </InfoRow>
-                            <InfoRow>
-                                <span>Content:</span>
-                                <span>{selectedPost.textContent}</span>
-                            </InfoRow>
-                            <InfoRow>
-                                <span>Created By:</span>
-                                <span>{selectedPost.createdBy}</span>
-                            </InfoRow>
-                        </PostInfo>
-
-                        <Section>
-                            <TabsContainer>
-                                {enabledPlatforms.map(platform => (
-                                    <Tab
-                                        key={platform.id}
-                                        $isActive={activeTab === platform.id}
-                                        onClick={() => setActiveTab(platform.id)}
-                                    >
-                                        {platform.name}
-                                    </Tab>
-                                ))}
-                                <Tab $isActive={false} onClick={() => setActiveTab('add')}>
-                                    <IconPlus />
-                                </Tab>
-                            </TabsContainer>
-
-                            {/* Platform specific settings would go here based on activeTab */}
-                        </Section>
-                    </>
-                ) : (
-                    <Section>Select a post to view details</Section>
-                )}
-            </ContentArea>
-        </Container>
-    );
+              {/* Platform specific settings would go here based on activeTab */}
+            </Section>
+          </>
+        ) : (
+          <Section>Select a post to view details</Section>
+        )}
+      </ContentArea>
+    </Container>
+  );
 };
 
 export default Publish;

@@ -4,7 +4,7 @@ import { Post } from "./types";
 const postApiConfig: ApiConfig<{
     getProjectPosts: EndpointConfig<{ projectID: string }, Post[]>;
     getAvailablePostTypes: EndpointConfig<void, string[]>;
-    createPost: EndpointConfig<{ title: string, content: string, type: string, isIdea: boolean }, Post>;
+    createPost: EndpointConfig<{ projectID: string, title: string, text_content: string, type: string, is_idea: boolean }, Post>;
     getPost: EndpointConfig<{ projectID: string, postID: string }, Post>;
     linkPlatform: EndpointConfig<{ projectID: string, postID: string, platformID: string }, void>;
 }> = {
@@ -21,7 +21,8 @@ const postApiConfig: ApiConfig<{
         },
         createPost: {
             method: 'POST',
-            path: '',
+            path: '/{projectID}/add',
+            pathValues: ['projectID'],
         },
         getPost: {
             method: 'GET',
