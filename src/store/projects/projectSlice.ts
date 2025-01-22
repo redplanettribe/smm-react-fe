@@ -1,6 +1,7 @@
 import { Project, ProjectUser } from "../../api/project/types"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
+import { projectApi } from "../../api/project/project-api";
 
 
 export interface ProjectState {
@@ -38,4 +39,13 @@ const projectSlice = createSlice({
 export const { setProjectState, getProjectState } = projectSlice.actions;
 export default projectSlice.reducer;
 
-export const login = (projectID: string): AppThunk => async (dispatch) => { }
+export const setSelectedProject = (projectID: string): AppThunk => async (dispatch) => {
+    try {
+        const response = await projectApi.getProject({ projectID });
+        const project = response.Project;
+        const team = response.Users;
+        dispatch(setProjectState({ activeProject: project, team }));
+    } catch (error) {
+        console.error(error);
+    }
+}

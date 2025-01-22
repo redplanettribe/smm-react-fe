@@ -4,6 +4,9 @@ import ChevronDownIcon from "../../assets/icons/ChevronDown";
 import { projectApi } from "../../api/project/project-api";
 import { Project } from "../../api/project/types";
 import { getFontStyles } from "../../components/design-system/Typography";
+import { setSelectedProject } from "../../store/projects/projectSlice";
+import { AppDispatch, AppThunk } from "../../store/store";
+import { useDispatch } from "react-redux";
 
 const Container = styled.div`
     position: relative;
@@ -63,6 +66,7 @@ const ProjectSelector: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [projects, setProjects] = useState<Project[]>([]);
     const menuRef = useRef<HTMLDivElement>(null);
+    const dispatch: AppDispatch = useDispatch();
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -90,8 +94,8 @@ const ProjectSelector: React.FC = () => {
     };
 
     const handleSelectProject = (project: Project) => {
-        // TODO: Implement project selection logic
         console.log('Selected project:', project);
+        dispatch(setSelectedProject(project.id));
         setIsOpen(false);
     };
 
