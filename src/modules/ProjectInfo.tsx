@@ -3,6 +3,59 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store/root-reducer";
 import { getFontStyles } from "../components/design-system/Typography";
 import { formatDate } from "../utils";
+import { useState, useEffect } from "react";
+import { publisherApi } from "../api/publisher/publisher-api";
+import { Publisher } from "../api/publisher/types";
+import Button from "../components/design-system/Button";
+import IconPaperPlane from "../assets/icons/PaperPlane";
+
+const FloatingMenu = styled.div<{ $isOpen: boolean }>`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 8px;
+  background-color: ${props => props.theme.bgColors.primary};
+  border: 1px solid ${props => props.theme.dividerColor};
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  min-width: 200px;
+  display: ${props => (props.$isOpen ? 'block' : 'none')};
+  z-index: 1000;
+`;
+
+const MenuItem = styled.div`
+  padding: 16px;
+  ${({ theme }) => getFontStyles('r_14')(theme)};
+  color: ${props => props.theme.textColors.primary};
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${props => props.theme.bgColors.secondary};
+  }
+
+  &:not(:last-child) {
+    border-bottom: 1px solid ${props => props.theme.dividerColor};
+  }
+`;
+
+const ButtonWrapper = styled.div`
+  position: relative;
+`;
+
+const PlatformsList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 16px;
+`;
+
+const Platform = styled.div`
+  background-color: ${props => props.theme.bgColors.primary};
+  border: 1px solid ${props => props.theme.dividerColor};
+  border-radius: 4px;
+  padding: 16px;
+  min-width: 200px;
+`;
 
 const ContentArea = styled.div`
   padding: 24px;
@@ -82,7 +135,30 @@ const InlineDescriptions = styled.div`
 
 const ProjectInfo: React.FC = () => {
   const { activeProject, team } = useSelector((state: RootState) => state.project);
-  console.log("Date", activeProject.createdAt);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [publishers, setPublishers] = useState<Publisher[]>([]);
+
+  useEffect(() => {
+    const fetchPublishers = async () => {
+      try {
+        const availablePublishers = await publisherApi.getAvailablePublishers();
+        console.log('Available publishers:', availablePublishers);
+        setPublishers(availablePublishers);
+      } catch (error) {
+        console.error('Failed to fetch publishers:', error);
+      }
+    };
+
+    if (isMenuOpen) {
+      fetchPublishers();
+    }
+  }, [isMenuOpen]);
+
+  const handlePublisherSelect = (publisher: Publisher) => {
+    console.log('Selected publisher:', publisher);
+    setIsMenuOpen(false);
+  };
+
   return (
     <ContentArea>
       <Title>{activeProject.name}</Title>
@@ -119,6 +195,41 @@ const ProjectInfo: React.FC = () => {
           </TeamList>
         </InfoSection>
       </InfoCard>
+
+      <InfoCard>
+        <InfoSection>
+          <SectionTitle>Connected Platforms</SectionTitle>
+          <PlatformsList>
+            {/* Replace this with actual call to api */}
+            <Platform>
+              <MemberName>LinkedIn</MemberName>
+              <Description>Connected on Jan 1, 2024</Description>
+            </Platform>
+          </PlatformsList>
+
+          <ButtonWrapper>
+            <Button
+              variant="off"
+              icon={<IconPaperPlane />}
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              Connect Platform
+            </Button>
+
+            <FloatingMenu $isOpen={isMenuOpen}>
+              {publishers.map(publisher => (
+                <MenuItem
+                  key={publisher.id}
+                  onClick={() => handlePublisherSelect(publisher)}
+                >
+                  {publisher.name}
+                </MenuItem>
+              ))}
+            </FloatingMenu>
+          </ButtonWrapper>
+        </InfoSection>
+      </InfoCard>
+
     </ContentArea>
   );
 };

@@ -5,12 +5,13 @@ import SidePanel from './SidePanel';
 
 const LayoutContainer = styled.div`
   display: grid;
-  grid-template-rows: 77px auto;
-  grid-template-columns: 250px auto;
+  grid-template-rows: 77px 1fr;
+  grid-template-columns: 250px 1fr;
   grid-template-areas:
     "header header"
     "sidebar content";
-  min-height: 100vh;
+  height: 100vh; 
+  overflow: hidden; 
 `;
 
 const HeaderWrapper = styled.header`
@@ -24,6 +25,9 @@ const SidebarWrapper = styled.aside`
 const ContentWrapper = styled.main`
   grid-area: content;
   background-color: ${props => props.theme.bgColors.primary};
+  overflow-y: auto;
+  height: 100%; 
+  padding-bottom: 24px;
 `;
 
 const DashboardLayout = () => {

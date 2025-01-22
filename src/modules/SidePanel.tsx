@@ -12,6 +12,7 @@ interface SidePanelProps {
 const PanelContainer = styled.nav`
   display: flex;
   flex-direction: column;
+  gap: 2px;
   padding: 16px;
   background-color: ${props => props.theme.bgColors.secondary};
   height: 100%;
