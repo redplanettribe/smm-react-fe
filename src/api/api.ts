@@ -1,9 +1,10 @@
-import store from "../store/store";
-import { clearUser } from "../store/user/userSlice";
-import { toCamelCase } from "./utils";
+import { cleanProjectState } from '../store/projects/projectSlice';
+import store from '../store/store';
+import { clearUser } from '../store/user/userSlice';
+import { toCamelCase } from './utils';
 
 export const config = {
-  baseUrl: import.meta.env.VITE_API_URL || 'http://localhost:5555'
+  baseUrl: import.meta.env.VITE_API_URL || 'http://localhost:5555',
 };
 
 console.log('API URL:', config.baseUrl);
@@ -14,7 +15,7 @@ export type EndpointConfig<RequestType, ResponseType> = {
   pathValues?: (keyof RequestType)[];
   requestType?: RequestType;
   responseType?: ResponseType;
-  contentType?: 'json' | 'multipart'
+  contentType?: 'json' | 'multipart';
 };
 
 export type ApiConfig<Endpoints extends Record<string, EndpointConfig<any, any>>> = {
@@ -27,8 +28,8 @@ export function createApi<Endpoints extends { [key: string]: EndpointConfig<any,
 ) {
   type ApiMethods = {
     [K in keyof Endpoints]: Endpoints[K] extends EndpointConfig<infer Req, infer Res>
-    ? (params: Req) => Promise<Res>
-    : never;
+      ? (params: Req) => Promise<Res>
+      : never;
   };
 
   const api = {} as ApiMethods;
@@ -36,7 +37,6 @@ export function createApi<Endpoints extends { [key: string]: EndpointConfig<any,
   const createApiMethod = <K extends keyof Endpoints>(key: K, endpoint: Endpoints[K]) => {
     return async (params: Endpoints[K] extends EndpointConfig<infer Req, any> ? Req : never) => {
       try {
-
         // Replace path values in the URL with the actual values from the params object
         let path = endpoint.path;
         if (endpoint.pathValues && params) {
@@ -49,7 +49,7 @@ export function createApi<Endpoints extends { [key: string]: EndpointConfig<any,
         type RequestType = Endpoints[K] extends EndpointConfig<infer Req, any> ? Req : never;
         const bodyParams: Partial<RequestType> =
           params && typeof params === 'object' && !Array.isArray(params)
-            ? { ...params as Partial<RequestType> }
+            ? { ...(params as Partial<RequestType>) }
             : {};
 
         // Remove path values from params
@@ -74,26 +74,22 @@ export function createApi<Endpoints extends { [key: string]: EndpointConfig<any,
             });
             body = formData;
           } else {
-            // Handle JSON
             headers['Content-Type'] = 'application/json';
             body = JSON.stringify(bodyParams);
           }
         }
 
-
-        const response = await fetch(
-          config.baseUrl + enpointConfig.basePath + path,
-          {
-            method: endpoint.method,
-            headers,
-            credentials: 'include',
-            body,
-          }
-        );
+        const response = await fetch(config.baseUrl + enpointConfig.basePath + path, {
+          method: endpoint.method,
+          headers,
+          credentials: 'include',
+          body,
+        });
 
         if (!response.ok) {
           if (response.status === 401) {
             store.dispatch(clearUser());
+            store.dispatch(cleanProjectState());
             window.location.href = '/login';
             return;
           }
@@ -104,7 +100,9 @@ export function createApi<Endpoints extends { [key: string]: EndpointConfig<any,
         const contentType = response.headers.get('Content-Type');
         if (endpoint.method !== 'DELETE' && contentType?.includes('application/json')) {
           const data = await response.json();
-          return toCamelCase(data) as Endpoints[K] extends EndpointConfig<any, infer Res> ? Res : never;
+          return toCamelCase(data) as Endpoints[K] extends EndpointConfig<any, infer Res>
+            ? Res
+            : never;
         } else {
           return undefined as any;
         }

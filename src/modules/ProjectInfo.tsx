@@ -1,59 +1,45 @@
-import styled from "styled-components";
-import { useSelector } from "react-redux";
-import { RootState } from "../store/root-reducer";
-import { getFontStyles } from "../components/design-system/Typography";
-import { formatDate } from "../utils";
-import { useState, useEffect } from "react";
-import { publisherApi } from "../api/publisher/publisher-api";
-import { Publisher } from "../api/publisher/types";
-import Button from "../components/design-system/Button";
-import IconPlus from "../assets/icons/Plus";
-import { AppDispatch } from "../store/store";
-import { useDispatch } from "react-redux";
-import { enablePlatform, setSelectedProject } from "../store/projects/projectSlice";
+import styled from 'styled-components';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/root-reducer';
+import { getFontStyles } from '../components/design-system/Typography';
+import { formatDate } from '../utils';
+import { useState, useEffect } from 'react';
+import { publisherApi } from '../api/publisher/publisher-api';
+import { Publisher } from '../api/publisher/types';
+import Button from '../components/design-system/Button';
+import IconPlus from '../assets/icons/Plus';
+import { AppDispatch } from '../store/store';
+import { useDispatch } from 'react-redux';
+import { enablePlatform, setSelectedProject } from '../store/projects/projectSlice';
+import { authenticateTo } from '../api/ third-party';
 
 const FloatingMenu = styled.div<{ $isOpen: boolean }>`
   position: absolute;
   top: 100%;
   left: 0;
   margin-top: 8px;
-  background-color: ${props => props.theme.bgColors.primary};
-  border: 1px solid ${props => props.theme.dividerColor};
+  background-color: ${(props) => props.theme.bgColors.primary};
+  border: 1px solid ${(props) => props.theme.dividerColor};
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   min-width: 200px;
-  display: ${props => (props.$isOpen ? 'block' : 'none')};
+  display: ${(props) => (props.$isOpen ? 'block' : 'none')};
   z-index: 1000;
 `;
 
 const MenuItem = styled.div`
   padding: 16px;
   ${({ theme }) => getFontStyles('r_14')(theme)};
-  color: ${props => props.theme.textColors.primary};
+  color: ${(props) => props.theme.textColors.primary};
   cursor: pointer;
 
   &:hover {
-    background-color: ${props => props.theme.bgColors.secondary};
+    background-color: ${(props) => props.theme.bgColors.secondary};
   }
 
   &:not(:last-child) {
-    border-bottom: 1px solid ${props => props.theme.dividerColor};
+    border-bottom: 1px solid ${(props) => props.theme.dividerColor};
   }
-`;
-
-const PlatformsList = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-`;
-
-const Platform = styled.div`
-  background-color: ${props => props.theme.bgColors.primary};
-  border: 1px solid ${props => props.theme.dividerColor};
-  border-radius: 4px;
-  padding: 16px;
-  min-width: 200px;
 `;
 
 const ButtonWrapper = styled.div`
@@ -69,12 +55,12 @@ const ContentArea = styled.div`
 
 const Title = styled.h1`
   margin-bottom: 2rem;
-  color: ${props => props.theme.textColors.primary};
+  color: ${(props) => props.theme.textColors.primary};
   ${({ theme }) => getFontStyles('sb_24')(theme)};
 `;
 
 const InfoCard = styled.div`
-  background-color: ${props => props.theme.bgColors.secondary};
+  background-color: ${(props) => props.theme.bgColors.secondary};
   border-radius: 8px;
   padding: 24px;
   margin-bottom: 24px;
@@ -82,20 +68,20 @@ const InfoCard = styled.div`
 
 const InfoSection = styled.div`
   margin-bottom: 24px;
-  
+
   &:last-child {
     margin-bottom: 0;
   }
 `;
 
 const SectionTitle = styled.h2`
-  color: ${props => props.theme.textColors.primary};
+  color: ${(props) => props.theme.textColors.primary};
   ${({ theme }) => getFontStyles('m_16')(theme)};
   margin-bottom: 16px;
 `;
 
 const Description = styled.p`
-  color: ${props => props.theme.textColors.secondary};
+  color: ${(props) => props.theme.textColors.secondary};
   ${({ theme }) => getFontStyles('r_14')(theme)};
   margin-bottom: 8px;
 `;
@@ -107,24 +93,24 @@ const TeamList = styled.div`
 `;
 
 const TeamMember = styled.div`
-  background-color: ${props => props.theme.bgColors.primary};
-  border: 1px solid ${props => props.theme.dividerColor};
+  background-color: ${(props) => props.theme.bgColors.primary};
+  border: 1px solid ${(props) => props.theme.dividerColor};
   border-radius: 4px;
   padding: 16px;
 `;
 
 const MemberName = styled.div`
-  color: ${props => props.theme.textColors.primary};
+  color: ${(props) => props.theme.textColors.primary};
   ${({ theme }) => getFontStyles('m_14')(theme)};
 `;
 
 const MemberEmail = styled.div`
-  color: ${props => props.theme.textColors.secondary};
+  color: ${(props) => props.theme.textColors.secondary};
   ${({ theme }) => getFontStyles('r_12')(theme)};
 `;
 
 const DateInfo = styled.div`
-  color: ${props => props.theme.textColors.secondary};
+  color: ${(props) => props.theme.textColors.secondary};
   ${({ theme }) => getFontStyles('r_12')(theme)};
 `;
 
@@ -132,17 +118,60 @@ const InlineDescriptions = styled.div`
   margin-top: 8px;
   display: flex;
   gap: 4px;
-  color: ${props => props.theme.textColors.secondary};
+  color: ${(props) => props.theme.textColors.secondary};
   ${({ theme }) => getFontStyles('r_14')(theme)};
 `;
 
+const TabsContainer = styled.div`
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+`;
 
+const Tab = styled.div<{ $isActive: boolean }>`
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  ${({ theme }) => getFontStyles('r_14')(theme)};
+  color: ${(props) => props.theme.textColors.primary};
+  background: ${(props) => (props.$isActive ? props.theme.bgColors.primary : 'transparent')};
+  border: 1px solid ${(props) => props.theme.dividerColor};
+
+  &:hover {
+    background: ${(props) => props.theme.bgColors.primary};
+  }
+`;
+
+const PlatformContent = styled.div`
+  background: ${(props) => props.theme.bgColors.primary};
+  border: 1px solid ${(props) => props.theme.dividerColor};
+  border-radius: 4px;
+  padding: 24px;
+`;
+
+const PlatformStatus = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+`;
+
+const Status = styled.div<{ $isAuthenticated: boolean }>`
+  color: ${(props) =>
+    props.$isAuthenticated ? props.theme.colors.active : props.theme.colors.warning};
+  ${({ theme }) => getFontStyles('m_14')(theme)};
+`;
 
 const ProjectInfo: React.FC = () => {
   const { activeProject, team } = useSelector((state: RootState) => state.project);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [platforms, setPlatfroms] = useState<Publisher[]>([]);
+  const [availablePlatforms, setPlatfroms] = useState<Publisher[]>([]);
   const enabledPlatforms = useSelector((state: RootState) => state.project.enabledPlatforms);
+  const [activeTab, setActiveTab] = useState<string | null>(null);
+  const user = useSelector((state: RootState) => state.user);
+  const isDefaultUser = team.some((member) => member.id === user.id && member.defaultUser);
+
   const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
@@ -164,6 +193,10 @@ const ProjectInfo: React.FC = () => {
   const handlePublisherSelect = (publisher: Publisher) => {
     dispatch(enablePlatform(activeProject.id, publisher.id));
     setIsMenuOpen(false);
+  };
+
+  const handleAuthenticate = (platformId: string) => {
+    authenticateTo(platformId);
   };
 
   return (
@@ -192,9 +225,7 @@ const ProjectInfo: React.FC = () => {
                 <MemberName>{member.name}</MemberName>
                 <MemberEmail>{member.email}</MemberEmail>
                 <InlineDescriptions>
-                  {member.defaultUser && (
-                    <>Default User, </>
-                  )}
+                  {member.defaultUser && <>Default User, </>}
                   {member.role}
                 </InlineDescriptions>
               </TeamMember>
@@ -206,34 +237,57 @@ const ProjectInfo: React.FC = () => {
       <InfoCard>
         <InfoSection>
           <SectionTitle>Enabled Platforms</SectionTitle>
-          <PlatformsList>
-            {enabledPlatforms && enabledPlatforms.map(platform => (
-              <Platform key={platform.id}>
-                <MemberName>{platform.name}</MemberName>
-              </Platform>
+          <TabsContainer>
+            {enabledPlatforms.map((platform) => (
+              <Tab
+                key={platform.id}
+                $isActive={activeTab === platform.id}
+                onClick={() => setActiveTab(platform.id)}
+              >
+                {platform.name}
+              </Tab>
             ))}
             <ButtonWrapper>
               <Button
                 variant="off"
                 icon={<IconPlus />}
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-              >
-              </Button>
+              />
               <FloatingMenu $isOpen={isMenuOpen}>
-                {platforms.map(publisher => (
-                  <MenuItem
-                    key={publisher.id}
-                    onClick={() => handlePublisherSelect(publisher)}
-                  >
+                {availablePlatforms.map((publisher) => (
+                  <MenuItem key={publisher.id} onClick={() => handlePublisherSelect(publisher)}>
                     {publisher.name}
                   </MenuItem>
                 ))}
               </FloatingMenu>
             </ButtonWrapper>
-          </PlatformsList>
+          </TabsContainer>
+
+          {activeTab && (
+            <PlatformContent>
+              {enabledPlatforms.map((platform) => {
+                if (platform.id !== activeTab) return null;
+
+                return (
+                  <div key={platform.id}>
+                    <PlatformStatus>
+                      <Status $isAuthenticated={false}>
+                        {false ? 'Authenticated' : 'Not Authenticated'}
+                      </Status>
+                      {isDefaultUser && !false && (
+                        <Button onClick={() => handleAuthenticate(platform.id)}>
+                          Authenticate with {platform.name}
+                        </Button>
+                      )}
+                    </PlatformStatus>
+                    {/* Add more platform-specific information here */}
+                  </div>
+                );
+              })}
+            </PlatformContent>
+          )}
         </InfoSection>
       </InfoCard>
-
     </ContentArea>
   );
 };
