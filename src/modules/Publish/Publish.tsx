@@ -4,8 +4,9 @@ import { getFontStyles } from "../../components/design-system/Typography";
 import { useState } from "react";
 import Button from "../../components/design-system/Button";
 import IconPlus from "../../assets/icons/Plus";
-import { selectActivePost, selectEnabledPlatforms } from "../../store/projects/projectSlice";
+import { selectActivePost, selectActivePostMediaData, selectEnabledPlatforms } from "../../store/projects/projectSlice";
 import PostList from "./PostList";
+import MediaCard from "./MediaCard";
 
 const Container = styled.div`
   display: grid;
@@ -88,15 +89,17 @@ const ContentHeader = styled.div`
 
 const Publish: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string | null>(null);
-  const selectedPost = useSelector(selectActivePost);
+  const activePost = useSelector(selectActivePost);
+  const mediaData = useSelector(selectActivePostMediaData);
   const enabledPlatforms = useSelector(selectEnabledPlatforms);
+
 
 
   return (
     <Container>
       <PostList />
       <ContentArea>
-        {selectedPost ? (
+        {activePost ? (
           <>
             <ContentHeader>
               <Button>
@@ -104,26 +107,28 @@ const Publish: React.FC = () => {
               </Button>
             </ContentHeader>
             <MediaSection>
-              {/* Media items would go here */}
+              {mediaData && mediaData.map(media => (
+                <MediaCard key={media.id} media={media} />
+              ))}
               <Button variant="off" icon={<IconPlus />} />
             </MediaSection>
 
             <PostInfo>
               <InfoRow>
                 <span>Title:</span>
-                <span>{selectedPost.title}</span>
+                <span>{activePost.title}</span>
               </InfoRow>
               <InfoRow>
                 <span>Type:</span>
-                <span>{selectedPost.type}</span>
+                <span>{activePost.type}</span>
               </InfoRow>
               <InfoRow>
                 <span>Content:</span>
-                <span>{selectedPost.textContent}</span>
+                <span>{activePost.textContent}</span>
               </InfoRow>
               <InfoRow>
                 <span>Created By:</span>
-                <span>{selectedPost.createdBy}</span>
+                <span>{activePost.createdBy}</span>
               </InfoRow>
             </PostInfo>
 

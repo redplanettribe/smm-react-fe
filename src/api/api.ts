@@ -14,6 +14,7 @@ export type EndpointConfig<RequestType, ResponseType> = {
   pathValues?: (keyof RequestType)[];
   requestType?: RequestType;
   responseType?: ResponseType;
+  contentType?: 'json' | 'multipart'
 };
 
 export type ApiConfig<Endpoints extends Record<string, EndpointConfig<any, any>>> = {
@@ -37,28 +38,51 @@ export function createApi<Endpoints extends { [key: string]: EndpointConfig<any,
       try {
 
         // Replace path values in the URL with the actual values from the params object
-        let url = endpoint.path;
+        let path = endpoint.path;
         if (endpoint.pathValues && params) {
           for (const param of endpoint.pathValues as (keyof typeof params)[]) {
-            url = url.replace(`{${String(param)}}`, String(params[param]));
+            path = path.replace(`{${String(param)}}`, String(params[param]));
           }
         }
 
-        // Remove path values from the params object
+        // Remove path values from params
+        type RequestType = Endpoints[K] extends EndpointConfig<infer Req, any> ? Req : never;
+        const bodyParams: Partial<RequestType> =
+          params && typeof params === 'object' && !Array.isArray(params)
+            ? { ...params as Partial<RequestType> }
+            : {};
+
+        // Remove path values from params
         if (endpoint.pathValues) {
           for (const param of endpoint.pathValues as (keyof typeof params)[]) {
-            delete params[param];
+            delete bodyParams[param];
           }
         }
-        const hasParams = params && Object.keys(params).length > 0;
-        const headers: HeadersInit = {
-          ...(hasParams && (endpoint.method === 'POST' || endpoint.method === 'PUT')) && { 'Content-Type': 'application/json' },
-        };
+        let body: string | FormData | undefined;
+        const headers: HeadersInit = {};
 
-        const body = hasParams && endpoint.method !== 'GET' ? JSON.stringify(params) : undefined;
+        if (Object.keys(bodyParams).length > 0) {
+          if (endpoint.contentType === 'multipart') {
+            // Handle form-data
+            const formData = new FormData();
+            Object.entries(bodyParams).forEach(([key, value]) => {
+              if (value instanceof File) {
+                formData.append(key, value);
+              } else {
+                formData.append(key, String(value));
+              }
+            });
+            body = formData;
+          } else {
+            // Handle JSON
+            headers['Content-Type'] = 'application/json';
+            body = JSON.stringify(bodyParams);
+          }
+        }
+
 
         const response = await fetch(
-          config.baseUrl + enpointConfig.basePath + url,
+          config.baseUrl + enpointConfig.basePath + path,
           {
             method: endpoint.method,
             headers,

@@ -5,7 +5,8 @@ import IconPlus from "../../assets/icons/Plus";
 import { useDispatch } from "react-redux";
 import { openModal } from "../../store/modal/modalSlice";
 import { useSelector } from "react-redux";
-import { selectActivePost, selectPosts, setActivePost } from "../../store/projects/projectSlice";
+import { selectActivePost, selectPosts, setActivePostWithMetadata } from "../../store/projects/projectSlice";
+import { AppDispatch } from "../../store/store";
 
 const PostsList = styled.div`
   background: ${props => props.theme.bgColors.secondary};
@@ -41,7 +42,7 @@ const CreateButton = styled(Button)`
 
 const PostList: React.FC = () => {
     const posts = useSelector(selectPosts);
-    const dispatch = useDispatch();
+    const dispatch: AppDispatch = useDispatch();
     const selectedPost = useSelector(selectActivePost);
 
     const handleCreatePost = () => {
@@ -63,7 +64,7 @@ const PostList: React.FC = () => {
                 <PostItem
                     key={post.id}
                     $isActive={selectedPost?.id === post.id}
-                    onClick={() => dispatch(setActivePost(post))}
+                    onClick={() => dispatch(setActivePostWithMetadata(post.projectID, post.id))}
                 >
                     {post.title}
                 </PostItem>

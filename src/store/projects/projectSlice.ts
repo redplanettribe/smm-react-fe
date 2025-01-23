@@ -7,6 +7,8 @@ import { Publisher } from "../../api/publisher/types";
 import { Post } from "../../api/posts/types";
 import { postApi } from "../../api/posts/postApi";
 import { RootState } from "../root-reducer";
+import { DownloadMetadata } from "../../api/media/types";
+import { mediaApi } from "../../api/media/mediaApi";
 
 export interface User {
     id: string
@@ -23,6 +25,7 @@ export interface ProjectState {
     enabledPlatforms: Publisher[]
     posts: Post[]
     activePost: Post | null
+    activePostMediaMetadata: DownloadMetadata[] | null
 }
 
 const initialState: ProjectState = {
@@ -40,6 +43,7 @@ const initialState: ProjectState = {
     enabledPlatforms: [],
     posts: [],
     activePost: null,
+    activePostMediaMetadata: null,
 }
 
 const projectSlice = createSlice({
@@ -58,13 +62,17 @@ const projectSlice = createSlice({
         setPosts(state, action: PayloadAction<Post[]>) {
             state.posts = action.payload;
         },
-        setActivePost(state, action: PayloadAction<Post | null>) {
-            state.activePost = action.payload;
+        setActivePost(state, action: PayloadAction<{ post: Post, metadata: DownloadMetadata[] }>) {
+            state.activePost = action.payload.post;
+            state.activePostMediaMetadata = action.payload.metadata;
+        },
+        cleanProjectState() {
+            return initialState;
         },
     }
 })
 
-export const { setProjectState, getProjectState, setEnabledPlatforms, setPosts, setActivePost } = projectSlice.actions;
+export const { setProjectState, getProjectState, setEnabledPlatforms, setPosts, setActivePost, cleanProjectState } = projectSlice.actions;
 export default projectSlice.reducer;
 
 /**ASYNC ACTIONS */
@@ -78,7 +86,7 @@ export const setSelectedProject = (projectID: string): AppThunk => async (dispat
         ]);
         const project = response.project;
         const team = addRole(response.users);
-        dispatch(setProjectState({ activeProject: project, team, enabledPlatforms, posts, activePost: null }));
+        dispatch(setProjectState({ activeProject: project, team, enabledPlatforms, posts, activePost: null, activePostMediaMetadata: null }));
     } catch (error) {
         console.error(error);
     }
@@ -129,8 +137,21 @@ export const createPost = (projectID: string, title: string, content: string, ty
     }
 }
 
+export const setActivePostWithMetadata = (projectID: string, postID: string): AppThunk => async (dispatch) => {
+    try {
+        const [post, metadata] = await Promise.all([
+            postApi.getPost({ projectID, postID }),
+            mediaApi.downloadMediaMetadata({ projectID, postID }),
+        ]);
+        dispatch(setActivePost({ post, metadata }));
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 /**SELECTORS */
 export const selectActivePost = (state: RootState) => state.project.activePost;
 export const selectPosts = (state: RootState) => state.project.posts;
 export const selectTeam = (state: RootState) => state.project.team;
 export const selectEnabledPlatforms = (state: RootState) => state.project.enabledPlatforms;
+export const selectActivePostMediaData = (state: RootState) => state.project.activePostMediaMetadata;

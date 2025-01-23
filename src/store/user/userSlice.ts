@@ -3,6 +3,7 @@ import { AppThunk } from "../store";
 import { userApi } from "../../api/user/user-api";
 import { marshallUnauthenticatedUser, marshallUser } from "./utils";
 import { showNotification } from "../notifications/notificationSice";
+import { cleanProjectState } from "../projects/projectSlice";
 
 export interface UserState {
   id: string
@@ -44,6 +45,7 @@ export const login = (email: string, password: string): AppThunk => async (dispa
     const loginResponse = await userApi.login({ email, password });
     const user = marshallUser(loginResponse.user);
     dispatch(setUser(user));
+    dispatch(cleanProjectState)
     dispatch(showNotification('User logged in', 'success'));
   } catch (error) {
     console.error('Failed to login:', error);
