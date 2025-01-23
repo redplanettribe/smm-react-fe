@@ -1,12 +1,19 @@
-import styled from "styled-components";
-import { useSelector } from "react-redux";
-import { getFontStyles } from "../../components/design-system/Typography";
-import { useState } from "react";
-import Button from "../../components/design-system/Button";
-import IconPlus from "../../assets/icons/Plus";
-import { selectActivePost, selectActivePostMediaData, selectEnabledPlatforms } from "../../store/projects/projectSlice";
-import PostList from "./PostList";
-import MediaCard from "./MediaCard";
+import styled from 'styled-components';
+import { useSelector } from 'react-redux';
+import { getFontStyles } from '../../components/design-system/Typography';
+import { useState } from 'react';
+import Button from '../../components/design-system/Button';
+import IconPlus from '../../assets/icons/Plus';
+import {
+  selectActivePost,
+  selectActivePostMediaData,
+  selectEnabledPlatforms,
+} from '../../store/projects/projectSlice';
+import PostList from './PostList';
+import MediaCard from './MediaCard';
+import { AppDispatch } from '../../store/store';
+import { useDispatch } from 'react-redux';
+import { openModal } from '../../store/modal/modalSlice';
 
 const Container = styled.div`
   display: grid;
@@ -16,8 +23,6 @@ const Container = styled.div`
   height: 100%;
 `;
 
-
-
 const ContentArea = styled.div`
   display: flex;
   flex-direction: column;
@@ -25,8 +30,8 @@ const ContentArea = styled.div`
 `;
 
 const Section = styled.div`
-  background: ${props => props.theme.bgColors.secondary};
-  color: ${props => props.theme.textColors.primary};
+  background: ${(props) => props.theme.bgColors.secondary};
+  color: ${(props) => props.theme.textColors.primary};
   border-radius: 8px;
   padding: 24px;
 `;
@@ -35,16 +40,6 @@ const MediaSection = styled(Section)`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 16px;
-`;
-
-const MediaItem = styled.div`
-  width: 100px;
-  height: 100px;
-  border-radius: 4px;
-  background: ${props => props.theme.bgColors.primary};
-  display: flex;
-  align-items: center;
-  justify-content: center;
 `;
 
 const PostInfo = styled(Section)`
@@ -57,7 +52,7 @@ const InfoRow = styled.div`
   display: flex;
   justify-content: space-between;
   ${({ theme }) => getFontStyles('r_14')(theme)};
-  color: ${props => props.theme.textColors.primary};
+  color: ${(props) => props.theme.textColors.primary};
 `;
 
 const TabsContainer = styled.div`
@@ -71,14 +66,13 @@ const Tab = styled.div<{ $isActive: boolean }>`
   border-radius: 4px;
   cursor: pointer;
   ${({ theme }) => getFontStyles('r_14')(theme)};
-  color: ${props => props.theme.textColors.primary};
-  background: ${props => props.$isActive ? props.theme.bgColors.primary : 'transparent'};
+  color: ${(props) => props.theme.textColors.primary};
+  background: ${(props) => (props.$isActive ? props.theme.bgColors.primary : 'transparent')};
 
   &:hover {
-    background: ${props => props.theme.bgColors.primary};
+    background: ${(props) => props.theme.bgColors.primary};
   }
 `;
-
 
 const ContentHeader = styled.div`
   display: flex;
@@ -86,14 +80,16 @@ const ContentHeader = styled.div`
   margin-bottom: 16px;
 `;
 
-
 const Publish: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const activePost = useSelector(selectActivePost);
   const mediaData = useSelector(selectActivePostMediaData);
   const enabledPlatforms = useSelector(selectEnabledPlatforms);
+  const dispatch: AppDispatch = useDispatch();
 
-
+  const handleUploadClick = () => {
+    dispatch(openModal({ type: 'UPLOAD_MEDIA' }));
+  };
 
   return (
     <Container>
@@ -102,15 +98,11 @@ const Publish: React.FC = () => {
         {activePost ? (
           <>
             <ContentHeader>
-              <Button>
-                Publish Post
-              </Button>
+              <Button>Publish Post</Button>
             </ContentHeader>
             <MediaSection>
-              {mediaData && mediaData.map(media => (
-                <MediaCard key={media.id} media={media} />
-              ))}
-              <Button variant="off" icon={<IconPlus />} />
+              {mediaData && mediaData.map((media) => <MediaCard key={media.id} media={media} />)}
+              <Button variant="off" icon={<IconPlus />} onClick={handleUploadClick} />
             </MediaSection>
 
             <PostInfo>
@@ -134,7 +126,7 @@ const Publish: React.FC = () => {
 
             <Section>
               <TabsContainer>
-                {enabledPlatforms.map(platform => (
+                {enabledPlatforms.map((platform) => (
                   <Tab
                     key={platform.id}
                     $isActive={activeTab === platform.id}

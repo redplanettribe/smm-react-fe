@@ -3,10 +3,12 @@ import { useSelector } from 'react-redux';
 import { selectModal } from '../../store/modal/modalSlice';
 import CreateProjectModal from './CreateProjectModal';
 import CreatePostModal from './CreatePostModal';
+import UploadMediaModal from './UploadMediaModal';
 
 const MODAL_COMPONENTS = {
   CREATE_PROJECT: CreateProjectModal,
   CREATE_POST: CreatePostModal,
+  UPLOAD_MEDIA: UploadMediaModal,
 };
 
 const ModalManager: React.FC = () => {
