@@ -4,6 +4,18 @@ import Button from '../../components/design-system/Button';
 import { DownloadMetadata } from '../../api/media/types';
 import IconPlus from '../../assets/icons/Plus';
 import IconDocument from '../../assets/icons/Document';
+import { mediaApi } from '../../api/media/mediaApi';
+import { useSelector } from 'react-redux';
+import {
+  linkPostMediaToPlatform,
+  selectActivePost,
+  selectActivePostLinkedPlatforms,
+  selectActiveProject,
+  selectEnabledPlatforms,
+} from '../../store/projects/projectSlice';
+import { useEffect, useRef, useState } from 'react';
+import { AppDispatch } from '../../store/store';
+import { useDispatch } from 'react-redux';
 
 const Container = styled.div`
   position: relative;
@@ -25,7 +37,6 @@ const ThumbnailContainer = styled.div`
   width: 100px;
   height: 100px;
   border-radius: 4px;
-  overflow: hidden;
   background: ${(props) => props.theme.bgColors.primary};
 `;
 
@@ -72,6 +83,39 @@ const DocumentPlaceholder = styled.div`
   background: ${(props) => props.theme.bgColors.secondary};
 `;
 
+const DropdownMenu = styled.div<{ $isOpen: boolean }>`
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background-color: ${(props) => props.theme.bgColors.primary};
+  border: 1px solid ${(props) => props.theme.dividerColor};
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  min-width: 150px;
+  display: ${(props) => (props.$isOpen ? 'block' : 'none')};
+  z-index: 1000;
+`;
+
+const MenuItem = styled.div`
+  padding: 12px 16px;
+  ${({ theme }) => getFontStyles('r_14')(theme)};
+  color: ${(props) => props.theme.textColors.primary};
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${(props) => props.theme.bgColors.secondary};
+  }
+
+  &:not(:last-child) {
+    border-bottom: 1px solid ${(props) => props.theme.dividerColor};
+  }
+`;
+
+const ButtonWrapper = styled.div`
+  position: relative;
+`;
+
 interface MediaCardProps {
   media: DownloadMetadata;
 }
@@ -79,6 +123,29 @@ interface MediaCardProps {
 const MediaCard: React.FC<MediaCardProps> = ({ media }) => {
   const isDocument = media.mediaType === 'document';
   const theme = useTheme();
+  const project = useSelector(selectActiveProject);
+  const post = useSelector(selectActivePost);
+  const linkedPlatforms = useSelector(selectActivePostLinkedPlatforms);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const dispatch: AppDispatch = useDispatch();
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleLinkToPlatform = async (platformID: string) => {
+    if (!project || !post) return;
+    dispatch(linkPostMediaToPlatform(project.id, post.id, media.id, platformID));
+    setIsMenuOpen(false);
+  };
 
   return (
     <Container>
@@ -91,13 +158,21 @@ const MediaCard: React.FC<MediaCardProps> = ({ media }) => {
           <Thumbnail src={media.urlThumbnail} alt={media.altText || media.filename} />
         )}
         <HoverControls className="hover-controls">
-          <IconButton
-            variant="off"
-            icon={<IconPlus size={16} />}
-            onClick={() => {
-              console.log('Link media:', media.id);
-            }}
-          />
+          <ButtonWrapper ref={menuRef}>
+            <IconButton
+              variant="off"
+              icon={<IconPlus size={16} />}
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            />
+            <DropdownMenu $isOpen={isMenuOpen}>
+              {linkedPlatforms &&
+                linkedPlatforms.map((platform) => (
+                  <MenuItem key={platform.id} onClick={() => handleLinkToPlatform(platform.id)}>
+                    {platform.name}
+                  </MenuItem>
+                ))}
+            </DropdownMenu>
+          </ButtonWrapper>
         </HoverControls>
       </ThumbnailContainer>
       <FileName>{media.filename}</FileName>

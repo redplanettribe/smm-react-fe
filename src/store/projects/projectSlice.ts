@@ -205,10 +205,40 @@ export const uploadMedia =
     }
   };
 
+export const linkPostToPlatform =
+  (projectID: string, postID: string, platformID: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      await postApi.linkPlatform({ projectID, postID, platformID });
+      dispatch(setActivePostWithMetadata(projectID, postID));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+export const linkPostMediaToPlatform =
+  (projectID: string, postID: string, mediaID: string, platformID: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      await mediaApi.linkToPlatform({
+        projectID,
+        post_id: postID,
+        media_id: mediaID,
+        platform_id: platformID,
+      });
+      dispatch(setActivePostWithMetadata(projectID, postID));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
 /**SELECTORS */
+export const selectActiveProject = (state: RootState) => state.project.activeProject;
 export const selectActivePost = (state: RootState) => state.project.activePost;
 export const selectPosts = (state: RootState) => state.project.posts;
 export const selectTeam = (state: RootState) => state.project.team;
 export const selectEnabledPlatforms = (state: RootState) => state.project.enabledPlatforms;
 export const selectActivePostMediaData = (state: RootState) =>
   state.project.activePostMediaMetadata;
+export const selectActivePostLinkedPlatforms = (state: RootState) =>
+  state.project.activePost?.linkedPlatforms;

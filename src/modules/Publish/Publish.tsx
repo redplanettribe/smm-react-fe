@@ -1,19 +1,22 @@
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import { getFontStyles } from '../../components/design-system/Typography';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Button from '../../components/design-system/Button';
 import IconPlus from '../../assets/icons/Plus';
 import {
+  linkPostToPlatform,
   selectActivePost,
   selectActivePostMediaData,
   selectEnabledPlatforms,
+  setActivePostWithMetadata,
 } from '../../store/projects/projectSlice';
 import PostList from './PostList';
 import MediaCard from './MediaCard';
 import { AppDispatch } from '../../store/store';
 import { useDispatch } from 'react-redux';
 import { openModal } from '../../store/modal/modalSlice';
+import { postApi } from '../../api/posts/postApi';
 
 const Container = styled.div`
   display: grid;
@@ -80,12 +83,64 @@ const ContentHeader = styled.div`
   margin-bottom: 16px;
 `;
 
+const ButtonWrapper = styled.div`
+  position: relative;
+`;
+
+const DropdownMenu = styled.div<{ $isOpen: boolean }>`
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background-color: ${(props) => props.theme.bgColors.primary};
+  border: 1px solid ${(props) => props.theme.dividerColor};
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  min-width: 150px;
+  display: ${(props) => (props.$isOpen ? 'block' : 'none')};
+  z-index: 1000;
+`;
+
+const MenuItem = styled.div`
+  padding: 12px 16px;
+  ${({ theme }) => getFontStyles('r_14')(theme)};
+  color: ${(props) => props.theme.textColors.primary};
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${(props) => props.theme.bgColors.secondary};
+  }
+
+  &:not(:last-child) {
+    border-bottom: 1px solid ${(props) => props.theme.dividerColor};
+  }
+`;
+
 const Publish: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   const activePost = useSelector(selectActivePost);
   const mediaData = useSelector(selectActivePostMediaData);
   const enabledPlatforms = useSelector(selectEnabledPlatforms);
   const dispatch: AppDispatch = useDispatch();
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleLinkPlatform = async (platformId: string) => {
+    if (!activePost) return;
+    dispatch(linkPostToPlatform(activePost.projectID, activePost.id, platformId));
+    setIsMenuOpen(false);
+  };
 
   const handleUploadClick = () => {
     dispatch(openModal({ type: 'UPLOAD_MEDIA' }));
@@ -126,7 +181,7 @@ const Publish: React.FC = () => {
 
             <Section>
               <TabsContainer>
-                {enabledPlatforms.map((platform) => (
+                {activePost.linkedPlatforms.map((platform) => (
                   <Tab
                     key={platform.id}
                     $isActive={activeTab === platform.id}
@@ -135,9 +190,23 @@ const Publish: React.FC = () => {
                     {platform.name}
                   </Tab>
                 ))}
-                <Tab $isActive={false} onClick={() => setActiveTab('add')}>
-                  <IconPlus />
-                </Tab>
+                <ButtonWrapper ref={menuRef}>
+                  <Tab $isActive={false} onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                    <IconPlus />
+                  </Tab>
+                  <DropdownMenu $isOpen={isMenuOpen}>
+                    {enabledPlatforms
+                      .filter(
+                        (platform) =>
+                          !activePost.linkedPlatforms.some((linked) => linked.id === platform.id)
+                      )
+                      .map((platform) => (
+                        <MenuItem key={platform.id} onClick={() => handleLinkPlatform(platform.id)}>
+                          {platform.name}
+                        </MenuItem>
+                      ))}
+                  </DropdownMenu>
+                </ButtonWrapper>
               </TabsContainer>
 
               {/* Platform specific settings would go here based on activeTab */}
