@@ -9,6 +9,7 @@ import { postApi } from '../../api/posts/postApi';
 import { RootState } from '../root-reducer';
 import { DownloadMetadata } from '../../api/media/types';
 import { mediaApi } from '../../api/media/mediaApi';
+import { showNotification } from '../notifications/notificationSice';
 
 export interface User {
   id: string;
@@ -120,8 +121,9 @@ export const createProject =
     try {
       const proj = await projectApi.createProject({ name, description });
       dispatch(setSelectedProject(proj.id));
+      dispatch(showNotification(`Project ${proj.name} created succesfully`, 'success'));
     } catch (error) {
-      console.error(error);
+      dispatch(showNotification(`Failed to create project: ${error}`, 'error'));
     }
   };
 
@@ -132,7 +134,7 @@ export const getEnabledPlatforms =
       const enabledPlatforms = await projectApi.getEnabledSocialPlatforms({ projectID });
       dispatch(setEnabledPlatforms(enabledPlatforms));
     } catch (error) {
-      console.error(error);
+      dispatch(showNotification(`Failed to get enabled platforms: ${error}`, 'error'));
     }
   };
 
@@ -142,8 +144,9 @@ export const enablePlatform =
     try {
       await projectApi.enableSocialPlatform({ projectID, platformID });
       dispatch(getEnabledPlatforms(projectID));
+      dispatch(showNotification('Platform enabled', 'success'));
     } catch (error) {
-      console.error(error);
+      dispatch(showNotification(`Failed to enable platform: ${error}`, 'error'));
     }
   };
 
@@ -154,7 +157,7 @@ export const getPosts =
       const posts = await postApi.getProjectPosts({ projectID });
       dispatch(setPosts(posts));
     } catch (error) {
-      console.error(error);
+      dispatch(showNotification(`Failed to get posts: ${error}`, 'error'));
     }
   };
 
@@ -164,8 +167,9 @@ export const createPost =
     try {
       await postApi.createPost({ projectID, title, text_content: content, type, is_idea: isIdea });
       dispatch(getPosts(projectID));
+      dispatch(showNotification('Post created', 'success'));
     } catch (error) {
-      console.error(error);
+      dispatch(showNotification(`Failed to create post: ${error}`, 'error'));
     }
   };
 
@@ -179,7 +183,7 @@ export const setActivePostWithMetadata =
       ]);
       dispatch(setActivePost({ post, metadata }));
     } catch (error) {
-      console.error(error);
+      dispatch(showNotification(`Failed to get active post: ${error}`, 'error'));
     }
   };
 
@@ -189,8 +193,9 @@ export const updatePostMediaMetadata =
     try {
       const metadata = await mediaApi.downloadMediaMetadata({ projectID, postID });
       dispatch(setActivePostMediaMetadata(metadata));
+      dispatch(showNotification('Media metadata updated', 'success'));
     } catch (error) {
-      console.error(error);
+      dispatch(showNotification(`Failed to update media metadata: ${error}`, 'error'));
     }
   };
 
@@ -200,8 +205,9 @@ export const uploadMedia =
     try {
       await mediaApi.uploadMedia({ projectID, postID, file, alt_text: altText });
       dispatch(updatePostMediaMetadata(projectID, postID));
+      dispatch(showNotification('Media uploaded', 'success'));
     } catch (error) {
-      console.error(error);
+      dispatch(showNotification(`Failed to upload media: ${error}`, 'error'));
     }
   };
 
@@ -211,8 +217,9 @@ export const linkPostToPlatform =
     try {
       await postApi.linkPlatform({ projectID, postID, platformID });
       dispatch(setActivePostWithMetadata(projectID, postID));
+      dispatch(showNotification('Platform added to post succesfuly', 'success'));
     } catch (error) {
-      console.error(error);
+      dispatch(showNotification(`Failed to link post to platform: ${error}`, 'error'));
     }
   };
 
@@ -227,8 +234,9 @@ export const linkPostMediaToPlatform =
         platform_id: platformID,
       });
       dispatch(setActivePostWithMetadata(projectID, postID));
+      dispatch(showNotification('Media linked to platform', 'success'));
     } catch (error) {
-      console.error(error);
+      dispatch(showNotification(`Failed to link media to platform: ${error}`, 'error'));
     }
   };
 

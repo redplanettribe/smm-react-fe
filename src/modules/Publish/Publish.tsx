@@ -9,14 +9,12 @@ import {
   selectActivePost,
   selectActivePostMediaData,
   selectEnabledPlatforms,
-  setActivePostWithMetadata,
 } from '../../store/projects/projectSlice';
 import PostList from './PostList';
 import MediaCard from './MediaCard';
 import { AppDispatch } from '../../store/store';
 import { useDispatch } from 'react-redux';
 import { openModal } from '../../store/modal/modalSlice';
-import { postApi } from '../../api/posts/postApi';
 
 const Container = styled.div`
   display: grid;
