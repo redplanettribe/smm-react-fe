@@ -86,6 +86,8 @@ export function createApi<Endpoints extends { [key: string]: EndpointConfig<any,
           body,
         });
 
+        console.info('API Response', response);
+
         if (!response.ok) {
           if (response.status === 401) {
             store.dispatch(clearUser());

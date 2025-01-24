@@ -216,7 +216,6 @@ export const updatePostMediaMetadata =
     try {
       const metadata = await mediaApi.downloadMediaMetadata({ projectID, postID });
       dispatch(setActivePostMediaMetadata(metadata));
-      dispatch(showNotification('Media metadata updated', 'success'));
     } catch (error) {
       dispatch(showNotification(`Failed to update media metadata: ${error}`, 'error'));
     }
