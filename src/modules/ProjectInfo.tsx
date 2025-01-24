@@ -267,7 +267,6 @@ const ProjectInfo: React.FC = () => {
             <PlatformContent>
               {enabledPlatforms.map((platform) => {
                 if (platform.id !== activeTab) return null;
-
                 return (
                   <div key={platform.id}>
                     <PlatformStatus>

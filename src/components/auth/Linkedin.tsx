@@ -1,8 +1,16 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { publisherApi } from '../../api/publisher/publisher-api';
+import { selectActiveProject } from '../../store/projects/projectSlice';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../../store/user/userSlice';
+import { PlatformID } from '../../api/publisher/types';
 
 const ContentArea = styled.div`
-  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 100px;
 `;
 
 const Title = styled.h1`
@@ -11,17 +19,31 @@ const Title = styled.h1`
 `;
 
 const LinkedinCallbackHandler: React.FC = () => {
+  const project = useSelector(selectActiveProject);
+  const user = useSelector(selectUser);
+
+  const authenticateWithLinkedin = async (code: string) => {
+    try {
+      const response = await publisherApi.authenticatePlatform({
+        projectID: project.id,
+        userID: user.id,
+        platformID: PlatformID.LINKEDIN,
+        code,
+      });
+      console.log('Successfully authenticated with LinkedIn:', response);
+    } catch (error) {
+      console.error('Error authenticating with LinkedIn:', error);
+    }
+  };
+
   useEffect(() => {
-    // Get the code from URL
     const code = new URLSearchParams(window.location.search).get('code');
-    console.log(code);
-    const redirectURI = encodeURIComponent(import.meta.env.VITE_LINKEDIN_REDIRECT_URI);
-    console.log(redirectURI);
+    code && authenticateWithLinkedin(code);
   }, []);
 
   return (
     <ContentArea>
-      <Title>Linkeding Callback</Title>
+      <Title>Saving LinkedIn authentication data...</Title>
     </ContentArea>
   );
 };

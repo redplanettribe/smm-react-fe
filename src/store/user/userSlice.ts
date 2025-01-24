@@ -89,3 +89,6 @@ export const signup =
       dispatch(showNotification('Failed to signup', 'error'));
     }
   };
+
+/** SELECTORS */
+export const selectUser = (state: { user: UserState }) => state.user;
