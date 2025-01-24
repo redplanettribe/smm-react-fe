@@ -5,6 +5,10 @@ import { selectActiveProject } from '../../store/projects/projectSlice';
 import { useSelector } from 'react-redux';
 import { selectUser } from '../../store/user/userSlice';
 import { PlatformID } from '../../api/publisher/types';
+import { useNavigate } from 'react-router-dom';
+import { AppDispatch } from '../../store/store';
+import { useDispatch } from 'react-redux';
+import { showNotification } from '../../store/notifications/notificationSice';
 
 const ContentArea = styled.div`
   display: flex;
@@ -18,28 +22,46 @@ const Title = styled.h1`
   margin-bottom: 8px;
 `;
 
+// In LinkedinCallbackHandler component
 const LinkedinCallbackHandler: React.FC = () => {
   const project = useSelector(selectActiveProject);
   const user = useSelector(selectUser);
-
-  const authenticateWithLinkedin = async (code: string) => {
-    try {
-      const response = await publisherApi.authenticatePlatform({
-        projectID: project.id,
-        userID: user.id,
-        platformID: PlatformID.LINKEDIN,
-        code,
-      });
-      console.log('Successfully authenticated with LinkedIn:', response);
-    } catch (error) {
-      console.error('Error authenticating with LinkedIn:', error);
-    }
-  };
+  const navigate = useNavigate();
+  const dispatch: AppDispatch = useDispatch();
+  const code = new URLSearchParams(window.location.search).get('code');
 
   useEffect(() => {
-    const code = new URLSearchParams(window.location.search).get('code');
-    code && authenticateWithLinkedin(code);
-  }, []);
+    let mounted = true;
+
+    const authenticateWithLinkedin = async (code: string) => {
+      if (!code || !mounted) return;
+
+      try {
+        await publisherApi.authenticatePlatform({
+          projectID: project.id,
+          userID: user.id,
+          platformID: PlatformID.LINKEDIN,
+          code,
+        });
+
+        if (mounted) {
+          // navigate('/app/project');
+          dispatch(showNotification('Successfully authenticated with LinkedIn', 'success'));
+        }
+      } catch (error) {
+        if (mounted) {
+          // navigate('/app/project');
+          dispatch(showNotification('Failed to authenticate with LinkedIn', 'error'));
+        }
+      }
+    };
+
+    authenticateWithLinkedin(code || '');
+
+    return () => {
+      mounted = false;
+    };
+  }, [code, project.id, user.id, navigate, dispatch]);
 
   return (
     <ContentArea>

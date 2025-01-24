@@ -20,6 +20,12 @@ export interface User {
   maxRole: number;
   role: string;
 }
+
+export interface DefaultUserPlatformInfo {
+  platformID: string;
+  isAuthenticated: boolean;
+  authTTL: string;
+}
 export interface ProjectState {
   activeProject: Project;
   team: User[];
@@ -27,6 +33,7 @@ export interface ProjectState {
   posts: Post[];
   activePost: Post | null;
   activePostMediaMetadata: DownloadMetadata[] | null;
+  defaultUserPlatformInfo: DefaultUserPlatformInfo[];
 }
 
 const initialState: ProjectState = {
@@ -45,6 +52,7 @@ const initialState: ProjectState = {
   posts: [],
   activePost: null,
   activePostMediaMetadata: null,
+  defaultUserPlatformInfo: [],
 };
 
 const projectSlice = createSlice({
@@ -73,6 +81,18 @@ const projectSlice = createSlice({
     cleanProjectState() {
       return initialState;
     },
+    addUserPlatformInfo(state, action: PayloadAction<DefaultUserPlatformInfo>) {
+      if (state.defaultUserPlatformInfo) {
+        const index = state.defaultUserPlatformInfo.findIndex(
+          (info) => info.platformID === action.payload.platformID
+        );
+        if (index !== -1) {
+          state.defaultUserPlatformInfo[index] = action.payload;
+        } else {
+          state.defaultUserPlatformInfo.push(action.payload);
+        }
+      }
+    },
   },
 });
 
@@ -84,6 +104,7 @@ export const {
   setActivePost,
   cleanProjectState,
   setActivePostMediaMetadata,
+  addUserPlatformInfo,
 } = projectSlice.actions;
 export default projectSlice.reducer;
 
@@ -91,7 +112,7 @@ export default projectSlice.reducer;
 
 export const setSelectedProject =
   (projectID: string): AppThunk =>
-  async (dispatch) => {
+  async (dispatch, getState) => {
     try {
       const [response, enabledPlatforms, posts] = await Promise.all([
         projectApi.getProject({ projectID }),
@@ -100,6 +121,7 @@ export const setSelectedProject =
       ]);
       const project = response.project;
       const team = addRole(response.users);
+      const currentState = getState();
       dispatch(
         setProjectState({
           activeProject: project,
@@ -108,6 +130,7 @@ export const setSelectedProject =
           posts,
           activePost: null,
           activePostMediaMetadata: null,
+          defaultUserPlatformInfo: currentState.project.defaultUserPlatformInfo,
         })
       );
     } catch (error) {
@@ -240,6 +263,21 @@ export const linkPostMediaToPlatform =
     }
   };
 
+export const getDefaulUserPlatformInfo =
+  (projectID: string, platformID: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      const info = await projectApi.getDefaultUserInfo({ projectID, platformID });
+      const defaultUserPlatformInfo = {
+        ...info,
+        platformID,
+      };
+      dispatch(addUserPlatformInfo(defaultUserPlatformInfo));
+    } catch (error) {
+      dispatch(showNotification(`Failed to get default user platform info: ${error}`, 'error'));
+    }
+  };
+
 /**SELECTORS */
 export const selectActiveProject = (state: RootState) => state.project.activeProject;
 export const selectActivePost = (state: RootState) => state.project.activePost;
@@ -250,3 +288,5 @@ export const selectActivePostMediaData = (state: RootState) =>
   state.project.activePostMediaMetadata;
 export const selectActivePostLinkedPlatforms = (state: RootState) =>
   state.project.activePost?.linkedPlatforms;
+export const selectPlatformInfo = (platformID: string) => (state: RootState) =>
+  state.project.defaultUserPlatformInfo.find((info) => info.platformID === platformID);

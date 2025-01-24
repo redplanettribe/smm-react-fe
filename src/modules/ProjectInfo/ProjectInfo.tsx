@@ -1,17 +1,21 @@
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
-import { RootState } from '../store/root-reducer';
-import { getFontStyles } from '../components/design-system/Typography';
-import { formatDate } from '../utils';
+import { RootState } from '../../store/root-reducer';
+import { getFontStyles } from '../../components/design-system/Typography';
+import { formatDate } from '../../utils';
 import { useState, useEffect } from 'react';
-import { publisherApi } from '../api/publisher/publisher-api';
-import { Publisher } from '../api/publisher/types';
-import Button from '../components/design-system/Button';
-import IconPlus from '../assets/icons/Plus';
-import { AppDispatch } from '../store/store';
+import { publisherApi } from '../../api/publisher/publisher-api';
+import { Publisher } from '../../api/publisher/types';
+import Button from '../../components/design-system/Button';
+import IconPlus from '../../assets/icons/Plus';
+import { AppDispatch } from '../../store/store';
 import { useDispatch } from 'react-redux';
-import { enablePlatform, setSelectedProject } from '../store/projects/projectSlice';
-import { authenticateTo } from '../api/ third-party';
+import {
+  enablePlatform,
+  getDefaulUserPlatformInfo,
+  setSelectedProject,
+} from '../../store/projects/projectSlice';
+import PlatformInfo from './PlatformInfo';
 
 const FloatingMenu = styled.div<{ $isOpen: boolean }>`
   position: absolute;
@@ -125,7 +129,6 @@ const InlineDescriptions = styled.div`
 const TabsContainer = styled.div`
   display: flex;
   gap: 8px;
-  margin-bottom: 16px;
   flex-wrap: wrap;
 `;
 
@@ -148,19 +151,6 @@ const PlatformContent = styled.div`
   border: 1px solid ${(props) => props.theme.dividerColor};
   border-radius: 4px;
   padding: 24px;
-`;
-
-const PlatformStatus = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-`;
-
-const Status = styled.div<{ $isAuthenticated: boolean }>`
-  color: ${(props) =>
-    props.$isAuthenticated ? props.theme.colors.active : props.theme.colors.warning};
-  ${({ theme }) => getFontStyles('m_14')(theme)};
 `;
 
 const ProjectInfo: React.FC = () => {
@@ -190,13 +180,18 @@ const ProjectInfo: React.FC = () => {
     }
   }, [activeProject.id]);
 
+  useEffect(() => {
+    if (!activeTab && enabledPlatforms.length > 0) {
+      setActiveTab(enabledPlatforms[0].id);
+    }
+    if (activeTab && activeProject.id) {
+      dispatch(getDefaulUserPlatformInfo(activeProject.id, activeTab));
+    }
+  }, [activeTab]);
+
   const handlePublisherSelect = (publisher: Publisher) => {
     dispatch(enablePlatform(activeProject.id, publisher.id));
     setIsMenuOpen(false);
-  };
-
-  const handleAuthenticate = (platformId: string) => {
-    authenticateTo(platformId);
   };
 
   return (
@@ -268,19 +263,11 @@ const ProjectInfo: React.FC = () => {
               {enabledPlatforms.map((platform) => {
                 if (platform.id !== activeTab) return null;
                 return (
-                  <div key={platform.id}>
-                    <PlatformStatus>
-                      <Status $isAuthenticated={false}>
-                        {false ? 'Authenticated' : 'Not Authenticated'}
-                      </Status>
-                      {isDefaultUser && !false && (
-                        <Button onClick={() => handleAuthenticate(platform.id)}>
-                          Authenticate with {platform.name}
-                        </Button>
-                      )}
-                    </PlatformStatus>
-                    {/* Add more platform-specific information here */}
-                  </div>
+                  <PlatformInfo
+                    key={platform.id}
+                    platform={platform}
+                    isDefaultUser={isDefaultUser}
+                  />
                 );
               })}
             </PlatformContent>

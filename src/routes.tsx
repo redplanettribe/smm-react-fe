@@ -4,7 +4,7 @@ import SignUpPage from './pages/SignUp';
 import MarketingPage from './pages/Marketing';
 import Authenticated from './components/utility/AuthenticatedRoute';
 import DashboardLayout from './modules/DashboardLayout';
-import ProjectInfo from './modules/ProjectInfo';
+import ProjectInfo from './modules/ProjectInfo/ProjectInfo';
 import PostQueue from './modules/Publish/Publish';
 import SocialAuthCallback from './components/auth/callback-handler';
 
