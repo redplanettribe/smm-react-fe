@@ -7,6 +7,7 @@ const publisherApiConfig: ApiConfig<{
     { projectID: string; userID: string; platformID: string; code: string },
     void
   >;
+  publishPost: EndpointConfig<{ projectID: string; postID: string }, void>;
 }> = {
   basePath: '/publishers',
   endpoints: {
@@ -18,6 +19,11 @@ const publisherApiConfig: ApiConfig<{
       method: 'POST',
       path: '/{projectID}/{userID}/{platformID}/authenticate/{code}',
       pathValues: ['projectID', 'userID', 'platformID', 'code'],
+    },
+    publishPost: {
+      method: 'POST',
+      path: '/{projectID}/{postID}',
+      pathValues: ['projectID', 'postID'],
     },
   },
 };

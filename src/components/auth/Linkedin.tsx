@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { publisherApi } from '../../api/publisher/publisher-api';
 import { selectActiveProject } from '../../store/projects/projectSlice';
@@ -29,13 +29,14 @@ const LinkedinCallbackHandler: React.FC = () => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const code = new URLSearchParams(window.location.search).get('code');
+  const hasAuthenticated = useRef(false);
 
   useEffect(() => {
     let mounted = true;
 
     const authenticateWithLinkedin = async (code: string) => {
-      if (!code || !mounted) return;
-
+      if (!code || !mounted || hasAuthenticated.current) return;
+      hasAuthenticated.current = true;
       try {
         await publisherApi.authenticatePlatform({
           projectID: project.id,
@@ -45,12 +46,10 @@ const LinkedinCallbackHandler: React.FC = () => {
         });
 
         if (mounted) {
-          // navigate('/app/project');
           dispatch(showNotification('Successfully authenticated with LinkedIn', 'success'));
         }
       } catch (error) {
         if (mounted) {
-          // navigate('/app/project');
           dispatch(showNotification('Failed to authenticate with LinkedIn', 'error'));
         }
       }

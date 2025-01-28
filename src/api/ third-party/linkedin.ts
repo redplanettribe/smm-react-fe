@@ -2,7 +2,7 @@ export const linkedinAuth = () => {
   try {
     const clientID = import.meta.env.VITE_LINKEDIN_CLIENT_ID;
     const redirectURI = encodeURIComponent(import.meta.env.VITE_LINKEDIN_REDIRECT_URI);
-    const scope = encodeURIComponent('profile email w_member_social');
+    const scope = encodeURIComponent('email openid profile w_member_social');
 
     const linkedinAuthUrl =
       `https://www.linkedin.com/oauth/v2/authorization?` +

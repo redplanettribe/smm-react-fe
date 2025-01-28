@@ -5,6 +5,7 @@ import { authenticateTo } from '../../api/ third-party';
 import { useSelector } from 'react-redux';
 import { selectPlatformInfo } from '../../store/projects/projectSlice';
 import { Publisher } from '../../api/publisher/types';
+import { useCallback } from 'react';
 
 const Container = styled.div`
   display: flex;
@@ -43,12 +44,13 @@ interface PlatformInfoProps {
 
 const PlatformInfo: React.FC<PlatformInfoProps> = ({ platform, isDefaultUser }) => {
   const defaultUserPlatformInfo = useSelector(selectPlatformInfo(platform.id));
-  const handleAuthenticate = (platformId: string) => {
-    authenticateTo(platformId);
-  };
+
+  const handleAuthenticate = useCallback(() => {
+    authenticateTo(platform.id);
+  }, [platform.id]);
 
   return (
-    <Container key={platform.id}>
+    <Container>
       <PlatformStatus>
         <AuthInfo>
           <Status $isAuthenticated={defaultUserPlatformInfo?.isAuthenticated || false}>
@@ -60,10 +62,8 @@ const PlatformInfo: React.FC<PlatformInfoProps> = ({ platform, isDefaultUser }) 
             <AuthTTL>Authentication expires: {defaultUserPlatformInfo.authTTL}</AuthTTL>
           )}
         </AuthInfo>
-        {isDefaultUser && !defaultUserPlatformInfo?.isAuthenticated && (
-          <Button onClick={() => handleAuthenticate(platform.id)}>
-            Authenticate with {platform.name}
-          </Button>
+        {isDefaultUser && (
+          <Button onClick={handleAuthenticate}>Authenticate with {platform.name}</Button>
         )}
       </PlatformStatus>
     </Container>

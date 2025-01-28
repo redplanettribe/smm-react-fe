@@ -6,6 +6,7 @@ import Button from '../../components/design-system/Button';
 import IconPlus from '../../assets/icons/Plus';
 import {
   linkPostToPlatform,
+  publishPost,
   selectActivePost,
   selectActivePostMediaData,
   selectEnabledPlatforms,
@@ -144,6 +145,11 @@ const Publish: React.FC = () => {
     dispatch(openModal({ type: 'UPLOAD_MEDIA' }));
   };
 
+  const handlePublish = async () => {
+    if (!activePost) return;
+    dispatch(publishPost(activePost.projectID, activePost.id));
+  };
+
   return (
     <Container>
       <PostList />
@@ -151,7 +157,7 @@ const Publish: React.FC = () => {
         {activePost ? (
           <>
             <ContentHeader>
-              <Button>Publish Post</Button>
+              <Button onClick={handlePublish}>Publish Post</Button>
             </ContentHeader>
             <MediaSection>
               {mediaData && mediaData.map((media) => <MediaCard key={media.id} media={media} />)}

@@ -10,6 +10,7 @@ import { RootState } from '../root-reducer';
 import { DownloadMetadata } from '../../api/media/types';
 import { mediaApi } from '../../api/media/mediaApi';
 import { showNotification } from '../notifications/notificationSice';
+import { publisherApi } from '../../api/publisher/publisher-api';
 
 export interface User {
   id: string;
@@ -274,6 +275,17 @@ export const getDefaulUserPlatformInfo =
       dispatch(addUserPlatformInfo(defaultUserPlatformInfo));
     } catch (error) {
       dispatch(showNotification(`Failed to get default user platform info: ${error}`, 'error'));
+    }
+  };
+
+export const publishPost =
+  (projectID: string, postID: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      await publisherApi.publishPost({ projectID, postID });
+      dispatch(showNotification('Post published', 'success'));
+    } catch (error) {
+      dispatch(showNotification(`Failed to publish post: ${error}`, 'error'));
     }
   };
 
