@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import Button from '../../components/design-system/Button';
 import IconPlus from '../../assets/icons/Plus';
 import {
+  enqueuePost,
   linkPostToPlatform,
   publishPost,
   selectActivePost,
@@ -19,7 +20,7 @@ import { openModal } from '../../store/modal/modalSlice';
 
 const Container = styled.div`
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 350px 1fr;
   gap: 24px;
   padding: 24px;
   height: 100%;
@@ -80,6 +81,7 @@ const ContentHeader = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-bottom: 16px;
+  gap: 8px;
 `;
 
 const ButtonWrapper = styled.div`
@@ -150,6 +152,17 @@ const Publish: React.FC = () => {
     dispatch(publishPost(activePost.projectID, activePost.id));
   };
 
+  const handleSchedule = () => {
+    // Implement schedule functionality
+    console.log('Schedule post:', activePost?.id);
+  };
+
+  const handleEnqueue = () => {
+    if (activePost?.projectID && activePost?.id) {
+      dispatch(enqueuePost(activePost.projectID, activePost.id));
+    }
+  };
+
   return (
     <Container>
       <PostList />
@@ -157,6 +170,12 @@ const Publish: React.FC = () => {
         {activePost ? (
           <>
             <ContentHeader>
+              <Button variant="off" onClick={handleSchedule}>
+                Schedule
+              </Button>
+              <Button variant="off" onClick={handleEnqueue}>
+                Enqueue
+              </Button>
               <Button onClick={handlePublish}>Publish Post</Button>
             </ContentHeader>
             <MediaSection>

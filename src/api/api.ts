@@ -10,7 +10,7 @@ export const config = {
 console.log('API URL:', config.baseUrl);
 
 export type EndpointConfig<RequestType, ResponseType> = {
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
   path: string;
   pathValues?: (keyof RequestType)[];
   requestType?: RequestType;

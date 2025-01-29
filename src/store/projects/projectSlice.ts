@@ -289,6 +289,17 @@ export const publishPost =
     }
   };
 
+export const enqueuePost =
+  (projectID: string, postID: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      await postApi.enqueuePost({ projectID, postID });
+      dispatch(showNotification('Post enqueued', 'success'));
+    } catch (error) {
+      dispatch(showNotification(`Failed to enqueue post: ${error}`, 'error'));
+    }
+  };
+
 /**SELECTORS */
 export const selectActiveProject = (state: RootState) => state.project.activeProject;
 export const selectActivePost = (state: RootState) => state.project.activePost;

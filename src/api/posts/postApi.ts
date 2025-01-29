@@ -10,6 +10,13 @@ const postApiConfig: ApiConfig<{
   >;
   getPost: EndpointConfig<{ projectID: string; postID: string }, Post>;
   linkPlatform: EndpointConfig<{ projectID: string; postID: string; platformID: string }, void>;
+  enqueuePost: EndpointConfig<{ projectID: string; postID: string }, void>;
+  schedulePost: EndpointConfig<{ projectID: string; postID: string }, void>;
+  movePostInQueue: EndpointConfig<
+    { projectID: string; current_index: number; new_index: number },
+    void
+  >;
+  archivePost: EndpointConfig<{ projectID: string; postID: string }, void>;
 }> = {
   basePath: '/posts',
   endpoints: {
@@ -36,6 +43,26 @@ const postApiConfig: ApiConfig<{
       method: 'POST',
       path: '/{projectID}/{postID}/platforms/{platformID}',
       pathValues: ['projectID', 'postID', 'platformID'],
+    },
+    enqueuePost: {
+      method: 'PATCH',
+      path: '/{projectID}/{postID}/enqueue',
+      pathValues: ['projectID', 'postID'],
+    },
+    schedulePost: {
+      method: 'PATCH',
+      path: '/{projectID}/{postID}/schedule',
+      pathValues: ['projectID', 'postID'],
+    },
+    movePostInQueue: {
+      method: 'PATCH',
+      path: '/{projectID}/queue/move',
+      pathValues: ['projectID'],
+    },
+    archivePost: {
+      method: 'PATCH',
+      path: '/{projectID}/{postID}/archive',
+      pathValues: ['projectID', 'postID'],
     },
   },
 };
