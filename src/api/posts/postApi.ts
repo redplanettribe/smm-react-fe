@@ -11,7 +11,7 @@ const postApiConfig: ApiConfig<{
   getPost: EndpointConfig<{ projectID: string; postID: string }, Post>;
   linkPlatform: EndpointConfig<{ projectID: string; postID: string; platformID: string }, void>;
   enqueuePost: EndpointConfig<{ projectID: string; postID: string }, void>;
-  schedulePost: EndpointConfig<{ projectID: string; postID: string }, void>;
+  schedulePost: EndpointConfig<{ projectID: string; postID: string; scheduled_at: string }, void>;
   movePostInQueue: EndpointConfig<
     { projectID: string; current_index: number; new_index: number },
     void

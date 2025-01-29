@@ -14,6 +14,7 @@ import {
 import { AppDispatch } from '../../store/store';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import ChevronDownIcon from '../../assets/icons/ChevronDown';
+import { PostStatusEnum } from '../../api/posts/types';
 
 const PostsList = styled.div`
   background: ${(props) => props.theme.bgColors.secondary};
@@ -108,7 +109,9 @@ const PostList: React.FC = () => {
   const activeProject = useSelector(selectActiveProject);
   const dispatch: AppDispatch = useDispatch();
   const selectedPost = useSelector(selectActivePost);
-  const [activeTab, setActiveTab] = useState<'all' | 'queue' | 'ideas'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'queue' | 'ideas' | 'scheduled' | 'draft'>(
+    'all'
+  );
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -127,10 +130,13 @@ const PostList: React.FC = () => {
     all: 'All',
     queue: 'Post Queue',
     ideas: 'Idea Queue',
+    scheduled: 'Scheduled',
+    draft: 'Drafts',
   };
 
   const handleCreatePost = () => {
     dispatch(openModal({ type: 'CREATE_POST' }));
+    setActiveTab('all');
   };
 
   const filteredPosts = useMemo(() => {
@@ -139,6 +145,10 @@ const PostList: React.FC = () => {
         return posts.filter((post) => activeProject.postQueue.includes(post.id));
       case 'ideas':
         return posts.filter((post) => post.isIdea);
+      case 'scheduled':
+        return posts.filter((post) => post.status === PostStatusEnum.SCHEDULED);
+      case 'draft':
+        return posts.filter((post) => post.status === PostStatusEnum.DRAFT);
       default:
         return posts;
     }
@@ -159,7 +169,15 @@ const PostList: React.FC = () => {
                 setIsOpen(false);
               }}
             >
-              Todos
+              All
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                setActiveTab('draft');
+                setIsOpen(false);
+              }}
+            >
+              Drafts
             </MenuItem>
             <MenuItem
               onClick={() => {
@@ -167,7 +185,15 @@ const PostList: React.FC = () => {
                 setIsOpen(false);
               }}
             >
-              Cola
+              Post Queue
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                setActiveTab('scheduled');
+                setIsOpen(false);
+              }}
+            >
+              Scheduled
             </MenuItem>
             <MenuItem
               onClick={() => {
@@ -175,7 +201,7 @@ const PostList: React.FC = () => {
                 setIsOpen(false);
               }}
             >
-              Ideas
+              Idea Queue
             </MenuItem>
           </DropdownMenu>
           <CreateButtonWrapper>

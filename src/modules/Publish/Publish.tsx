@@ -8,6 +8,7 @@ import {
   enqueuePost,
   linkPostToPlatform,
   publishPost,
+  schedulePost,
   selectActivePost,
   selectActivePostMediaData,
   selectEnabledPlatforms,
@@ -17,6 +18,7 @@ import MediaCard from './MediaCard';
 import { AppDispatch } from '../../store/store';
 import { useDispatch } from 'react-redux';
 import { openModal } from '../../store/modal/modalSlice';
+import { PostStatusEnum } from '../../api/posts/types';
 
 const Container = styled.div`
   display: grid;
@@ -153,13 +155,27 @@ const Publish: React.FC = () => {
   };
 
   const handleSchedule = () => {
-    // Implement schedule functionality
-    console.log('Schedule post:', activePost?.id);
+    if (activePost?.projectID && activePost?.id) {
+      // test scheduling
+      dispatch(schedulePost(activePost.projectID, activePost.id, new Date(Date.now() + 200)));
+    }
   };
 
   const handleEnqueue = () => {
     if (activePost?.projectID && activePost?.id) {
       dispatch(enqueuePost(activePost.projectID, activePost.id));
+    }
+  };
+
+  const handleDequeue = () => {
+    if (activePost?.projectID && activePost?.id) {
+      // dispatch(dequeuePost(activePost.projectID, activePost.id));
+    }
+  };
+
+  const handleUnschedule = () => {
+    if (activePost?.projectID && activePost?.id) {
+      // dispatch(unschedulePost(activePost.projectID, activePost.id));
     }
   };
 
@@ -170,19 +186,33 @@ const Publish: React.FC = () => {
         {activePost ? (
           <>
             <ContentHeader>
-              <Button variant="off" onClick={handleSchedule}>
-                Schedule
+              {activePost.status === PostStatusEnum.SCHEDULED ? (
+                <Button variant="off" onClick={handleUnschedule}>
+                  Unschedule
+                </Button>
+              ) : activePost.status === PostStatusEnum.QUEUED ? (
+                <Button variant="off" onClick={handleDequeue}>
+                  Dequeue
+                </Button>
+              ) : (
+                <>
+                  <Button variant="off" onClick={handleSchedule}>
+                    Schedule
+                  </Button>
+                  <Button variant="off" onClick={handleEnqueue}>
+                    Enqueue
+                  </Button>
+                </>
+              )}
+              <Button onClick={handlePublish} disabled={activePost.status === 'published'}>
+                Publish Post
               </Button>
-              <Button variant="off" onClick={handleEnqueue}>
-                Enqueue
-              </Button>
-              <Button onClick={handlePublish}>Publish Post</Button>
             </ContentHeader>
+
             <MediaSection>
               {mediaData && mediaData.map((media) => <MediaCard key={media.id} media={media} />)}
               <Button variant="off" icon={<IconPlus />} onClick={handleUploadClick} />
             </MediaSection>
-
             <PostInfo>
               <InfoRow>
                 <span>Title:</span>

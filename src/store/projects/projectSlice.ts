@@ -300,6 +300,17 @@ export const enqueuePost =
     }
   };
 
+export const schedulePost =
+  (projectID: string, postID: string, scheduledAt: Date): AppThunk =>
+  async (dispatch) => {
+    try {
+      await postApi.schedulePost({ projectID, postID, scheduled_at: scheduledAt.toISOString() });
+      dispatch(showNotification('Post scheduled', 'success'));
+    } catch (error) {
+      dispatch(showNotification(`Failed to schedule post: ${error}`, 'error'));
+    }
+  };
+
 /**SELECTORS */
 export const selectActiveProject = (state: RootState) => state.project.activeProject;
 export const selectActivePost = (state: RootState) => state.project.activePost;
