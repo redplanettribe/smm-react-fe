@@ -182,27 +182,46 @@ const Publish: React.FC = () => {
         {activePost ? (
           <>
             <ContentHeader>
-              {activePost.status === PostStatusEnum.SCHEDULED ? (
-                <Button variant="off" onClick={handleUnschedule}>
-                  Unschedule
-                </Button>
-              ) : activePost.status === PostStatusEnum.QUEUED ? (
-                <Button variant="off" onClick={handleDequeue}>
-                  Dequeue
-                </Button>
-              ) : (
+              {activePost.linkedPlatforms.length > 0 ? (
+                // Show action buttons only if platforms are linked
                 <>
-                  <Button variant="off" onClick={handleSchedule}>
-                    Schedule
-                  </Button>
-                  <Button variant="off" onClick={handleEnqueue}>
-                    Enqueue
+                  {activePost.status === PostStatusEnum.SCHEDULED ? (
+                    <Button variant="off" onClick={handleUnschedule}>
+                      Unschedule
+                    </Button>
+                  ) : activePost.status === PostStatusEnum.QUEUED ? (
+                    <Button variant="off" onClick={handleDequeue}>
+                      Dequeue
+                    </Button>
+                  ) : (
+                    <>
+                      <Button variant="off" onClick={handleSchedule}>
+                        Schedule
+                      </Button>
+                      <Button variant="off" onClick={handleEnqueue}>
+                        Enqueue
+                      </Button>
+                    </>
+                  )}
+                  <Button onClick={handlePublish} disabled={activePost.status === 'published'}>
+                    Publish Post
                   </Button>
                 </>
+              ) : (
+                // Show platform linking prompt if no platforms are linked
+                <ButtonWrapper ref={menuRef}>
+                  <Button variant="off" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                    Link to Platform
+                  </Button>
+                  <DropdownMenu $isOpen={isMenuOpen}>
+                    {enabledPlatforms.map((platform) => (
+                      <MenuItem key={platform.id} onClick={() => handleLinkPlatform(platform.id)}>
+                        {platform.name}
+                      </MenuItem>
+                    ))}
+                  </DropdownMenu>
+                </ButtonWrapper>
               )}
-              <Button onClick={handlePublish} disabled={activePost.status === 'published'}>
-                Publish Post
-              </Button>
             </ContentHeader>
 
             <MediaSection>
@@ -227,39 +246,43 @@ const Publish: React.FC = () => {
                 <span>{activePost.createdBy}</span>
               </InfoRow>
             </PostInfo>
+            {activePost.linkedPlatforms.length > 0 && (
+              <Section>
+                <TabsContainer>
+                  {activePost.linkedPlatforms.map((platform) => (
+                    <Tab
+                      key={platform.id}
+                      $isActive={activeTab === platform.id}
+                      onClick={() => setActiveTab(platform.id)}
+                    >
+                      {platform.name}
+                    </Tab>
+                  ))}
+                  <ButtonWrapper ref={menuRef}>
+                    <Tab $isActive={false} onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                      <IconPlus />
+                    </Tab>
+                    <DropdownMenu $isOpen={isMenuOpen}>
+                      {enabledPlatforms
+                        .filter(
+                          (platform) =>
+                            !activePost.linkedPlatforms.some((linked) => linked.id === platform.id)
+                        )
+                        .map((platform) => (
+                          <MenuItem
+                            key={platform.id}
+                            onClick={() => handleLinkPlatform(platform.id)}
+                          >
+                            {platform.name}
+                          </MenuItem>
+                        ))}
+                    </DropdownMenu>
+                  </ButtonWrapper>
+                </TabsContainer>
 
-            <Section>
-              <TabsContainer>
-                {activePost.linkedPlatforms.map((platform) => (
-                  <Tab
-                    key={platform.id}
-                    $isActive={activeTab === platform.id}
-                    onClick={() => setActiveTab(platform.id)}
-                  >
-                    {platform.name}
-                  </Tab>
-                ))}
-                <ButtonWrapper ref={menuRef}>
-                  <Tab $isActive={false} onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                    <IconPlus />
-                  </Tab>
-                  <DropdownMenu $isOpen={isMenuOpen}>
-                    {enabledPlatforms
-                      .filter(
-                        (platform) =>
-                          !activePost.linkedPlatforms.some((linked) => linked.id === platform.id)
-                      )
-                      .map((platform) => (
-                        <MenuItem key={platform.id} onClick={() => handleLinkPlatform(platform.id)}>
-                          {platform.name}
-                        </MenuItem>
-                      ))}
-                  </DropdownMenu>
-                </ButtonWrapper>
-              </TabsContainer>
-
-              {/* Platform specific settings would go here based on activeTab */}
-            </Section>
+                {/* Platform specific settings would go here based on activeTab */}
+              </Section>
+            )}
           </>
         ) : (
           <Section>Select a post to view details</Section>
