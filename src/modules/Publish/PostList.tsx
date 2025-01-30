@@ -109,9 +109,9 @@ const PostList: React.FC = () => {
   const activeProject = useSelector(selectActiveProject);
   const dispatch: AppDispatch = useDispatch();
   const selectedPost = useSelector(selectActivePost);
-  const [activeTab, setActiveTab] = useState<'all' | 'queue' | 'ideas' | 'scheduled' | 'draft'>(
-    'all'
-  );
+  const [activeTab, setActiveTab] = useState<
+    'draft' | 'queue' | 'ideas' | 'scheduled' | 'published' | 'failed'
+  >('draft');
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -127,16 +127,17 @@ const PostList: React.FC = () => {
   }, []);
 
   const filterLabels = {
-    all: 'All',
+    draft: 'Drafts',
     queue: 'Post Queue',
     ideas: 'Idea Queue',
     scheduled: 'Scheduled',
-    draft: 'Drafts',
+    published: 'Published',
+    failed: 'Failed',
   };
 
   const handleCreatePost = () => {
     dispatch(openModal({ type: 'CREATE_POST' }));
-    setActiveTab('all');
+    setActiveTab('draft');
   };
 
   const filteredPosts = useMemo(() => {
@@ -149,6 +150,14 @@ const PostList: React.FC = () => {
         return posts.filter((post) => post.status === PostStatusEnum.SCHEDULED);
       case 'draft':
         return posts.filter((post) => post.status === PostStatusEnum.DRAFT);
+      case 'published':
+        return posts.filter(
+          (post) =>
+            post.status === PostStatusEnum.PUBLISHED ||
+            post.status === PostStatusEnum.PARTIALLY_PUBLISHED
+        );
+      case 'failed':
+        return posts.filter((post) => post.status === PostStatusEnum.FAILED);
       default:
         return posts;
     }
@@ -165,19 +174,11 @@ const PostList: React.FC = () => {
           <DropdownMenu $isOpen={isOpen}>
             <MenuItem
               onClick={() => {
-                setActiveTab('all');
-                setIsOpen(false);
-              }}
-            >
-              All
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
                 setActiveTab('draft');
                 setIsOpen(false);
               }}
             >
-              Drafts
+              {filterLabels.draft}
             </MenuItem>
             <MenuItem
               onClick={() => {
@@ -185,7 +186,7 @@ const PostList: React.FC = () => {
                 setIsOpen(false);
               }}
             >
-              Post Queue
+              {filterLabels.queue}
             </MenuItem>
             <MenuItem
               onClick={() => {
@@ -193,7 +194,23 @@ const PostList: React.FC = () => {
                 setIsOpen(false);
               }}
             >
-              Scheduled
+              {filterLabels.scheduled}
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                setActiveTab('published');
+                setIsOpen(false);
+              }}
+            >
+              {filterLabels.published}
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                setActiveTab('failed');
+                setIsOpen(false);
+              }}
+            >
+              {filterLabels.failed}
             </MenuItem>
             <MenuItem
               onClick={() => {
@@ -201,7 +218,7 @@ const PostList: React.FC = () => {
                 setIsOpen(false);
               }}
             >
-              Idea Queue
+              {filterLabels.ideas}
             </MenuItem>
           </DropdownMenu>
           <CreateButtonWrapper>
