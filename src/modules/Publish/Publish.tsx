@@ -6,7 +6,6 @@ import Button from '../../components/design-system/Button';
 import IconPlus from '../../assets/icons/Plus';
 import {
   enqueuePost,
-  getPosts,
   linkPostToPlatform,
   publishPost,
   selectActivePost,

@@ -11,6 +11,7 @@ import { DownloadMetadata } from '../../api/media/types';
 import { mediaApi } from '../../api/media/mediaApi';
 import { showNotification } from '../notifications/notificationSice';
 import { publisherApi } from '../../api/publisher/publisher-api';
+import { PostListTabEnum, setPostListTab } from '../ui/uiSlice';
 
 export interface User {
   id: string;
@@ -75,6 +76,10 @@ const projectSlice = createSlice({
     setActivePost(state, action: PayloadAction<{ post: Post; metadata: DownloadMetadata[] }>) {
       state.activePost = action.payload.post;
       state.activePostMediaMetadata = action.payload.metadata;
+      const index = state.posts.findIndex((post) => post.id === action.payload.post.id);
+      if (index !== -1) {
+        state.posts[index] = action.payload.post;
+      }
     },
     setActivePostMediaMetadata(state, action: PayloadAction<DownloadMetadata[]>) {
       state.activePostMediaMetadata = action.payload;
@@ -284,6 +289,8 @@ export const publishPost =
     try {
       await publisherApi.publishPost({ projectID, postID });
       dispatch(showNotification('Post published', 'success'));
+      dispatch(setActivePostWithMetadata(projectID, postID));
+      dispatch(setPostListTab(PostListTabEnum.PUBLISHED));
     } catch (error) {
       dispatch(showNotification(`Failed to publish post: ${error}`, 'error'));
     }
@@ -295,7 +302,8 @@ export const enqueuePost =
     try {
       await postApi.enqueuePost({ projectID, postID });
       dispatch(showNotification('Post enqueued', 'success'));
-      dispatch(getPosts(projectID));
+      dispatch(setActivePostWithMetadata(projectID, postID));
+      dispatch(setPostListTab(PostListTabEnum.QUEUE));
     } catch (error) {
       dispatch(showNotification(`Failed to enqueue post: ${error}`, 'error'));
     }
@@ -307,7 +315,8 @@ export const schedulePost =
     try {
       await postApi.schedulePost({ projectID, postID, scheduled_at: scheduledAt.toISOString() });
       dispatch(showNotification('Post scheduled', 'success'));
-      dispatch(getPosts(projectID));
+      dispatch(setActivePostWithMetadata(projectID, postID));
+      dispatch(setPostListTab(PostListTabEnum.SCHEDULED));
     } catch (error) {
       dispatch(showNotification(`Failed to schedule post: ${error}`, 'error'));
     }
@@ -319,7 +328,8 @@ export const unschedulePost =
     try {
       await postApi.unschedulePost({ projectID, postID });
       dispatch(showNotification('Post unscheduled', 'success'));
-      dispatch(getPosts(projectID));
+      dispatch(setActivePostWithMetadata(projectID, postID));
+      dispatch(setPostListTab(PostListTabEnum.DRAFT));
     } catch (error) {
       dispatch(showNotification(`Failed to unschedule post: ${error}`, 'error'));
     }

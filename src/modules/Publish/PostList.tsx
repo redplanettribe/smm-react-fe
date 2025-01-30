@@ -15,6 +15,7 @@ import { AppDispatch } from '../../store/store';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import ChevronDownIcon from '../../assets/icons/ChevronDown';
 import { PostStatusEnum } from '../../api/posts/types';
+import { PostListTab, selectPostListTab, setPostListTab } from '../../store/ui/uiSlice';
 
 const PostsList = styled.div`
   background: ${(props) => props.theme.bgColors.secondary};
@@ -109,11 +110,14 @@ const PostList: React.FC = () => {
   const activeProject = useSelector(selectActiveProject);
   const dispatch: AppDispatch = useDispatch();
   const selectedPost = useSelector(selectActivePost);
-  const [activeTab, setActiveTab] = useState<
-    'draft' | 'queue' | 'ideas' | 'scheduled' | 'published' | 'failed'
-  >('draft');
+  const activeTab = useSelector(selectPostListTab);
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  const handleTabChange = (tab: PostListTab) => {
+    dispatch(setPostListTab(tab));
+    setIsOpen(false);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -137,10 +141,10 @@ const PostList: React.FC = () => {
 
   const handleCreatePost = () => {
     dispatch(openModal({ type: 'CREATE_POST' }));
-    setActiveTab('draft');
   };
 
   const filteredPosts = useMemo(() => {
+    if (!posts) return [];
     switch (activeTab) {
       case 'queue':
         return posts.filter((post) => activeProject.postQueue.includes(post.id));
@@ -149,7 +153,7 @@ const PostList: React.FC = () => {
       case 'scheduled':
         return posts.filter((post) => post.status === PostStatusEnum.SCHEDULED);
       case 'draft':
-        return posts.filter((post) => post.status === PostStatusEnum.DRAFT);
+        return posts.filter((post) => post.status === PostStatusEnum.DRAFT && !post.isIdea);
       case 'published':
         return posts.filter(
           (post) =>
@@ -172,54 +176,16 @@ const PostList: React.FC = () => {
             <ChevronDownIcon />
           </FilterButton>
           <DropdownMenu $isOpen={isOpen}>
-            <MenuItem
-              onClick={() => {
-                setActiveTab('draft');
-                setIsOpen(false);
-              }}
-            >
-              {filterLabels.draft}
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                setActiveTab('queue');
-                setIsOpen(false);
-              }}
-            >
-              {filterLabels.queue}
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                setActiveTab('scheduled');
-                setIsOpen(false);
-              }}
-            >
+            <MenuItem onClick={() => handleTabChange('draft')}>{filterLabels.draft}</MenuItem>
+            <MenuItem onClick={() => handleTabChange('queue')}>{filterLabels.queue}</MenuItem>
+            <MenuItem onClick={() => handleTabChange('scheduled')}>
               {filterLabels.scheduled}
             </MenuItem>
-            <MenuItem
-              onClick={() => {
-                setActiveTab('published');
-                setIsOpen(false);
-              }}
-            >
+            <MenuItem onClick={() => handleTabChange('published')}>
               {filterLabels.published}
             </MenuItem>
-            <MenuItem
-              onClick={() => {
-                setActiveTab('failed');
-                setIsOpen(false);
-              }}
-            >
-              {filterLabels.failed}
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                setActiveTab('ideas');
-                setIsOpen(false);
-              }}
-            >
-              {filterLabels.ideas}
-            </MenuItem>
+            <MenuItem onClick={() => handleTabChange('failed')}>{filterLabels.failed}</MenuItem>
+            <MenuItem onClick={() => handleTabChange('ideas')}>{filterLabels.ideas}</MenuItem>
           </DropdownMenu>
           <CreateButtonWrapper>
             <Button variant="off" icon={<IconPlus />} onClick={handleCreatePost} />
