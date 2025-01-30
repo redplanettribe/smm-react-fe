@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import Button from '../../components/design-system/Button';
 import IconPlus from '../../assets/icons/Plus';
 import {
+  dequeuePost,
   enqueuePost,
   linkPostToPlatform,
   publishPost,
@@ -166,7 +167,7 @@ const Publish: React.FC = () => {
 
   const handleDequeue = () => {
     if (activePost?.projectID && activePost?.id) {
-      // dispatch(dequeuePost(activePost.projectID, activePost.id));
+      dispatch(dequeuePost(activePost.projectID, activePost.id));
     }
   };
 

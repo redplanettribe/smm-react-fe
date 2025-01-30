@@ -11,6 +11,7 @@ const postApiConfig: ApiConfig<{
   getPost: EndpointConfig<{ projectID: string; postID: string }, Post>;
   linkPlatform: EndpointConfig<{ projectID: string; postID: string; platformID: string }, void>;
   enqueuePost: EndpointConfig<{ projectID: string; postID: string }, void>;
+  dequeuePost: EndpointConfig<{ projectID: string; postID: string }, void>;
   schedulePost: EndpointConfig<{ projectID: string; postID: string; scheduled_at: string }, void>;
   unschedulePost: EndpointConfig<{ projectID: string; postID: string }, void>;
   movePostInQueue: EndpointConfig<
@@ -48,6 +49,11 @@ const postApiConfig: ApiConfig<{
     enqueuePost: {
       method: 'PATCH',
       path: '/{projectID}/{postID}/enqueue',
+      pathValues: ['projectID', 'postID'],
+    },
+    dequeuePost: {
+      method: 'PATCH',
+      path: '/{projectID}/{postID}/dequeue',
       pathValues: ['projectID', 'postID'],
     },
     schedulePost: {

@@ -309,6 +309,19 @@ export const enqueuePost =
     }
   };
 
+export const dequeuePost =
+  (projectID: string, postID: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      await postApi.dequeuePost({ projectID, postID });
+      dispatch(showNotification('Post dequeued', 'success'));
+      dispatch(setActivePostWithMetadata(projectID, postID));
+      dispatch(setPostListTab(PostListTabEnum.DRAFT));
+    } catch (error) {
+      dispatch(showNotification(`Failed to dequeue post: ${error}`, 'error'));
+    }
+  };
+
 export const schedulePost =
   (projectID: string, postID: string, scheduledAt: Date): AppThunk =>
   async (dispatch) => {

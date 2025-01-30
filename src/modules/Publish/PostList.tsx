@@ -147,7 +147,7 @@ const PostList: React.FC = () => {
     if (!posts) return [];
     switch (activeTab) {
       case 'queue':
-        return posts.filter((post) => activeProject.postQueue.includes(post.id));
+        return posts.filter((post) => post.status === PostStatusEnum.QUEUED);
       case 'ideas':
         return posts.filter((post) => post.isIdea);
       case 'scheduled':
