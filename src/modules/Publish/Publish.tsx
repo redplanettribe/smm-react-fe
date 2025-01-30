@@ -6,11 +6,13 @@ import Button from '../../components/design-system/Button';
 import IconPlus from '../../assets/icons/Plus';
 import {
   enqueuePost,
+  getPosts,
   linkPostToPlatform,
   publishPost,
   selectActivePost,
   selectActivePostMediaData,
   selectEnabledPlatforms,
+  unschedulePost,
 } from '../../store/projects/projectSlice';
 import PostList from './PostList';
 import MediaCard from './MediaCard';
@@ -171,7 +173,7 @@ const Publish: React.FC = () => {
 
   const handleUnschedule = () => {
     if (activePost?.projectID && activePost?.id) {
-      // dispatch(unschedulePost(activePost.projectID, activePost.id));
+      dispatch(unschedulePost(activePost.projectID, activePost.id));
     }
   };
 

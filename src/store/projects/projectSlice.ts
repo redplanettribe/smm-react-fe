@@ -295,6 +295,7 @@ export const enqueuePost =
     try {
       await postApi.enqueuePost({ projectID, postID });
       dispatch(showNotification('Post enqueued', 'success'));
+      dispatch(getPosts(projectID));
     } catch (error) {
       dispatch(showNotification(`Failed to enqueue post: ${error}`, 'error'));
     }
@@ -306,8 +307,21 @@ export const schedulePost =
     try {
       await postApi.schedulePost({ projectID, postID, scheduled_at: scheduledAt.toISOString() });
       dispatch(showNotification('Post scheduled', 'success'));
+      dispatch(getPosts(projectID));
     } catch (error) {
       dispatch(showNotification(`Failed to schedule post: ${error}`, 'error'));
+    }
+  };
+
+export const unschedulePost =
+  (projectID: string, postID: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      await postApi.unschedulePost({ projectID, postID });
+      dispatch(showNotification('Post unscheduled', 'success'));
+      dispatch(getPosts(projectID));
+    } catch (error) {
+      dispatch(showNotification(`Failed to unschedule post: ${error}`, 'error'));
     }
   };
 
