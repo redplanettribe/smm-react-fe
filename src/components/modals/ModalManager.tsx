@@ -4,11 +4,13 @@ import { selectModal } from '../../store/modal/modalSlice';
 import CreateProjectModal from './CreateProjectModal';
 import CreatePostModal from './CreatePostModal';
 import UploadMediaModal from './UploadMediaModal';
+import SchedulePostModal from './SchedulePostModal';
 
 const MODAL_COMPONENTS = {
   CREATE_PROJECT: CreateProjectModal,
   CREATE_POST: CreatePostModal,
   UPLOAD_MEDIA: UploadMediaModal,
+  SCHEDULE_POST: SchedulePostModal,
 };
 
 const ModalManager: React.FC = () => {

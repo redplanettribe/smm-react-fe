@@ -8,7 +8,6 @@ import {
   enqueuePost,
   linkPostToPlatform,
   publishPost,
-  schedulePost,
   selectActivePost,
   selectActivePostMediaData,
   selectEnabledPlatforms,
@@ -155,10 +154,7 @@ const Publish: React.FC = () => {
   };
 
   const handleSchedule = () => {
-    if (activePost?.projectID && activePost?.id) {
-      // test scheduling
-      dispatch(schedulePost(activePost.projectID, activePost.id, new Date(Date.now() + 200)));
-    }
+    dispatch(openModal({ type: 'SCHEDULE_POST' }));
   };
 
   const handleEnqueue = () => {
