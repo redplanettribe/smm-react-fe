@@ -23,6 +23,7 @@ import {
   selectActivePostMediaData,
   unschedulePost,
 } from '../../store/activePost/activePostSlice';
+import PlatformPostInfo from './PlatformPostInfo';
 
 const Container = styled.div`
   display: grid;
@@ -323,7 +324,7 @@ const Publish: React.FC = () => {
                   </ButtonWrapper>
                 </TabsContainer>
 
-                {/* Platform specific settings would go here based on activeTab */}
+                {activeTab && <PlatformPostInfo platformId={activeTab} />}
               </Section>
             )}
           </>

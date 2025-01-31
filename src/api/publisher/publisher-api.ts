@@ -1,11 +1,15 @@
 import { ApiConfig, createApi, EndpointConfig } from '../api';
-import { Publisher } from './types';
+import { Publisher, PublishPostInfo } from './types';
 
 const publisherApiConfig: ApiConfig<{
   getAvailablePublishers: EndpointConfig<void, Publisher[]>;
   authenticatePlatform: EndpointConfig<
     { projectID: string; userID: string; platformID: string; code: string },
     void
+  >;
+  getPublishPostInfo: EndpointConfig<
+    { projectID: string; postID: string; platformID: string },
+    PublishPostInfo
   >;
   publishPost: EndpointConfig<{ projectID: string; postID: string }, void>;
 }> = {
@@ -14,6 +18,11 @@ const publisherApiConfig: ApiConfig<{
     getAvailablePublishers: {
       method: 'GET',
       path: '',
+    },
+    getPublishPostInfo: {
+      method: 'GET',
+      path: '/{projectID}/{postID}/{platformID}/info',
+      pathValues: ['projectID', 'postID', 'platformID'],
     },
     authenticatePlatform: {
       method: 'POST',
