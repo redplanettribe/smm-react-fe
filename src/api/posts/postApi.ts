@@ -18,6 +18,10 @@ const postApiConfig: ApiConfig<{
     { projectID: string; current_index: number; new_index: number },
     void
   >;
+  moveIdeaInQueue: EndpointConfig<
+    { projectID: string; current_index: number; new_index: number },
+    void
+  >;
   archivePost: EndpointConfig<{ projectID: string; postID: string }, void>;
 }> = {
   basePath: '/posts',
@@ -68,7 +72,12 @@ const postApiConfig: ApiConfig<{
     },
     movePostInQueue: {
       method: 'PATCH',
-      path: '/{projectID}/queue/move',
+      path: '/{projectID}/post-queue/move',
+      pathValues: ['projectID'],
+    },
+    moveIdeaInQueue: {
+      method: 'PATCH',
+      path: '/{projectID}/idea-queue/move',
       pathValues: ['projectID'],
     },
     archivePost: {

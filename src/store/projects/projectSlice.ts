@@ -67,6 +67,9 @@ const projectSlice = createSlice({
     getProjectState(state) {
       return state;
     },
+    setActiveProject(state, action: PayloadAction<Project>) {
+      state.activeProject = action.payload;
+    },
     setEnabledPlatforms(state, action: PayloadAction<Publisher[]>) {
       state.enabledPlatforms = action.payload;
     },
@@ -111,6 +114,7 @@ export const {
   cleanProjectState,
   setActivePostMediaMetadata,
   addUserPlatformInfo,
+  setActiveProject,
 } = projectSlice.actions;
 export default projectSlice.reducer;
 
@@ -345,6 +349,38 @@ export const unschedulePost =
       dispatch(setPostListTab(PostListTabEnum.DRAFT));
     } catch (error) {
       dispatch(showNotification(`Failed to unschedule post: ${error}`, 'error'));
+    }
+  };
+
+export const movePostInQueue =
+  (projectID: string, currentIndex: number, newIndex: number): AppThunk =>
+  async (dispatch) => {
+    try {
+      await postApi.movePostInQueue({
+        projectID,
+        current_index: currentIndex,
+        new_index: newIndex,
+      });
+      const project = (await projectApi.getProject({ projectID })).project;
+      dispatch(setActiveProject(project));
+    } catch (error) {
+      dispatch(showNotification(`Failed to move post in queue: ${error}`, 'error'));
+    }
+  };
+
+export const moveIdeaInQueue =
+  (projectID: string, currentIndex: number, newIndex: number): AppThunk =>
+  async (dispatch) => {
+    try {
+      await postApi.moveIdeaInQueue({
+        projectID,
+        current_index: currentIndex,
+        new_index: newIndex,
+      });
+      const project = (await projectApi.getProject({ projectID })).project;
+      dispatch(setActiveProject(project));
+    } catch (error) {
+      dispatch(showNotification(`Failed to move idea in queue: ${error}`, 'error'));
     }
   };
 

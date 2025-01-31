@@ -14,8 +14,10 @@ import {
 import { AppDispatch } from '../../store/store';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import ChevronDownIcon from '../../assets/icons/ChevronDown';
-import { PostStatusEnum } from '../../api/posts/types';
+import { Post, PostStatusEnum } from '../../api/posts/types';
 import { PostListTab, selectPostListTab, setPostListTab } from '../../store/ui/uiSlice';
+import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
+import { movePostInQueue, moveIdeaInQueue } from '../../store/projects/projectSlice';
 
 const PostsList = styled.div`
   background: ${(props) => props.theme.bgColors.secondary};
@@ -105,6 +107,19 @@ const MenuItem = styled.div`
   }
 `;
 
+const DroppableList = styled.div`
+  min-height: 100px;
+`;
+
+const DraggableItem = styled(PostItem)`
+  margin-bottom: 8px;
+  background: ${(props) => props.theme.bgColors.secondary};
+
+  &:hover {
+    background: ${(props) => props.theme.bgColors.primary};
+  }
+`;
+
 const PostList: React.FC = () => {
   const posts = useSelector(selectPosts);
   const activeProject = useSelector(selectActiveProject);
@@ -143,13 +158,32 @@ const PostList: React.FC = () => {
     dispatch(openModal({ type: 'CREATE_POST' }));
   };
 
+  const handleDragEnd = (result: DropResult) => {
+    if (!result.destination || !activeProject) return;
+
+    const sourceIndex = result.source.index;
+    const destinationIndex = result.destination.index;
+
+    if (sourceIndex === destinationIndex) return;
+
+    if (activeTab === 'queue') {
+      dispatch(movePostInQueue(activeProject.id, sourceIndex, destinationIndex));
+    } else if (activeTab === 'ideas') {
+      dispatch(moveIdeaInQueue(activeProject.id, sourceIndex, destinationIndex));
+    }
+  };
+
   const filteredPosts = useMemo(() => {
     if (!posts) return [];
     switch (activeTab) {
       case 'queue':
-        return posts.filter((post) => post.status === PostStatusEnum.QUEUED);
+        return activeProject.postQueue
+          .map((postId) => posts.find((post) => post.id === postId))
+          .filter((post): post is Post => post !== undefined);
       case 'ideas':
-        return posts.filter((post) => post.isIdea);
+        return activeProject.ideaQueue
+          .map((postId) => posts.find((post) => post.id === postId))
+          .filter((post): post is Post => post !== undefined);
       case 'scheduled':
         return posts.filter((post) => post.status === PostStatusEnum.SCHEDULED);
       case 'draft':
@@ -165,7 +199,7 @@ const PostList: React.FC = () => {
       default:
         return posts;
     }
-  }, [posts, activeTab, activeProject.postQueue]);
+  }, [posts, activeTab, activeProject.postQueue, activeProject.ideaQueue]);
 
   return (
     <PostsList>
@@ -193,15 +227,47 @@ const PostList: React.FC = () => {
         </FilterContainer>
       </HeaderContainer>
 
-      {filteredPosts.map((post) => (
-        <PostItem
-          key={post.id}
-          $isActive={selectedPost?.id === post.id}
-          onClick={() => dispatch(setActivePostWithMetadata(post.projectID, post.id))}
-        >
-          {post.title}
-        </PostItem>
-      ))}
+      <DragDropContext onDragEnd={handleDragEnd}>
+        {activeTab === 'queue' || activeTab === 'ideas' ? (
+          <Droppable droppableId="post-list">
+            {(provided) => (
+              <DroppableList {...provided.droppableProps} ref={provided.innerRef}>
+                {filteredPosts.map((post, index) => (
+                  <Draggable key={post.id} draggableId={post.id} index={index}>
+                    {(provided, snapshot) => (
+                      <DraggableItem
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        $isActive={selectedPost?.id === post.id}
+                        style={{
+                          ...provided.draggableProps.style,
+                          opacity: snapshot.isDragging ? 0.8 : 1,
+                        }}
+                        onClick={() => dispatch(setActivePostWithMetadata(post.projectID, post.id))}
+                      >
+                        {post.title}
+                      </DraggableItem>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </DroppableList>
+            )}
+          </Droppable>
+        ) : (
+          // Regular list for non-draggable tabs
+          filteredPosts.map((post) => (
+            <PostItem
+              key={post.id}
+              $isActive={selectedPost?.id === post.id}
+              onClick={() => dispatch(setActivePostWithMetadata(post.projectID, post.id))}
+            >
+              {post.title}
+            </PostItem>
+          ))
+        )}
+      </DragDropContext>
     </PostsList>
   );
 };
