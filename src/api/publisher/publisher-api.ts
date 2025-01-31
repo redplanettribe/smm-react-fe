@@ -11,6 +11,10 @@ const publisherApiConfig: ApiConfig<{
     { projectID: string; postID: string; platformID: string },
     PublishPostInfo
   >;
+  validatePostForPlatform: EndpointConfig<
+    { projectID: string; postID: string; platformID: string },
+    void
+  >;
   publishPost: EndpointConfig<{ projectID: string; postID: string }, void>;
 }> = {
   basePath: '/publishers',
@@ -28,6 +32,11 @@ const publisherApiConfig: ApiConfig<{
       method: 'POST',
       path: '/{projectID}/{userID}/{platformID}/authenticate/{code}',
       pathValues: ['projectID', 'userID', 'platformID', 'code'],
+    },
+    validatePostForPlatform: {
+      method: 'GET',
+      path: '/{projectID}/{postID}/{platformID}/validate',
+      pathValues: ['projectID', 'postID', 'platformID'],
     },
     publishPost: {
       method: 'POST',

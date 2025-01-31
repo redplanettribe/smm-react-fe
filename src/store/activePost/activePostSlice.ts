@@ -9,15 +9,18 @@ import { showNotification } from '../notifications/notificationSice';
 import { PostListTabEnum, setPostListTab } from '../ui/uiSlice';
 import { setPosts } from '../projects/projectSlice';
 import { publisherApi } from '../../api/publisher/publisher-api';
+import { PublishPostInfo } from '../../api/publisher/types';
 
 export interface ActivePostState {
   post: Post | null;
   mediaMetadata: DownloadMetadata[] | null;
+  publishInfo: PublishPostInfo | null;
 }
 
 const initialState: ActivePostState = {
   post: null,
   mediaMetadata: null,
+  publishInfo: null,
 };
 
 const activePostSlice = createSlice({
@@ -35,7 +38,11 @@ const activePostSlice = createSlice({
     setActivePostMediaMetadata(state, action: PayloadAction<DownloadMetadata[]>) {
       state.mediaMetadata = action.payload;
     },
+    setPublishInfo(state, action: PayloadAction<PublishPostInfo>) {
+      state.publishInfo = action.payload;
+    },
     updatePostInState(state, action: PayloadAction<Post>) {
+      // this belongs to project
       if (state.post?.id === action.payload.id) {
         state.post = action.payload;
       }
@@ -43,8 +50,13 @@ const activePostSlice = createSlice({
   },
 });
 
-export const { setActivePost, resetActivePost, setActivePostMediaMetadata, updatePostInState } =
-  activePostSlice.actions;
+export const {
+  setActivePost,
+  resetActivePost,
+  setActivePostMediaMetadata,
+  updatePostInState,
+  setPublishInfo,
+} = activePostSlice.actions;
 
 // Async Actions
 export const setActivePostWithMetadata =
@@ -219,10 +231,32 @@ export const unschedulePost =
     }
   };
 
+export const validatePostForPlatform =
+  (projectID: string, postID: string, platformID: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      await publisherApi.validatePostForPlatform({ projectID, postID, platformID });
+      dispatch(showNotification('Post validated', 'success'));
+    } catch (error) {
+      dispatch(showNotification(`Failed to validate post: ${error}`, 'error'));
+    }
+  };
+
+export const getPublishPostInfo =
+  (projectID: string, postID: string, platformID: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      const info = await publisherApi.getPublishPostInfo({ projectID, postID, platformID });
+      dispatch(setPublishInfo(info));
+    } catch (error) {
+      dispatch(showNotification(`Failed to get publish info: ${error}`, 'error'));
+    }
+  };
 // Selectors
 export const selectActivePost = (state: RootState) => state.activePost.post;
 export const selectActivePostMediaData = (state: RootState) => state.activePost.mediaMetadata;
 export const selectActivePostLinkedPlatforms = (state: RootState) =>
   state.activePost.post?.linkedPlatforms;
+export const selectActivePostPublishInfo = (state: RootState) => state.activePost.publishInfo;
 
 export default activePostSlice.reducer;

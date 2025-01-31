@@ -1,10 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { PublishPostInfo } from '../../api/publisher/types';
-import { publisherApi } from '../../api/publisher/publisher-api';
 import { getFontStyles } from '../../components/design-system/Typography';
 import { useSelector } from 'react-redux';
-import { selectActivePost } from '../../store/activePost/activePostSlice';
+import {
+  getPublishPostInfo,
+  selectActivePost,
+  selectActivePostPublishInfo,
+  validatePostForPlatform,
+} from '../../store/activePost/activePostSlice';
+import { AppDispatch } from '../../store/store';
+import { useDispatch } from 'react-redux';
+import Button from '../../components/design-system/Button';
 
 const Container = styled.div`
   display: flex;
@@ -40,31 +46,35 @@ const FileName = styled.div`
   text-align: center;
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+`;
+
 interface PlatformPostInfoProps {
   platformId: string;
 }
 
 const PlatformPostInfo: React.FC<PlatformPostInfoProps> = ({ platformId }) => {
-  const [publishInfo, setPublishInfo] = useState<PublishPostInfo | null>(null);
+  const publishInfo = useSelector(selectActivePostPublishInfo);
   const activePost = useSelector(selectActivePost);
+  const dispatch: AppDispatch = useDispatch();
+  const hasFetched = useRef(false);
 
   useEffect(() => {
-    const fetchPublishInfo = async () => {
-      if (!activePost) return;
-      try {
-        const info = await publisherApi.getPublishPostInfo({
-          projectID: activePost.projectID,
-          postID: activePost.id,
-          platformID: platformId,
-        });
-        setPublishInfo(info);
-      } catch (error) {
-        console.error('Failed to fetch publish info:', error);
-      }
+    if (!activePost) return;
+    hasFetched.current = true;
+    dispatch(getPublishPostInfo(activePost.projectID, activePost.id, platformId));
+    return () => {
+      hasFetched.current = false;
     };
-
-    fetchPublishInfo();
   }, [activePost, platformId]);
+
+  const handleValidate = () => {
+    if (!activePost) return;
+    dispatch(validatePostForPlatform(activePost.projectID, activePost.id, platformId));
+  };
 
   if (!publishInfo) return <div>Loading...</div>;
 
@@ -79,6 +89,11 @@ const PlatformPostInfo: React.FC<PlatformPostInfoProps> = ({ platformId }) => {
           </MediaItem>
         ))}
       </MediaList>
+      <ButtonContainer>
+        <Button variant="off" onClick={handleValidate}>
+          Validate for Platform
+        </Button>
+      </ButtonContainer>
     </Container>
   );
 };
