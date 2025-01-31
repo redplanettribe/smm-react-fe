@@ -13,6 +13,9 @@ import {
   selectActivePostMediaData,
   selectEnabledPlatforms,
   unschedulePost,
+  archivePost,
+  restorePost,
+  deletePost,
 } from '../../store/projects/projectSlice';
 import PostList from './PostList';
 import MediaCard from './MediaCard';
@@ -177,6 +180,24 @@ const Publish: React.FC = () => {
     }
   };
 
+  const handleArchive = () => {
+    if (activePost?.projectID && activePost?.id) {
+      dispatch(archivePost(activePost.projectID, activePost.id));
+    }
+  };
+
+  const handleRestore = () => {
+    if (activePost?.projectID && activePost?.id) {
+      dispatch(restorePost(activePost.projectID, activePost.id));
+    }
+  };
+
+  const handleDelete = () => {
+    if (activePost?.projectID && activePost?.id) {
+      dispatch(deletePost(activePost.projectID, activePost.id));
+    }
+  };
+
   return (
     <Container>
       <PostList />
@@ -185,29 +206,49 @@ const Publish: React.FC = () => {
           <>
             <ContentHeader>
               {activePost.linkedPlatforms.length > 0 ? (
-                // Show action buttons only if platforms are linked
                 <>
-                  {activePost.status === PostStatusEnum.SCHEDULED ? (
-                    <Button variant="off" onClick={handleUnschedule}>
-                      Unschedule
-                    </Button>
-                  ) : activePost.status === PostStatusEnum.QUEUED ? (
-                    <Button variant="off" onClick={handleDequeue}>
-                      Dequeue
-                    </Button>
-                  ) : (
+                  {activePost.status === PostStatusEnum.ARCHIVED ? (
+                    // Show restore and delete for archived posts
                     <>
-                      <Button variant="off" onClick={handleSchedule}>
-                        Schedule
+                      <Button variant="off" onClick={handleRestore}>
+                        Restore
                       </Button>
-                      <Button variant="off" onClick={handleEnqueue}>
-                        Enqueue
+                      <Button variant="off" onClick={handleDelete}>
+                        Delete
+                      </Button>
+                    </>
+                  ) : (
+                    // Show normal actions for non-archived posts
+                    <>
+                      {activePost.status === PostStatusEnum.SCHEDULED ? (
+                        <Button variant="off" onClick={handleUnschedule}>
+                          Unschedule
+                        </Button>
+                      ) : activePost.status === PostStatusEnum.QUEUED ? (
+                        <Button variant="off" onClick={handleDequeue}>
+                          Dequeue
+                        </Button>
+                      ) : (
+                        <>
+                          <Button variant="off" onClick={handleSchedule}>
+                            Schedule
+                          </Button>
+                          <Button variant="off" onClick={handleEnqueue}>
+                            Enqueue
+                          </Button>
+                        </>
+                      )}
+                      <Button variant="off" onClick={handleArchive}>
+                        Archive
+                      </Button>
+                      <Button
+                        onClick={handlePublish}
+                        disabled={activePost.status === PostStatusEnum.PUBLISHED}
+                      >
+                        Publish Post
                       </Button>
                     </>
                   )}
-                  <Button onClick={handlePublish} disabled={activePost.status === 'published'}>
-                    Publish Post
-                  </Button>
                 </>
               ) : (
                 // Show platform linking prompt if no platforms are linked

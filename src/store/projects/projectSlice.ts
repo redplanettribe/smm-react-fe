@@ -84,6 +84,10 @@ const projectSlice = createSlice({
         state.posts[index] = action.payload.post;
       }
     },
+    resetActivePost(state) {
+      state.activePost = null;
+      state.activePostMediaMetadata = null;
+    },
     setActivePostMediaMetadata(state, action: PayloadAction<DownloadMetadata[]>) {
       state.activePostMediaMetadata = action.payload;
     },
@@ -115,6 +119,7 @@ export const {
   setActivePostMediaMetadata,
   addUserPlatformInfo,
   setActiveProject,
+  resetActivePost,
 } = projectSlice.actions;
 export default projectSlice.reducer;
 
@@ -201,6 +206,7 @@ export const createPost =
       await postApi.createPost({ projectID, title, text_content: content, type, is_idea: isIdea });
       dispatch(getPosts(projectID));
       dispatch(showNotification('Post created', 'success'));
+      dispatch(setPostListTab(PostListTabEnum.DRAFT));
     } catch (error) {
       dispatch(showNotification(`Failed to create post: ${error}`, 'error'));
     }
@@ -381,6 +387,47 @@ export const moveIdeaInQueue =
       dispatch(setActiveProject(project));
     } catch (error) {
       dispatch(showNotification(`Failed to move idea in queue: ${error}`, 'error'));
+    }
+  };
+
+export const archivePost =
+  (projectID: string, postID: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      await postApi.archivePost({ projectID, postID });
+      dispatch(showNotification('Post archived', 'success'));
+      dispatch(setActivePostWithMetadata(projectID, postID));
+      dispatch(setPostListTab(PostListTabEnum.ARCHIVED));
+    } catch (error) {
+      dispatch(showNotification(`Failed to archive post: ${error}`, 'error'));
+    }
+  };
+
+export const restorePost =
+  (projectID: string, postID: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      await postApi.restorePost({ projectID, postID });
+      dispatch(showNotification('Post restored', 'success'));
+      dispatch(setActivePostWithMetadata(projectID, postID));
+      dispatch(setPostListTab(PostListTabEnum.DRAFT));
+    } catch (error) {
+      dispatch(showNotification(`Failed to restore post: ${error}`, 'error'));
+    }
+  };
+
+export const deletePost =
+  (projectID: string, postID: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      await postApi.deletePost({ projectID, postID });
+      dispatch(showNotification('Post deleted', 'success'));
+      const posts = await postApi.getProjectPosts({ projectID });
+      dispatch(setPosts(posts));
+      dispatch(resetActivePost());
+      dispatch(setPostListTab(PostListTabEnum.DRAFT));
+    } catch (error) {
+      dispatch(showNotification(`Failed to delete post: ${error}`, 'error'));
     }
   };
 

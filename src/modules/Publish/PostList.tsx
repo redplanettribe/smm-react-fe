@@ -152,6 +152,7 @@ const PostList: React.FC = () => {
     scheduled: 'Scheduled',
     published: 'Published',
     failed: 'Failed',
+    archived: 'Archived',
   };
 
   const handleCreatePost = () => {
@@ -196,6 +197,8 @@ const PostList: React.FC = () => {
         );
       case 'failed':
         return posts.filter((post) => post.status === PostStatusEnum.FAILED);
+      case 'archived':
+        return posts.filter((post) => post.status === PostStatusEnum.ARCHIVED);
       default:
         return posts;
     }
@@ -220,6 +223,7 @@ const PostList: React.FC = () => {
             </MenuItem>
             <MenuItem onClick={() => handleTabChange('failed')}>{filterLabels.failed}</MenuItem>
             <MenuItem onClick={() => handleTabChange('ideas')}>{filterLabels.ideas}</MenuItem>
+            <MenuItem onClick={() => handleTabChange('archived')}>{filterLabels.archived}</MenuItem>
           </DropdownMenu>
           <CreateButtonWrapper>
             <Button variant="off" icon={<IconPlus />} onClick={handleCreatePost} />

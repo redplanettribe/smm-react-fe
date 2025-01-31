@@ -23,6 +23,8 @@ const postApiConfig: ApiConfig<{
     void
   >;
   archivePost: EndpointConfig<{ projectID: string; postID: string }, void>;
+  restorePost: EndpointConfig<{ projectID: string; postID: string }, void>;
+  deletePost: EndpointConfig<{ projectID: string; postID: string }, void>;
 }> = {
   basePath: '/posts',
   endpoints: {
@@ -83,6 +85,16 @@ const postApiConfig: ApiConfig<{
     archivePost: {
       method: 'PATCH',
       path: '/{projectID}/{postID}/archive',
+      pathValues: ['projectID', 'postID'],
+    },
+    restorePost: {
+      method: 'PATCH',
+      path: '/{projectID}/{postID}/restore',
+      pathValues: ['projectID', 'postID'],
+    },
+    deletePost: {
+      method: 'DELETE',
+      path: '/{projectID}/{postID}',
       pathValues: ['projectID', 'postID'],
     },
   },

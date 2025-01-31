@@ -1,7 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../root-reducer';
 
-export type PostListTab = 'draft' | 'queue' | 'ideas' | 'scheduled' | 'published' | 'failed';
+export type PostListTab =
+  | 'draft'
+  | 'queue'
+  | 'ideas'
+  | 'scheduled'
+  | 'published'
+  | 'failed'
+  | 'archived';
 
 export enum PostListTabEnum {
   DRAFT = 'draft',
@@ -10,6 +17,7 @@ export enum PostListTabEnum {
   SCHEDULED = 'scheduled',
   PUBLISHED = 'published',
   FAILED = 'failed',
+  ARCHIVED = 'archived',
 }
 interface UIState {
   postList: {
