@@ -4,25 +4,25 @@ import { getFontStyles } from '../../components/design-system/Typography';
 import { useEffect, useRef, useState } from 'react';
 import Button from '../../components/design-system/Button';
 import IconPlus from '../../assets/icons/Plus';
-import {
-  dequeuePost,
-  enqueuePost,
-  linkPostToPlatform,
-  publishPost,
-  selectActivePost,
-  selectActivePostMediaData,
-  selectEnabledPlatforms,
-  unschedulePost,
-  archivePost,
-  restorePost,
-  deletePost,
-} from '../../store/projects/projectSlice';
+import { selectEnabledPlatforms } from '../../store/projects/projectSlice';
 import PostList from './PostList';
 import MediaCard from './MediaCard';
 import { AppDispatch } from '../../store/store';
 import { useDispatch } from 'react-redux';
 import { openModal } from '../../store/modal/modalSlice';
 import { PostStatusEnum } from '../../api/posts/types';
+import {
+  archivePost,
+  deletePost,
+  dequeuePost,
+  enqueuePost,
+  linkPostToPlatform,
+  publishPost,
+  restorePost,
+  selectActivePost,
+  selectActivePostMediaData,
+  unschedulePost,
+} from '../../store/activePost/activePostSlice';
 
 const Container = styled.div`
   display: grid;

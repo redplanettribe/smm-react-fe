@@ -6,9 +6,9 @@ import Button from '../design-system/Button';
 import { useDispatch } from 'react-redux';
 import { closeModal } from '../../store/modal/modalSlice';
 import { useSelector } from 'react-redux';
-import { selectActivePost, uploadMedia } from '../../store/projects/projectSlice';
 import { getFontStyles } from '../design-system/Typography';
 import { AppDispatch } from '../../store/store';
+import { selectActivePost, uploadMedia } from '../../store/activePost/activePostSlice';
 
 const Form = styled.form`
   display: flex;

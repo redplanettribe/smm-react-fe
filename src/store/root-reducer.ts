@@ -5,12 +5,14 @@ import theme from './theme/themeSlice';
 import project from './projects/projectSlice';
 import modal from './modal/modalSlice';
 import ui from './ui/uiSlice';
+import activePost from './activePost/activePostSlice';
 
 const rootReducer = combineReducers({
   user,
   notifications,
   theme,
   project,
+  activePost,
   modal,
   ui,
 });

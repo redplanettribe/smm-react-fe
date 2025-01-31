@@ -6,8 +6,8 @@ import { useDispatch } from 'react-redux';
 import { closeModal } from '../../store/modal/modalSlice';
 import { AppDispatch } from '../../store/store';
 import { useSelector } from 'react-redux';
-import { schedulePost, selectActivePost } from '../../store/projects/projectSlice';
 import { getFontStyles } from '../design-system/Typography';
+import { schedulePost, selectActivePost } from '../../store/activePost/activePostSlice';
 
 const Form = styled.form`
   display: flex;

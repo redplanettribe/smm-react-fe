@@ -5,12 +5,7 @@ import IconPlus from '../../assets/icons/Plus';
 import { useDispatch } from 'react-redux';
 import { openModal } from '../../store/modal/modalSlice';
 import { useSelector } from 'react-redux';
-import {
-  selectActivePost,
-  selectActiveProject,
-  selectPosts,
-  setActivePostWithMetadata,
-} from '../../store/projects/projectSlice';
+import { selectActiveProject, selectPosts } from '../../store/projects/projectSlice';
 import { AppDispatch } from '../../store/store';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import ChevronDownIcon from '../../assets/icons/ChevronDown';
@@ -18,6 +13,10 @@ import { Post, PostStatusEnum } from '../../api/posts/types';
 import { PostListTab, selectPostListTab, setPostListTab } from '../../store/ui/uiSlice';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { movePostInQueue, moveIdeaInQueue } from '../../store/projects/projectSlice';
+import {
+  selectActivePost,
+  setActivePostWithMetadata,
+} from '../../store/activePost/activePostSlice';
 
 const PostsList = styled.div`
   background: ${(props) => props.theme.bgColors.secondary};

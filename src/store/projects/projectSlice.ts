@@ -7,10 +7,7 @@ import { Publisher } from '../../api/publisher/types';
 import { Post } from '../../api/posts/types';
 import { postApi } from '../../api/posts/postApi';
 import { RootState } from '../root-reducer';
-import { DownloadMetadata } from '../../api/media/types';
-import { mediaApi } from '../../api/media/mediaApi';
 import { showNotification } from '../notifications/notificationSice';
-import { publisherApi } from '../../api/publisher/publisher-api';
 import { PostListTabEnum, setPostListTab } from '../ui/uiSlice';
 
 export interface User {
@@ -33,8 +30,6 @@ export interface ProjectState {
   team: User[];
   enabledPlatforms: Publisher[];
   posts: Post[];
-  activePost: Post | null;
-  activePostMediaMetadata: DownloadMetadata[] | null;
   defaultUserPlatformInfo: DefaultUserPlatformInfo[];
 }
 
@@ -52,8 +47,6 @@ const initialState: ProjectState = {
   team: [],
   enabledPlatforms: [],
   posts: [],
-  activePost: null,
-  activePostMediaMetadata: null,
   defaultUserPlatformInfo: [],
 };
 
@@ -75,21 +68,6 @@ const projectSlice = createSlice({
     },
     setPosts(state, action: PayloadAction<Post[]>) {
       state.posts = action.payload;
-    },
-    setActivePost(state, action: PayloadAction<{ post: Post; metadata: DownloadMetadata[] }>) {
-      state.activePost = action.payload.post;
-      state.activePostMediaMetadata = action.payload.metadata;
-      const index = state.posts.findIndex((post) => post.id === action.payload.post.id);
-      if (index !== -1) {
-        state.posts[index] = action.payload.post;
-      }
-    },
-    resetActivePost(state) {
-      state.activePost = null;
-      state.activePostMediaMetadata = null;
-    },
-    setActivePostMediaMetadata(state, action: PayloadAction<DownloadMetadata[]>) {
-      state.activePostMediaMetadata = action.payload;
     },
     cleanProjectState() {
       return initialState;
@@ -114,12 +92,9 @@ export const {
   getProjectState,
   setEnabledPlatforms,
   setPosts,
-  setActivePost,
   cleanProjectState,
-  setActivePostMediaMetadata,
   addUserPlatformInfo,
   setActiveProject,
-  resetActivePost,
 } = projectSlice.actions;
 export default projectSlice.reducer;
 
@@ -143,8 +118,6 @@ export const setSelectedProject =
           team,
           enabledPlatforms,
           posts,
-          activePost: null,
-          activePostMediaMetadata: null,
           defaultUserPlatformInfo: currentState.project.defaultUserPlatformInfo,
         })
       );
@@ -212,72 +185,6 @@ export const createPost =
     }
   };
 
-export const setActivePostWithMetadata =
-  (projectID: string, postID: string): AppThunk =>
-  async (dispatch) => {
-    try {
-      const [post, metadata] = await Promise.all([
-        postApi.getPost({ projectID, postID }),
-        mediaApi.downloadMediaMetadata({ projectID, postID }),
-      ]);
-      dispatch(setActivePost({ post, metadata }));
-    } catch (error) {
-      dispatch(showNotification(`Failed to get active post: ${error}`, 'error'));
-    }
-  };
-
-export const updatePostMediaMetadata =
-  (projectID: string, postID: string): AppThunk =>
-  async (dispatch) => {
-    try {
-      const metadata = await mediaApi.downloadMediaMetadata({ projectID, postID });
-      dispatch(setActivePostMediaMetadata(metadata));
-    } catch (error) {
-      dispatch(showNotification(`Failed to update media metadata: ${error}`, 'error'));
-    }
-  };
-
-export const uploadMedia =
-  (projectID: string, postID: string, file: File, altText: string): AppThunk =>
-  async (dispatch) => {
-    try {
-      await mediaApi.uploadMedia({ projectID, postID, file, alt_text: altText });
-      dispatch(updatePostMediaMetadata(projectID, postID));
-      dispatch(showNotification('Media uploaded', 'success'));
-    } catch (error) {
-      dispatch(showNotification(`Failed to upload media: ${error}`, 'error'));
-    }
-  };
-
-export const linkPostToPlatform =
-  (projectID: string, postID: string, platformID: string): AppThunk =>
-  async (dispatch) => {
-    try {
-      await postApi.linkPlatform({ projectID, postID, platformID });
-      dispatch(setActivePostWithMetadata(projectID, postID));
-      dispatch(showNotification('Platform added to post succesfuly', 'success'));
-    } catch (error) {
-      dispatch(showNotification(`Failed to link post to platform: ${error}`, 'error'));
-    }
-  };
-
-export const linkPostMediaToPlatform =
-  (projectID: string, postID: string, mediaID: string, platformID: string): AppThunk =>
-  async (dispatch) => {
-    try {
-      await mediaApi.linkToPlatform({
-        projectID,
-        post_id: postID,
-        media_id: mediaID,
-        platform_id: platformID,
-      });
-      dispatch(setActivePostWithMetadata(projectID, postID));
-      dispatch(showNotification('Media linked to platform', 'success'));
-    } catch (error) {
-      dispatch(showNotification(`Failed to link media to platform: ${error}`, 'error'));
-    }
-  };
-
 export const getDefaulUserPlatformInfo =
   (projectID: string, platformID: string): AppThunk =>
   async (dispatch) => {
@@ -290,71 +197,6 @@ export const getDefaulUserPlatformInfo =
       dispatch(addUserPlatformInfo(defaultUserPlatformInfo));
     } catch (error) {
       dispatch(showNotification(`Failed to get default user platform info: ${error}`, 'error'));
-    }
-  };
-
-export const publishPost =
-  (projectID: string, postID: string): AppThunk =>
-  async (dispatch) => {
-    try {
-      await publisherApi.publishPost({ projectID, postID });
-      dispatch(showNotification('Post published', 'success'));
-      dispatch(setActivePostWithMetadata(projectID, postID));
-      dispatch(setPostListTab(PostListTabEnum.PUBLISHED));
-    } catch (error) {
-      dispatch(showNotification(`Failed to publish post: ${error}`, 'error'));
-    }
-  };
-
-export const enqueuePost =
-  (projectID: string, postID: string): AppThunk =>
-  async (dispatch) => {
-    try {
-      await postApi.enqueuePost({ projectID, postID });
-      dispatch(showNotification('Post enqueued', 'success'));
-      dispatch(setActivePostWithMetadata(projectID, postID));
-      dispatch(setPostListTab(PostListTabEnum.QUEUE));
-    } catch (error) {
-      dispatch(showNotification(`Failed to enqueue post: ${error}`, 'error'));
-    }
-  };
-
-export const dequeuePost =
-  (projectID: string, postID: string): AppThunk =>
-  async (dispatch) => {
-    try {
-      await postApi.dequeuePost({ projectID, postID });
-      dispatch(showNotification('Post dequeued', 'success'));
-      dispatch(setActivePostWithMetadata(projectID, postID));
-      dispatch(setPostListTab(PostListTabEnum.DRAFT));
-    } catch (error) {
-      dispatch(showNotification(`Failed to dequeue post: ${error}`, 'error'));
-    }
-  };
-
-export const schedulePost =
-  (projectID: string, postID: string, scheduledAt: Date): AppThunk =>
-  async (dispatch) => {
-    try {
-      await postApi.schedulePost({ projectID, postID, scheduled_at: scheduledAt.toISOString() });
-      dispatch(showNotification('Post scheduled', 'success'));
-      dispatch(setActivePostWithMetadata(projectID, postID));
-      dispatch(setPostListTab(PostListTabEnum.SCHEDULED));
-    } catch (error) {
-      dispatch(showNotification(`Failed to schedule post: ${error}`, 'error'));
-    }
-  };
-
-export const unschedulePost =
-  (projectID: string, postID: string): AppThunk =>
-  async (dispatch) => {
-    try {
-      await postApi.unschedulePost({ projectID, postID });
-      dispatch(showNotification('Post unscheduled', 'success'));
-      dispatch(setActivePostWithMetadata(projectID, postID));
-      dispatch(setPostListTab(PostListTabEnum.DRAFT));
-    } catch (error) {
-      dispatch(showNotification(`Failed to unschedule post: ${error}`, 'error'));
     }
   };
 
@@ -390,56 +232,10 @@ export const moveIdeaInQueue =
     }
   };
 
-export const archivePost =
-  (projectID: string, postID: string): AppThunk =>
-  async (dispatch) => {
-    try {
-      await postApi.archivePost({ projectID, postID });
-      dispatch(showNotification('Post archived', 'success'));
-      dispatch(setActivePostWithMetadata(projectID, postID));
-      dispatch(setPostListTab(PostListTabEnum.ARCHIVED));
-    } catch (error) {
-      dispatch(showNotification(`Failed to archive post: ${error}`, 'error'));
-    }
-  };
-
-export const restorePost =
-  (projectID: string, postID: string): AppThunk =>
-  async (dispatch) => {
-    try {
-      await postApi.restorePost({ projectID, postID });
-      dispatch(showNotification('Post restored', 'success'));
-      dispatch(setActivePostWithMetadata(projectID, postID));
-      dispatch(setPostListTab(PostListTabEnum.DRAFT));
-    } catch (error) {
-      dispatch(showNotification(`Failed to restore post: ${error}`, 'error'));
-    }
-  };
-
-export const deletePost =
-  (projectID: string, postID: string): AppThunk =>
-  async (dispatch) => {
-    try {
-      await postApi.deletePost({ projectID, postID });
-      dispatch(showNotification('Post deleted', 'success'));
-      const posts = await postApi.getProjectPosts({ projectID });
-      dispatch(setPosts(posts));
-      dispatch(resetActivePost());
-      dispatch(setPostListTab(PostListTabEnum.DRAFT));
-    } catch (error) {
-      dispatch(showNotification(`Failed to delete post: ${error}`, 'error'));
-    }
-  };
-
 /**SELECTORS */
 export const selectActiveProject = (state: RootState) => state.project.activeProject;
-export const selectActivePost = (state: RootState) => state.project.activePost;
 export const selectPosts = (state: RootState) => state.project.posts;
 export const selectTeam = (state: RootState) => state.project.team;
 export const selectEnabledPlatforms = (state: RootState) => state.project.enabledPlatforms;
-export const selectActivePostMediaData = (state: RootState) =>
-  state.project.activePostMediaMetadata;
-export const selectActivePostLinkedPlatforms = (state: RootState) =>
-  state.project.activePost?.linkedPlatforms;
 export const selectPlatformInfo = (platformID: string) => (state: RootState) =>
   state.project.defaultUserPlatformInfo.find((info) => info.platformID === platformID);

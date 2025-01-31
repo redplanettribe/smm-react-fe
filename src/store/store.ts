@@ -19,7 +19,7 @@ const persistConfig = {
   key: 'root',
   version: 1,
   storage,
-  whitelist: ['user', 'theme', 'project', 'ui'], // List of reducers to persist
+  whitelist: ['user', 'theme', 'project', 'ui', 'activePost'], // List of reducers to persist
   blacklist: ['notifications'], // List of reducers to not persist
 };
 

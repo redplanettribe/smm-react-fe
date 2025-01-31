@@ -5,15 +5,15 @@ import { DownloadMetadata } from '../../api/media/types';
 import IconPlus from '../../assets/icons/Plus';
 import IconDocument from '../../assets/icons/Document';
 import { useSelector } from 'react-redux';
+import { selectActiveProject } from '../../store/projects/projectSlice';
+import { useEffect, useRef, useState } from 'react';
+import { AppDispatch } from '../../store/store';
+import { useDispatch } from 'react-redux';
 import {
   linkPostMediaToPlatform,
   selectActivePost,
   selectActivePostLinkedPlatforms,
-  selectActiveProject,
-} from '../../store/projects/projectSlice';
-import { useEffect, useRef, useState } from 'react';
-import { AppDispatch } from '../../store/store';
-import { useDispatch } from 'react-redux';
+} from '../../store/activePost/activePostSlice';
 
 const Container = styled.div`
   position: relative;
