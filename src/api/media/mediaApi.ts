@@ -5,7 +5,11 @@ const mediaApiConfig: ApiConfig<{
   downloadMediaMetadata: EndpointConfig<{ projectID: string; postID: string }, DownloadMetadata[]>;
   uploadMedia: EndpointConfig<UploadMediaRequest, DownloadMetadata>;
   linkToPlatform: EndpointConfig<
-    { projectID: string; post_id: string; media_id: string; platform_id: string },
+    { projectID: string; postID: string; mediaID: string; platformID: string },
+    string
+  >;
+  unlinkToPlatform: EndpointConfig<
+    { projectID: string; postID: string; mediaID: string; platformID: string },
     string
   >;
 }> = {
@@ -24,8 +28,13 @@ const mediaApiConfig: ApiConfig<{
     },
     linkToPlatform: {
       method: 'POST',
-      path: '/{projectID}/link-to-platform',
-      pathValues: ['projectID'],
+      path: '/{projectID}/{postID}/{platformID}/{mediaID}/link',
+      pathValues: ['projectID', 'postID', 'platformID', 'mediaID'],
+    },
+    unlinkToPlatform: {
+      method: 'DELETE',
+      path: '/{projectID}/{postID}/{platformID}/{mediaID}/unlink',
+      pathValues: ['projectID', 'postID', 'platformID', 'mediaID'],
     },
   },
 };

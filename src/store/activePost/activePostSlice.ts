@@ -114,14 +114,31 @@ export const linkPostMediaToPlatform =
     try {
       await mediaApi.linkToPlatform({
         projectID,
-        post_id: postID,
-        media_id: mediaID,
-        platform_id: platformID,
+        postID: postID,
+        mediaID: mediaID,
+        platformID: platformID,
       });
       dispatch(setActivePostWithMetadata(projectID, postID));
       dispatch(showNotification('Media linked to platform', 'success'));
     } catch (error) {
       dispatch(showNotification(`Failed to link media to platform: ${error}`, 'error'));
+    }
+  };
+
+export const unlinkPostMediaFromPlatform =
+  (projectID: string, postID: string, mediaID: string, platformID: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      await mediaApi.unlinkToPlatform({
+        projectID,
+        postID: postID,
+        mediaID: mediaID,
+        platformID: platformID,
+      });
+      dispatch(setActivePostWithMetadata(projectID, postID));
+      dispatch(showNotification('Media unlinked from platform', 'success'));
+    } catch (error) {
+      dispatch(showNotification(`Failed to unlink media from platform: ${error}`, 'error'));
     }
   };
 
@@ -252,6 +269,7 @@ export const getPublishPostInfo =
       dispatch(showNotification(`Failed to get publish info: ${error}`, 'error'));
     }
   };
+
 // Selectors
 export const selectActivePost = (state: RootState) => state.activePost.post;
 export const selectActivePostMediaData = (state: RootState) => state.activePost.mediaMetadata;
