@@ -255,6 +255,7 @@ export const addUserToProject =
     try {
       await projectApi.addUserToProject({ projectID, email });
       dispatch(showNotification('User added to project', 'success'));
+      dispatch(updateTeamMembers(projectID));
     } catch (error) {
       dispatch(showNotification(`Failed to add user to project: ${error}`, 'error'));
     }

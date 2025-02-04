@@ -102,6 +102,19 @@ export const updatePost =
       dispatch(showNotification(`Failed to update post: ${error}`, 'error'));
     }
   };
+
+export const linkPostToPlatform =
+  (projectID: string, postID: string, platformID: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      await postApi.linkPlatform({ projectID, postID, platformID });
+      dispatch(setActivePostWithMetadata(projectID, postID));
+      dispatch(showNotification('Platform added to post succesfuly', 'success'));
+    } catch (error) {
+      dispatch(showNotification(`Failed to link post to platform: ${error}`, 'error'));
+    }
+  };
+
 export const uploadMedia =
   (projectID: string, postID: string, file: File, altText: string): AppThunk =>
   async (dispatch) => {
@@ -114,15 +127,15 @@ export const uploadMedia =
     }
   };
 
-export const linkPostToPlatform =
-  (projectID: string, postID: string, platformID: string): AppThunk =>
+export const deleteMedia =
+  (projectID: string, postID: string, mediaID: string): AppThunk =>
   async (dispatch) => {
     try {
-      await postApi.linkPlatform({ projectID, postID, platformID });
-      dispatch(setActivePostWithMetadata(projectID, postID));
-      dispatch(showNotification('Platform added to post succesfuly', 'success'));
+      await mediaApi.deleteMedia({ projectID, postID, mediaID });
+      dispatch(updatePostMediaMetadata(projectID, postID));
+      dispatch(showNotification('Media deleted', 'success'));
     } catch (error) {
-      dispatch(showNotification(`Failed to link post to platform: ${error}`, 'error'));
+      dispatch(showNotification(`Failed to delete media: ${error}`, 'error'));
     }
   };
 

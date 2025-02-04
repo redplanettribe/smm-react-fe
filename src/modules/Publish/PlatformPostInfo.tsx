@@ -102,7 +102,7 @@ const PlatformPostInfo: React.FC<PlatformPostInfoProps> = ({ platformId }) => {
     const fetchData = async () => {
       if (!mounted.current) return;
       hasFetched.current = true;
-      await dispatch(getPublishPostInfo(activePost.projectID, activePost.id, platformId));
+      dispatch(getPublishPostInfo(activePost.projectID, activePost.id, platformId));
     };
 
     fetchData();

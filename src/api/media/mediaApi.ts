@@ -4,6 +4,7 @@ import { DownloadMetadata, UploadMediaRequest } from './types';
 const mediaApiConfig: ApiConfig<{
   downloadMediaMetadata: EndpointConfig<{ projectID: string; postID: string }, DownloadMetadata[]>;
   uploadMedia: EndpointConfig<UploadMediaRequest, DownloadMetadata>;
+  deleteMedia: EndpointConfig<{ projectID: string; postID: string; mediaID: string }, string>;
   linkToPlatform: EndpointConfig<
     { projectID: string; postID: string; mediaID: string; platformID: string },
     string
@@ -35,6 +36,11 @@ const mediaApiConfig: ApiConfig<{
       method: 'DELETE',
       path: '/{projectID}/{postID}/{platformID}/{mediaID}/unlink',
       pathValues: ['projectID', 'postID', 'platformID', 'mediaID'],
+    },
+    deleteMedia: {
+      method: 'DELETE',
+      path: '/{projectID}/{postID}/{mediaID}',
+      pathValues: ['projectID', 'postID', 'mediaID'],
     },
   },
 };

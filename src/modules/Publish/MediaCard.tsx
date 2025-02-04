@@ -13,7 +13,15 @@ import {
   linkPostMediaToPlatform,
   selectActivePost,
   selectActivePostLinkedPlatforms,
+  deleteMedia,
 } from '../../store/activePost/activePostSlice';
+import IconClose from '../../assets/icons/Close';
+
+const Controls = styled.div`
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+`;
 
 const Container = styled.div`
   position: relative;
@@ -145,6 +153,11 @@ const MediaCard: React.FC<MediaCardProps> = ({ media }) => {
     setIsMenuOpen(false);
   };
 
+  const handleDelete = () => {
+    if (!project || !post) return;
+    dispatch(deleteMedia(project.id, post.id, media.id));
+  };
+
   return (
     <Container>
       <ThumbnailContainer>
@@ -156,21 +169,24 @@ const MediaCard: React.FC<MediaCardProps> = ({ media }) => {
           <Thumbnail src={media.urlThumbnail} alt={media.altText || media.filename} />
         )}
         <HoverControls className="hover-controls">
-          <ButtonWrapper ref={menuRef}>
-            <IconButton
-              variant="off"
-              icon={<IconPlus size={16} />}
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            />
-            <DropdownMenu $isOpen={isMenuOpen}>
-              {linkedPlatforms &&
-                linkedPlatforms.map((platform) => (
-                  <MenuItem key={platform.id} onClick={() => handleLinkToPlatform(platform.id)}>
-                    {platform.name}
-                  </MenuItem>
-                ))}
-            </DropdownMenu>
-          </ButtonWrapper>
+          <Controls>
+            <IconButton variant="off" icon={<IconClose size={16} />} onClick={handleDelete} />
+            <ButtonWrapper ref={menuRef}>
+              <IconButton
+                variant="off"
+                icon={<IconPlus size={16} />}
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              />
+              <DropdownMenu $isOpen={isMenuOpen}>
+                {linkedPlatforms &&
+                  linkedPlatforms.map((platform) => (
+                    <MenuItem key={platform.id} onClick={() => handleLinkToPlatform(platform.id)}>
+                      {platform.name}
+                    </MenuItem>
+                  ))}
+              </DropdownMenu>
+            </ButtonWrapper>
+          </Controls>
         </HoverControls>
       </ThumbnailContainer>
       <FileName>{media.filename}</FileName>
