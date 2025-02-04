@@ -5,12 +5,14 @@ import CreateProjectModal from './CreateProjectModal';
 import CreatePostModal from './CreatePostModal';
 import UploadMediaModal from './UploadMediaModal';
 import SchedulePostModal from './SchedulePostModal';
+import EditPostModal from './EditPostModal';
 
 const MODAL_COMPONENTS = {
   CREATE_PROJECT: CreateProjectModal,
   CREATE_POST: CreatePostModal,
   UPLOAD_MEDIA: UploadMediaModal,
   SCHEDULE_POST: SchedulePostModal,
+  EDIT_POST: EditPostModal,
 };
 
 const ModalManager: React.FC = () => {

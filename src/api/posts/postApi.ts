@@ -8,6 +8,17 @@ const postApiConfig: ApiConfig<{
     { projectID: string; title: string; text_content: string; type: string; is_idea: boolean },
     Post
   >;
+  updatePost: EndpointConfig<
+    {
+      projectID: string;
+      postID: string;
+      title: string;
+      text_content: string;
+      type: string;
+      is_idea: boolean;
+    },
+    Post
+  >;
   getPost: EndpointConfig<{ projectID: string; postID: string }, Post>;
   linkPlatform: EndpointConfig<{ projectID: string; postID: string; platformID: string }, void>;
   enqueuePost: EndpointConfig<{ projectID: string; postID: string }, void>;
@@ -41,6 +52,11 @@ const postApiConfig: ApiConfig<{
       method: 'POST',
       path: '/{projectID}/add',
       pathValues: ['projectID'],
+    },
+    updatePost: {
+      method: 'PATCH',
+      path: '/{projectID}/{postID}',
+      pathValues: ['projectID', 'postID'],
     },
     getPost: {
       method: 'GET',

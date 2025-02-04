@@ -199,6 +199,10 @@ const Publish: React.FC = () => {
     }
   };
 
+  const handleEdit = () => {
+    dispatch(openModal({ type: 'EDIT_POST' }));
+  };
+
   return (
     <Container>
       <PostList />
@@ -242,7 +246,11 @@ const Publish: React.FC = () => {
                       <Button variant="off" onClick={handleArchive}>
                         Archive
                       </Button>
+                      <Button variant="off" onClick={handleEdit}>
+                        Edit
+                      </Button>
                       <Button
+                        variant="off"
                         onClick={handlePublish}
                         disabled={activePost.status === PostStatusEnum.PUBLISHED}
                       >

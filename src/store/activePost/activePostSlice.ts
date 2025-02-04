@@ -84,6 +84,24 @@ export const updatePostMediaMetadata =
     }
   };
 
+export const updatePost =
+  (projectID: string, postID: string, post: Post): AppThunk =>
+  async (dispatch) => {
+    try {
+      await postApi.updatePost({
+        projectID,
+        postID,
+        title: post.title,
+        text_content: post.textContent,
+        type: post.type,
+        is_idea: post.isIdea,
+      });
+      dispatch(updatePostInState(post));
+      dispatch(showNotification('Post updated', 'success'));
+    } catch (error) {
+      dispatch(showNotification(`Failed to update post: ${error}`, 'error'));
+    }
+  };
 export const uploadMedia =
   (projectID: string, postID: string, file: File, altText: string): AppThunk =>
   async (dispatch) => {
