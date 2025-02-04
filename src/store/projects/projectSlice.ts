@@ -232,6 +232,18 @@ export const moveIdeaInQueue =
     }
   };
 
+export const updateProject =
+  (projectID: string, name: string, description: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      const project = await projectApi.updateProject({ projectID, name, description });
+      dispatch(setActiveProject(project));
+      dispatch(showNotification('Project updated', 'success'));
+    } catch (error) {
+      dispatch(showNotification(`Failed to update project: ${error}`, 'error'));
+    }
+  };
+
 /**SELECTORS */
 export const selectActiveProject = (state: RootState) => state.project.activeProject;
 export const selectPosts = (state: RootState) => state.project.posts;

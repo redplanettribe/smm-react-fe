@@ -4,6 +4,7 @@ import { DefaultUserPlatformInfo, GetProjectResponse, Project } from './types';
 
 const projectApiConfig: ApiConfig<{
   createProject: EndpointConfig<{ name: string; description: string }, Project>;
+  updateProject: EndpointConfig<{ projectID: string; name: string; description: string }, Project>;
   getProjects: EndpointConfig<void, Project[]>;
   getProject: EndpointConfig<{ projectID: string }, GetProjectResponse>;
   getEnabledSocialPlatforms: EndpointConfig<{ projectID: string }, Publisher[]>;
@@ -18,6 +19,11 @@ const projectApiConfig: ApiConfig<{
     createProject: {
       method: 'POST',
       path: '',
+    },
+    updateProject: {
+      method: 'PATCH',
+      path: '/{projectID}',
+      pathValues: ['projectID'],
     },
     getProjects: {
       method: 'GET',

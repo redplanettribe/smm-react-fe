@@ -16,6 +16,7 @@ import {
   setSelectedProject,
 } from '../../store/projects/projectSlice';
 import PlatformInfo from './PlatformInfo';
+import { openModal } from '../../store/modal/modalSlice';
 
 const FloatingMenu = styled.div<{ $isOpen: boolean }>`
   position: absolute;
@@ -153,6 +154,13 @@ const PlatformContent = styled.div`
   padding: 24px;
 `;
 
+const TitleContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+`;
+
 const ProjectInfo: React.FC = () => {
   const { activeProject, team } = useSelector((state: RootState) => state.project);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -196,7 +204,12 @@ const ProjectInfo: React.FC = () => {
 
   return (
     <ContentArea>
-      <Title>{activeProject.name}</Title>
+      <TitleContainer>
+        <Title>{activeProject.name}</Title>
+        <Button variant="off" onClick={() => dispatch(openModal({ type: 'EDIT_PROJECT' }))}>
+          Edit Project
+        </Button>
+      </TitleContainer>
 
       <InfoCard>
         <InfoSection>
