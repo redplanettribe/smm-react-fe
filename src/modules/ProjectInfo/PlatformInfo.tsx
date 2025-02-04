@@ -3,9 +3,15 @@ import { getFontStyles } from '../../components/design-system/Typography';
 import Button from '../../components/design-system/Button';
 import { authenticateTo } from '../../api/ third-party';
 import { useSelector } from 'react-redux';
-import { selectPlatformInfo } from '../../store/projects/projectSlice';
+import {
+  disablePlatform,
+  selectActiveProject,
+  selectPlatformInfo,
+} from '../../store/projects/projectSlice';
 import { Publisher } from '../../api/publisher/types';
 import { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../store/store';
 
 const Container = styled.div`
   display: flex;
@@ -37,20 +43,42 @@ const AuthTTL = styled.div`
   ${({ theme }) => getFontStyles('r_12')(theme)};
 `;
 
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+`;
+
 interface PlatformInfoProps {
   platform: Publisher;
   isDefaultUser: boolean;
 }
 
 const PlatformInfo: React.FC<PlatformInfoProps> = ({ platform, isDefaultUser }) => {
+  const dispatch: AppDispatch = useDispatch();
+  const activeProject = useSelector(selectActiveProject);
   const defaultUserPlatformInfo = useSelector(selectPlatformInfo(platform.id));
 
   const handleAuthenticate = useCallback(() => {
     authenticateTo(platform.id);
   }, [platform.id]);
 
+  const handleDisable = useCallback(() => {
+    if (!activeProject) return;
+    dispatch(disablePlatform(activeProject.id, platform.id));
+  }, [activeProject, platform.id, dispatch]);
+
   return (
     <Container>
+      <PlatformStatus>
+        <ButtonGroup>
+          <Button variant="off" onClick={handleDisable}>
+            Disable
+          </Button>
+        </ButtonGroup>
+      </PlatformStatus>
       <PlatformStatus>
         <AuthInfo>
           <Status $isAuthenticated={defaultUserPlatformInfo?.isAuthenticated || false}>

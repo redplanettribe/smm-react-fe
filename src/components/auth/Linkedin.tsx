@@ -56,6 +56,7 @@ const LinkedinCallbackHandler: React.FC = () => {
     };
 
     authenticateWithLinkedin(code || '');
+    navigate('/app/project');
 
     return () => {
       mounted = false;

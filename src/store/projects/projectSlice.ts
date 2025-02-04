@@ -139,6 +139,7 @@ export const createProject =
   async (dispatch) => {
     try {
       const proj = await projectApi.createProject({ name, description });
+      dispatch(cleanProject());
       dispatch(setSelectedProject(proj.id));
       dispatch(showNotification(`Project ${proj.name} created succesfully`, 'success'));
     } catch (error) {
@@ -285,6 +286,17 @@ export const removeUserFromProject =
       dispatch(updateTeamMembers(projectID));
     } catch (error) {
       dispatch(showNotification(`Failed to remove user from project: ${error}`, 'error'));
+    }
+  };
+export const disablePlatform =
+  (projectID: string, platformID: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      await projectApi.disableSocialPlatform({ projectID, platformID });
+      dispatch(getEnabledPlatforms(projectID));
+      dispatch(showNotification('Platform disabled', 'success'));
+    } catch (error) {
+      dispatch(showNotification(`Failed to disable platform: ${error}`, 'error'));
     }
   };
 

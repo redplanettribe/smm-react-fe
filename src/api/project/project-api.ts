@@ -10,6 +10,7 @@ const projectApiConfig: ApiConfig<{
   getProject: EndpointConfig<{ projectID: string }, GetProjectResponse>;
   getEnabledSocialPlatforms: EndpointConfig<{ projectID: string }, Publisher[]>;
   enableSocialPlatform: EndpointConfig<{ projectID: string; platformID: string }, void>;
+  disableSocialPlatform: EndpointConfig<{ projectID: string; platformID: string }, void>;
   getDefaultUserInfo: EndpointConfig<
     { projectID: string; platformID: string },
     DefaultUserPlatformInfo
@@ -50,6 +51,11 @@ const projectApiConfig: ApiConfig<{
     enableSocialPlatform: {
       method: 'POST',
       path: '/{projectID}/enable-social-platform/{platformID}',
+      pathValues: ['projectID', 'platformID'],
+    },
+    disableSocialPlatform: {
+      method: 'DELETE',
+      path: '/{projectID}/disable-social-platform/{platformID}',
       pathValues: ['projectID', 'platformID'],
     },
     getDefaultUserInfo: {
