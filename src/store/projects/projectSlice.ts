@@ -244,6 +244,17 @@ export const updateProject =
     }
   };
 
+export const addUserToProject =
+  (projectID: string, email: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      await projectApi.addUserToProject({ projectID, email });
+      dispatch(showNotification('User added to project', 'success'));
+    } catch (error) {
+      dispatch(showNotification(`Failed to add user to project: ${error}`, 'error'));
+    }
+  };
+
 /**SELECTORS */
 export const selectActiveProject = (state: RootState) => state.project.activeProject;
 export const selectPosts = (state: RootState) => state.project.posts;

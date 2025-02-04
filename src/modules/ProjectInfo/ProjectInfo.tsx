@@ -226,7 +226,23 @@ const ProjectInfo: React.FC = () => {
 
       <InfoCard>
         <InfoSection>
-          <SectionTitle>Team Members</SectionTitle>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '16px',
+            }}
+          >
+            <SectionTitle>Team Members</SectionTitle>
+            <Button
+              variant="off"
+              icon={<IconPlus />}
+              onClick={() => dispatch(openModal({ type: 'ADD_USER' }))}
+            >
+              Add Member
+            </Button>
+          </div>
           <TeamList>
             {team.map((member) => (
               <TeamMember key={member.id}>

@@ -13,6 +13,7 @@ const projectApiConfig: ApiConfig<{
     { projectID: string; platformID: string },
     DefaultUserPlatformInfo
   >;
+  addUserToProject: EndpointConfig<{ projectID: string; email: string }, void>;
 }> = {
   basePath: '/projects',
   endpoints: {
@@ -48,6 +49,11 @@ const projectApiConfig: ApiConfig<{
       method: 'GET',
       path: '/{projectID}/default-user-platform-info/{platformID}',
       pathValues: ['projectID', 'platformID'],
+    },
+    addUserToProject: {
+      method: 'POST',
+      path: '/{projectID}/add-user',
+      pathValues: ['projectID'],
     },
   },
 };
