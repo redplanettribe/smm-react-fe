@@ -6,6 +6,7 @@ import {
   getPublishPostInfo,
   selectActivePost,
   selectActivePostPublishInfo,
+  unlinkPostFromPlatform,
   unlinkPostMediaFromPlatform,
   validatePostForPlatform,
 } from '../../store/activePost/activePostSlice';
@@ -84,6 +85,16 @@ const IconButton = styled(Button)`
   }
 `;
 
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+`;
+
+const Title = styled.h3`
+  margin: 0;
+`;
 interface PlatformPostInfoProps {
   platformId: string;
 }
@@ -127,7 +138,18 @@ const PlatformPostInfo: React.FC<PlatformPostInfoProps> = ({ platformId }) => {
 
   return (
     <Container>
-      <h3>Linked Media</h3>
+      <Header>
+        <Title>Linked Media</Title>
+        <Button
+          variant="off"
+          onClick={() => {
+            if (!activePost) return;
+            dispatch(unlinkPostFromPlatform(activePost.projectID, activePost.id, platformId));
+          }}
+        >
+          Unlink Platform
+        </Button>
+      </Header>
       <MediaList>
         {publishInfo.media.map((media) => (
           <MediaItemContainer key={media.id}>

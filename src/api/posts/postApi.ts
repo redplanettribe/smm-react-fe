@@ -21,6 +21,7 @@ const postApiConfig: ApiConfig<{
   >;
   getPost: EndpointConfig<{ projectID: string; postID: string }, Post>;
   linkPlatform: EndpointConfig<{ projectID: string; postID: string; platformID: string }, void>;
+  unlinkPlatform: EndpointConfig<{ projectID: string; postID: string; platformID: string }, void>;
   enqueuePost: EndpointConfig<{ projectID: string; postID: string }, void>;
   dequeuePost: EndpointConfig<{ projectID: string; postID: string }, void>;
   schedulePost: EndpointConfig<{ projectID: string; postID: string; scheduled_at: string }, void>;
@@ -65,6 +66,11 @@ const postApiConfig: ApiConfig<{
     },
     linkPlatform: {
       method: 'POST',
+      path: '/{projectID}/{postID}/platforms/{platformID}',
+      pathValues: ['projectID', 'postID', 'platformID'],
+    },
+    unlinkPlatform: {
+      method: 'DELETE',
       path: '/{projectID}/{postID}/platforms/{platformID}',
       pathValues: ['projectID', 'postID', 'platformID'],
     },

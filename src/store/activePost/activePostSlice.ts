@@ -156,6 +156,18 @@ export const linkPostMediaToPlatform =
     }
   };
 
+export const unlinkPostFromPlatform =
+  (projectID: string, postID: string, platformID: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      await postApi.unlinkPlatform({ projectID, postID, platformID });
+      dispatch(setActivePostWithMetadata(projectID, postID));
+      dispatch(showNotification('Platform removed from post', 'success'));
+    } catch (error) {
+      dispatch(showNotification(`Failed to unlink post from platform: ${error}`, 'error'));
+    }
+  };
+
 export const unlinkPostMediaFromPlatform =
   (projectID: string, postID: string, mediaID: string, platformID: string): AppThunk =>
   async (dispatch) => {
