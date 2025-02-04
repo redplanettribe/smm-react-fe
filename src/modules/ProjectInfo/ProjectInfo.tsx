@@ -222,9 +222,17 @@ const ProjectInfo: React.FC = () => {
     <ContentArea>
       <TitleContainer>
         <Title>{activeProject.name}</Title>
-        <Button variant="off" onClick={() => dispatch(openModal({ type: 'EDIT_PROJECT' }))}>
-          Edit Project
-        </Button>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <Button variant="off" onClick={() => dispatch(openModal({ type: 'EDIT_PROJECT' }))}>
+            Edit Project
+          </Button>
+          <Button
+            variant="off"
+            onClick={() => dispatch(openModal({ type: 'CONFIRM_DELETE_PROJECT' }))}
+          >
+            Delete Project
+          </Button>
+        </div>
       </TitleContainer>
 
       <InfoCard>

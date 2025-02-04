@@ -5,6 +5,7 @@ import { DefaultUserPlatformInfo, GetProjectResponse, Project } from './types';
 const projectApiConfig: ApiConfig<{
   createProject: EndpointConfig<{ name: string; description: string }, Project>;
   updateProject: EndpointConfig<{ projectID: string; name: string; description: string }, Project>;
+  deleteProject: EndpointConfig<{ projectID: string }, void>;
   getProjects: EndpointConfig<void, Project[]>;
   getProject: EndpointConfig<{ projectID: string }, GetProjectResponse>;
   getEnabledSocialPlatforms: EndpointConfig<{ projectID: string }, Publisher[]>;
@@ -24,6 +25,11 @@ const projectApiConfig: ApiConfig<{
     },
     updateProject: {
       method: 'PATCH',
+      path: '/{projectID}',
+      pathValues: ['projectID'],
+    },
+    deleteProject: {
+      method: 'DELETE',
       path: '/{projectID}',
       pathValues: ['projectID'],
     },

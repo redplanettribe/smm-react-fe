@@ -9,6 +9,7 @@ import { postApi } from '../../api/posts/postApi';
 import { RootState } from '../root-reducer';
 import { showNotification } from '../notifications/notificationSice';
 import { PostListTabEnum, setPostListTab } from '../ui/uiSlice';
+import { resetActivePost } from '../activePost/activePostSlice';
 
 export interface User {
   id: string;
@@ -138,6 +139,18 @@ export const createProject =
       dispatch(showNotification(`Project ${proj.name} created succesfully`, 'success'));
     } catch (error) {
       dispatch(showNotification(`Failed to create project: ${error}`, 'error'));
+    }
+  };
+export const deleteProject =
+  (projectID: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      await projectApi.deleteProject({ projectID });
+      dispatch(cleanProjectState());
+      dispatch(resetActivePost());
+      dispatch(showNotification('Project deleted', 'success'));
+    } catch (error) {
+      dispatch(showNotification(`Failed to delete project: ${error}`, 'error'));
     }
   };
 export const getEnabledPlatforms =
