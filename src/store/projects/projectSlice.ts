@@ -130,6 +130,10 @@ export const setSelectedProject =
       console.error(error);
     }
   };
+export const cleanProject = (): AppThunk => async (dispatch) => {
+  dispatch(cleanProjectState());
+  dispatch(resetActivePost());
+};
 export const createProject =
   (name: string, description: string): AppThunk =>
   async (dispatch) => {
@@ -146,8 +150,7 @@ export const deleteProject =
   async (dispatch) => {
     try {
       await projectApi.deleteProject({ projectID });
-      dispatch(cleanProjectState());
-      dispatch(resetActivePost());
+      dispatch(cleanProject());
       dispatch(showNotification('Project deleted', 'success'));
     } catch (error) {
       dispatch(showNotification(`Failed to delete project: ${error}`, 'error'));

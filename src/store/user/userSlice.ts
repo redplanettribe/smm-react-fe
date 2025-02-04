@@ -3,7 +3,7 @@ import { AppThunk } from '../store';
 import { userApi } from '../../api/user/user-api';
 import { marshallUnauthenticatedUser, marshallUser } from './utils';
 import { showNotification } from '../notifications/notificationSice';
-import { cleanProjectState } from '../projects/projectSlice';
+import { cleanProject } from '../projects/projectSlice';
 
 export interface UserState {
   id: string;
@@ -47,7 +47,7 @@ export const login =
       const loginResponse = await userApi.login({ email, password });
       const user = marshallUser(loginResponse.user);
       dispatch(setUser(user));
-      dispatch(cleanProjectState);
+      dispatch(cleanProject());
       dispatch(showNotification('User logged in', 'success'));
     } catch (error) {
       console.error('Failed to login:', error);
@@ -59,7 +59,7 @@ export const logout = (): AppThunk => async (dispatch) => {
   try {
     await userApi.logout();
     dispatch(clearUser());
-    dispatch(cleanProjectState());
+    dispatch(cleanProject());
   } catch (error) {
     dispatch(showNotification('Failed to logout', 'error'));
   }
