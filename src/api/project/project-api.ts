@@ -14,6 +14,7 @@ const projectApiConfig: ApiConfig<{
     DefaultUserPlatformInfo
   >;
   addUserToProject: EndpointConfig<{ projectID: string; email: string }, void>;
+  removeUserFromProject: EndpointConfig<{ projectID: string; userID: string }, void>;
 }> = {
   basePath: '/projects',
   endpoints: {
@@ -54,6 +55,11 @@ const projectApiConfig: ApiConfig<{
       method: 'POST',
       path: '/{projectID}/add-user',
       pathValues: ['projectID'],
+    },
+    removeUserFromProject: {
+      path: '/{projectID}/remove-user/{userID}',
+      method: 'DELETE',
+      pathValues: ['projectID', 'userID'],
     },
   },
 };

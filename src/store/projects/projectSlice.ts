@@ -69,6 +69,9 @@ const projectSlice = createSlice({
     setPosts(state, action: PayloadAction<Post[]>) {
       state.posts = action.payload;
     },
+    setTeam(state, action: PayloadAction<User[]>) {
+      state.team = action.payload;
+    },
     cleanProjectState() {
       return initialState;
     },
@@ -95,6 +98,7 @@ export const {
   cleanProjectState,
   addUserPlatformInfo,
   setActiveProject,
+  setTeam,
 } = projectSlice.actions;
 export default projectSlice.reducer;
 
@@ -125,7 +129,6 @@ export const setSelectedProject =
       console.error(error);
     }
   };
-
 export const createProject =
   (name: string, description: string): AppThunk =>
   async (dispatch) => {
@@ -137,7 +140,6 @@ export const createProject =
       dispatch(showNotification(`Failed to create project: ${error}`, 'error'));
     }
   };
-
 export const getEnabledPlatforms =
   (projectID: string): AppThunk =>
   async (dispatch) => {
@@ -148,7 +150,6 @@ export const getEnabledPlatforms =
       dispatch(showNotification(`Failed to get enabled platforms: ${error}`, 'error'));
     }
   };
-
 export const enablePlatform =
   (projectID: string, platformID: string): AppThunk =>
   async (dispatch) => {
@@ -160,7 +161,6 @@ export const enablePlatform =
       dispatch(showNotification(`Failed to enable platform: ${error}`, 'error'));
     }
   };
-
 export const getPosts =
   (projectID: string): AppThunk =>
   async (dispatch) => {
@@ -171,7 +171,6 @@ export const getPosts =
       dispatch(showNotification(`Failed to get posts: ${error}`, 'error'));
     }
   };
-
 export const createPost =
   (projectID: string, title: string, content: string, type: string, isIdea: boolean): AppThunk =>
   async (dispatch) => {
@@ -184,7 +183,6 @@ export const createPost =
       dispatch(showNotification(`Failed to create post: ${error}`, 'error'));
     }
   };
-
 export const getDefaulUserPlatformInfo =
   (projectID: string, platformID: string): AppThunk =>
   async (dispatch) => {
@@ -199,7 +197,6 @@ export const getDefaulUserPlatformInfo =
       dispatch(showNotification(`Failed to get default user platform info: ${error}`, 'error'));
     }
   };
-
 export const movePostInQueue =
   (projectID: string, currentIndex: number, newIndex: number): AppThunk =>
   async (dispatch) => {
@@ -215,7 +212,6 @@ export const movePostInQueue =
       dispatch(showNotification(`Failed to move post in queue: ${error}`, 'error'));
     }
   };
-
 export const moveIdeaInQueue =
   (projectID: string, currentIndex: number, newIndex: number): AppThunk =>
   async (dispatch) => {
@@ -231,7 +227,6 @@ export const moveIdeaInQueue =
       dispatch(showNotification(`Failed to move idea in queue: ${error}`, 'error'));
     }
   };
-
 export const updateProject =
   (projectID: string, name: string, description: string): AppThunk =>
   async (dispatch) => {
@@ -243,7 +238,17 @@ export const updateProject =
       dispatch(showNotification(`Failed to update project: ${error}`, 'error'));
     }
   };
-
+export const updateTeamMembers =
+  (projectID: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      const response = await projectApi.getProject({ projectID });
+      const team = addRole(response.users);
+      dispatch(setTeam(team));
+    } catch (error) {
+      dispatch(showNotification(`Failed to update team members: ${error}`, 'error'));
+    }
+  };
 export const addUserToProject =
   (projectID: string, email: string): AppThunk =>
   async (dispatch) => {
@@ -252,6 +257,17 @@ export const addUserToProject =
       dispatch(showNotification('User added to project', 'success'));
     } catch (error) {
       dispatch(showNotification(`Failed to add user to project: ${error}`, 'error'));
+    }
+  };
+export const removeUserFromProject =
+  (projectID: string, userID: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      await projectApi.removeUserFromProject({ projectID, userID });
+      dispatch(showNotification('User removed from project', 'success'));
+      dispatch(updateTeamMembers(projectID));
+    } catch (error) {
+      dispatch(showNotification(`Failed to remove user from project: ${error}`, 'error'));
     }
   };
 

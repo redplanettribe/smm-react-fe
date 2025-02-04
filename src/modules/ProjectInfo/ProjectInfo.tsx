@@ -97,13 +97,6 @@ const TeamList = styled.div`
   gap: 16px;
 `;
 
-const TeamMember = styled.div`
-  background-color: ${(props) => props.theme.bgColors.primary};
-  border: 1px solid ${(props) => props.theme.dividerColor};
-  border-radius: 4px;
-  padding: 16px;
-`;
-
 const MemberName = styled.div`
   color: ${(props) => props.theme.textColors.primary};
   ${({ theme }) => getFontStyles('m_14')(theme)};
@@ -159,6 +152,29 @@ const TitleContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
+`;
+
+const TeamMember = styled.div`
+  position: relative;
+  background-color: ${(props) => props.theme.bgColors.primary};
+  border: 1px solid ${(props) => props.theme.dividerColor};
+  border-radius: 4px;
+  padding: 16px;
+
+  &:hover .remove-button {
+    opacity: 1;
+  }
+`;
+
+const RemoveButton = styled(Button)`
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  padding: 4px;
+  height: auto;
+  min-width: auto;
 `;
 
 const ProjectInfo: React.FC = () => {
@@ -246,6 +262,20 @@ const ProjectInfo: React.FC = () => {
           <TeamList>
             {team.map((member) => (
               <TeamMember key={member.id}>
+                <RemoveButton
+                  className="remove-button"
+                  variant="off"
+                  onClick={() =>
+                    dispatch(
+                      openModal({
+                        type: 'CONFIRM_REMOVE_USER',
+                        props: { userId: member.id, userName: member.name },
+                      })
+                    )
+                  }
+                >
+                  ✕
+                </RemoveButton>
                 <MemberName>{member.name}</MemberName>
                 <MemberEmail>{member.email}</MemberEmail>
                 <InlineDescriptions>

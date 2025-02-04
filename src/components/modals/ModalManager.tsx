@@ -8,8 +8,9 @@ import SchedulePostModal from './SchedulePostModal';
 import EditPostModal from './EditPostModal';
 import EditProjectModal from './EditProjectModal';
 import AddUserModal from './AddUserModal';
+import ConfirmRemoveUserModal from './ConfirmRemoveUserModal';
 
-const MODAL_COMPONENTS = {
+const MODAL_COMPONENTS: Record<string, React.ComponentType<any>> = {
   CREATE_PROJECT: CreateProjectModal,
   CREATE_POST: CreatePostModal,
   UPLOAD_MEDIA: UploadMediaModal,
@@ -17,17 +18,18 @@ const MODAL_COMPONENTS = {
   EDIT_POST: EditPostModal,
   EDIT_PROJECT: EditProjectModal,
   ADD_USER: AddUserModal,
+  CONFIRM_REMOVE_USER: ConfirmRemoveUserModal,
 };
 
 const ModalManager: React.FC = () => {
-  const { isOpen, type } = useSelector(selectModal);
+  const { isOpen, type, props } = useSelector(selectModal);
 
   if (!isOpen || !type) {
     return null;
   }
 
   const ModalComponent = MODAL_COMPONENTS[type as keyof typeof MODAL_COMPONENTS];
-  return ModalComponent ? <ModalComponent /> : null;
+  return ModalComponent ? <ModalComponent {...props} /> : null;
 };
 
 export default ModalManager;
