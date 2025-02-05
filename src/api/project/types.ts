@@ -33,3 +33,14 @@ export const PROJECT_ROLES = {
   2: 'Manager',
   3: 'Owner',
 } as const;
+
+export interface TimeSlot {
+  dayOfWeek: number;
+  hour: number;
+  minute: number;
+}
+
+export interface WeeklyPostSchedule {
+  slots: TimeSlot[];
+  timeMargin: number;
+}

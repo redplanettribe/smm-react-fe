@@ -131,15 +131,36 @@ const TitleContainer = styled.div`
   margin-bottom: 24px;
 `;
 
+const TimeSlotList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+const TimeSlotItem = styled.div`
+  padding: 12px;
+  background: ${(props) => props.theme.bgColors.primary};
+  border: 1px solid ${(props) => props.theme.dividerColor};
+  border-radius: 4px;
+  ${({ theme }) => getFontStyles('r_14')(theme)};
+  color: ${(props) => props.theme.textColors.primary};
+`;
+
+const HeaderWithAction = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+`;
+
 const ProjectInfo: React.FC = () => {
-  const { activeProject, team } = useSelector((state: RootState) => state.project);
+  const { activeProject, team, projectSchedule } = useSelector((state: RootState) => state.project);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [availablePlatforms, setPlatfroms] = useState<Publisher[]>([]);
   const enabledPlatforms = useSelector((state: RootState) => state.project.enabledPlatforms);
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const user = useSelector((state: RootState) => state.user);
   const isDefaultUser = team.some((member) => member.id === user.id && member.defaultUser);
-
   const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
@@ -170,6 +191,10 @@ const ProjectInfo: React.FC = () => {
   const handlePublisherSelect = (publisher: Publisher) => {
     dispatch(enablePlatform(activeProject.id, publisher.id));
     setIsMenuOpen(false);
+  };
+
+  const handleAddTimeSlot = () => {
+    dispatch(openModal({ type: 'ADD_TIME_SLOT' }));
   };
 
   return (
@@ -222,6 +247,57 @@ const ProjectInfo: React.FC = () => {
             </Button>
           </div>
           <TeamList />
+        </InfoSection>
+      </InfoCard>
+
+      <InfoCard>
+        <InfoSection>
+          <HeaderWithAction>
+            <SectionTitle>Publishing Schedule</SectionTitle>
+            <Button variant="off" icon={<IconPlus />} onClick={handleAddTimeSlot}>
+              Add Time Slot
+            </Button>
+          </HeaderWithAction>
+
+          {projectSchedule ? (
+            <>
+              <Description>
+                Time Margin: {projectSchedule.timeMargin / 60000000000} minutes
+              </Description>
+              <TimeSlotList>
+                {projectSchedule.slots.map((slot, index) => (
+                  <TimeSlotItem key={index}>
+                    {`${
+                      slot.dayOfWeek === 0
+                        ? 'Sunday'
+                        : slot.dayOfWeek === 1
+                          ? 'Monday'
+                          : slot.dayOfWeek === 2
+                            ? 'Tuesday'
+                            : slot.dayOfWeek === 3
+                              ? 'Wednesday'
+                              : slot.dayOfWeek === 4
+                                ? 'Thursday'
+                                : slot.dayOfWeek === 5
+                                  ? 'Friday'
+                                  : 'Saturday'
+                    } at ${(() => {
+                      const date = new Date(
+                        Date.UTC(2024, 0, 7 + slot.dayOfWeek, slot.hour, slot.minute) // we use 2024 as a reference as we only need day hour, and minute
+                      );
+
+                      const localHour = date.getHours();
+                      const localMinute = date.getMinutes();
+
+                      return `${String(localHour).padStart(2, '0')}:${String(localMinute).padStart(2, '0')}`;
+                    })()}`}
+                  </TimeSlotItem>
+                ))}
+              </TimeSlotList>
+            </>
+          ) : (
+            <Description>No publishing schedule configured.</Description>
+          )}
         </InfoSection>
       </InfoCard>
 

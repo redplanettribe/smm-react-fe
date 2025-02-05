@@ -1,4 +1,4 @@
-import { Project } from '../../api/project/types';
+import { Project, TimeSlot, WeeklyPostSchedule } from '../../api/project/types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppThunk } from '../store';
 import { projectApi } from '../../api/project/project-api';
@@ -32,6 +32,7 @@ export interface ProjectState {
   enabledPlatforms: Publisher[];
   posts: Post[];
   defaultUserPlatformInfo: DefaultUserPlatformInfo[];
+  projectSchedule: WeeklyPostSchedule;
 }
 
 const initialState: ProjectState = {
@@ -49,6 +50,10 @@ const initialState: ProjectState = {
   enabledPlatforms: [],
   posts: [],
   defaultUserPlatformInfo: [],
+  projectSchedule: {
+    slots: [],
+    timeMargin: 0,
+  },
 };
 
 const projectSlice = createSlice({
@@ -88,6 +93,9 @@ const projectSlice = createSlice({
         }
       }
     },
+    setProjectSchedule(state, action: PayloadAction<WeeklyPostSchedule>) {
+      state.projectSchedule = action.payload;
+    },
   },
 });
 
@@ -100,6 +108,7 @@ export const {
   addUserPlatformInfo,
   setActiveProject,
   setTeam,
+  setProjectSchedule,
 } = projectSlice.actions;
 export default projectSlice.reducer;
 
@@ -109,13 +118,15 @@ export const setSelectedProject =
   (projectID: string): AppThunk =>
   async (dispatch, getState) => {
     try {
-      const [response, enabledPlatforms, posts] = await Promise.all([
+      const [response, enabledPlatforms, posts, schedule] = await Promise.all([
         projectApi.getProject({ projectID }),
         projectApi.getEnabledSocialPlatforms({ projectID }),
         postApi.getProjectPosts({ projectID }),
+        projectApi.getPostingSchedule({ projectID }),
       ]);
       const project = response.project;
       const team = addRole(response.users);
+
       const currentState = getState();
       dispatch(
         setProjectState({
@@ -124,6 +135,7 @@ export const setSelectedProject =
           enabledPlatforms,
           posts,
           defaultUserPlatformInfo: currentState.project.defaultUserPlatformInfo,
+          projectSchedule: schedule,
         })
       );
     } catch (error) {
@@ -323,6 +335,41 @@ export const removeRoleFromUser =
     }
   };
 
+export const getPostingSchedule =
+  (projectID: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      const schedule = await projectApi.getPostingSchedule({ projectID });
+      dispatch(setProjectSchedule(schedule));
+    } catch (error) {
+      dispatch(showNotification(`Failed to get posting schedule: ${error}`, 'error'));
+    }
+  };
+
+export const addPostingTimeSlot =
+  (projectID: string, date: Date): AppThunk =>
+  async (dispatch) => {
+    console.log('Date', date);
+    const slot: TimeSlot = {
+      dayOfWeek: date.getUTCDay(),
+      hour: date.getUTCHours(),
+      minute: date.getUTCMinutes(),
+    };
+    console.log('Time slot', slot);
+    try {
+      await projectApi.addPostingTimeSlot({
+        projectID,
+        day_of_week: slot.dayOfWeek,
+        hour: slot.hour,
+        minute: slot.minute,
+      });
+      dispatch(getPostingSchedule(projectID));
+      dispatch(showNotification('Time slot added', 'success'));
+    } catch (error) {
+      dispatch(showNotification(`Failed to add time slot: ${error}`, 'error'));
+    }
+  };
+
 /**SELECTORS */
 export const selectActiveProject = (state: RootState) => state.project.activeProject;
 export const selectPosts = (state: RootState) => state.project.posts;
@@ -330,3 +377,4 @@ export const selectTeam = (state: RootState) => state.project.team;
 export const selectEnabledPlatforms = (state: RootState) => state.project.enabledPlatforms;
 export const selectPlatformInfo = (platformID: string) => (state: RootState) =>
   state.project.defaultUserPlatformInfo.find((info) => info.platformID === platformID);
+export const selectSchedule = (state: RootState) => state.project.projectSchedule;

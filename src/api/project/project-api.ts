@@ -1,6 +1,12 @@
 import { ApiConfig, createApi, EndpointConfig } from '../api';
 import { Publisher } from '../publisher/types';
-import { DefaultUserPlatformInfo, GetProjectResponse, Project } from './types';
+import {
+  DefaultUserPlatformInfo,
+  GetProjectResponse,
+  Project,
+  TimeSlot,
+  WeeklyPostSchedule,
+} from './types';
 
 const projectApiConfig: ApiConfig<{
   createProject: EndpointConfig<{ name: string; description: string }, Project>;
@@ -20,6 +26,11 @@ const projectApiConfig: ApiConfig<{
   getUserRoles: EndpointConfig<{ projectID: string; userID: string }, string[]>;
   addRoleToUser: EndpointConfig<{ projectID: string; userID: string; role: number }, void>;
   removeRoleFromUser: EndpointConfig<{ projectID: string; userID: string; role: number }, void>;
+  getPostingSchedule: EndpointConfig<{ projectID: string }, WeeklyPostSchedule>;
+  addPostingTimeSlot: EndpointConfig<
+    { projectID: string; day_of_week: number; hour: number; minute: number },
+    void
+  >;
 }> = {
   basePath: '/projects',
   endpoints: {
@@ -90,6 +101,16 @@ const projectApiConfig: ApiConfig<{
       method: 'DELETE',
       path: '/{projectID}/remove-role/{userID}/{role}',
       pathValues: ['projectID', 'userID', 'role'],
+    },
+    getPostingSchedule: {
+      method: 'GET',
+      path: '/{projectID}/schedule',
+      pathValues: ['projectID'],
+    },
+    addPostingTimeSlot: {
+      method: 'PATCH',
+      path: '/{projectID}/add-time-slot',
+      pathValues: ['projectID'],
     },
   },
 };
