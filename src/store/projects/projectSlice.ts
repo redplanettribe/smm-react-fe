@@ -2,7 +2,6 @@ import { Project } from '../../api/project/types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppThunk } from '../store';
 import { projectApi } from '../../api/project/project-api';
-import { addRole } from './utils';
 import { Publisher } from '../../api/publisher/types';
 import { Post } from '../../api/posts/types';
 import { postApi } from '../../api/posts/postApi';
@@ -10,6 +9,7 @@ import { RootState } from '../root-reducer';
 import { showNotification } from '../notifications/notificationSice';
 import { PostListTabEnum, setPostListTab } from '../ui/uiSlice';
 import { resetActivePost } from '../activePost/activePostSlice';
+import { addRole } from '../../api/project/utils';
 
 export interface User {
   id: string;
@@ -297,6 +297,29 @@ export const disablePlatform =
       dispatch(showNotification('Platform disabled', 'success'));
     } catch (error) {
       dispatch(showNotification(`Failed to disable platform: ${error}`, 'error'));
+    }
+  };
+export const addRoleToUser =
+  (projectID: string, userID: string, role: number): AppThunk =>
+  async (dispatch) => {
+    try {
+      await projectApi.addRoleToUser({ projectID, userID, role });
+      dispatch(showNotification('Role added to user', 'success'));
+      dispatch(updateTeamMembers(projectID));
+    } catch (error) {
+      dispatch(showNotification(`Failed to add role to user: ${error}`, 'error'));
+    }
+  };
+
+export const removeRoleFromUser =
+  (projectID: string, userID: string, role: number): AppThunk =>
+  async (dispatch) => {
+    try {
+      await projectApi.removeRoleFromUser({ projectID, userID, role });
+      dispatch(showNotification('Role removed from user', 'success'));
+      dispatch(updateTeamMembers(projectID));
+    } catch (error) {
+      dispatch(showNotification(`Failed to remove role from user: ${error}`, 'error'));
     }
   };
 

@@ -10,6 +10,8 @@ import EditProjectModal from './EditProjectModal';
 import AddUserModal from './AddUserModal';
 import ConfirmRemoveUserModal from './ConfirmRemoveUserModal';
 import ConfirmDeleteProjectModal from './ConfirmDeleteProjectModal';
+import AddRoleModal from './AddRoleModal';
+import RemoveRoleModal from './RemoveRoleModal';
 
 const MODAL_COMPONENTS: Record<string, React.ComponentType<any>> = {
   CREATE_PROJECT: CreateProjectModal,
@@ -21,6 +23,8 @@ const MODAL_COMPONENTS: Record<string, React.ComponentType<any>> = {
   ADD_USER: AddUserModal,
   CONFIRM_REMOVE_USER: ConfirmRemoveUserModal,
   CONFIRM_DELETE_PROJECT: ConfirmDeleteProjectModal,
+  ADD_ROLE: AddRoleModal,
+  REMOVE_ROLE: RemoveRoleModal,
 };
 
 const ModalManager: React.FC = () => {

@@ -27,3 +27,9 @@ export interface DefaultUserPlatformInfo {
   isAuthenticated: boolean;
   authTTL: string;
 }
+
+export const PROJECT_ROLES = {
+  1: 'Member',
+  2: 'Manager',
+  3: 'Owner',
+} as const;

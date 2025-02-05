@@ -17,6 +17,7 @@ import {
 } from '../../store/projects/projectSlice';
 import PlatformInfo from './PlatformInfo';
 import { openModal } from '../../store/modal/modalSlice';
+import TeamList from './TeamList';
 
 const FloatingMenu = styled.div<{ $isOpen: boolean }>`
   position: absolute;
@@ -91,33 +92,9 @@ const Description = styled.p`
   margin-bottom: 8px;
 `;
 
-const TeamList = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 16px;
-`;
-
-const MemberName = styled.div`
-  color: ${(props) => props.theme.textColors.primary};
-  ${({ theme }) => getFontStyles('m_14')(theme)};
-`;
-
-const MemberEmail = styled.div`
-  color: ${(props) => props.theme.textColors.secondary};
-  ${({ theme }) => getFontStyles('r_12')(theme)};
-`;
-
 const DateInfo = styled.div`
   color: ${(props) => props.theme.textColors.secondary};
   ${({ theme }) => getFontStyles('r_12')(theme)};
-`;
-
-const InlineDescriptions = styled.div`
-  margin-top: 8px;
-  display: flex;
-  gap: 4px;
-  color: ${(props) => props.theme.textColors.secondary};
-  ${({ theme }) => getFontStyles('r_14')(theme)};
 `;
 
 const TabsContainer = styled.div`
@@ -152,29 +129,6 @@ const TitleContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
-`;
-
-const TeamMember = styled.div`
-  position: relative;
-  background-color: ${(props) => props.theme.bgColors.primary};
-  border: 1px solid ${(props) => props.theme.dividerColor};
-  border-radius: 4px;
-  padding: 16px;
-
-  &:hover .remove-button {
-    opacity: 1;
-  }
-`;
-
-const RemoveButton = styled(Button)`
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  padding: 4px;
-  height: auto;
-  min-width: auto;
 `;
 
 const ProjectInfo: React.FC = () => {
@@ -267,32 +221,7 @@ const ProjectInfo: React.FC = () => {
               Add Member
             </Button>
           </div>
-          <TeamList>
-            {team.map((member) => (
-              <TeamMember key={member.id}>
-                <RemoveButton
-                  className="remove-button"
-                  variant="off"
-                  onClick={() =>
-                    dispatch(
-                      openModal({
-                        type: 'CONFIRM_REMOVE_USER',
-                        props: { userId: member.id, userName: member.name },
-                      })
-                    )
-                  }
-                >
-                  ✕
-                </RemoveButton>
-                <MemberName>{member.name}</MemberName>
-                <MemberEmail>{member.email}</MemberEmail>
-                <InlineDescriptions>
-                  {member.defaultUser && <>Default User, </>}
-                  {member.role}
-                </InlineDescriptions>
-              </TeamMember>
-            ))}
-          </TeamList>
+          <TeamList />
         </InfoSection>
       </InfoCard>
 

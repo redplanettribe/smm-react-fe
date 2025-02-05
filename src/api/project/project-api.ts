@@ -17,6 +17,9 @@ const projectApiConfig: ApiConfig<{
   >;
   addUserToProject: EndpointConfig<{ projectID: string; email: string }, void>;
   removeUserFromProject: EndpointConfig<{ projectID: string; userID: string }, void>;
+  getUserRoles: EndpointConfig<{ projectID: string; userID: string }, string[]>;
+  addRoleToUser: EndpointConfig<{ projectID: string; userID: string; role: number }, void>;
+  removeRoleFromUser: EndpointConfig<{ projectID: string; userID: string; role: number }, void>;
 }> = {
   basePath: '/projects',
   endpoints: {
@@ -72,6 +75,21 @@ const projectApiConfig: ApiConfig<{
       path: '/{projectID}/remove-user/{userID}',
       method: 'DELETE',
       pathValues: ['projectID', 'userID'],
+    },
+    getUserRoles: {
+      method: 'GET',
+      path: '/{projectID}/user-roles/{userID}',
+      pathValues: ['projectID', 'userID'],
+    },
+    addRoleToUser: {
+      method: 'POST',
+      path: '/{projectID}/add-role/{userID}/{role}',
+      pathValues: ['projectID', 'userID', 'role'],
+    },
+    removeRoleFromUser: {
+      method: 'DELETE',
+      path: '/{projectID}/remove-role/{userID}/{role}',
+      pathValues: ['projectID', 'userID', 'role'],
     },
   },
 };
