@@ -13,11 +13,14 @@ import { useDispatch } from 'react-redux';
 import {
   enablePlatform,
   getDefaulUserPlatformInfo,
+  removePostingTimeSlot,
   setSelectedProject,
 } from '../../store/projects/projectSlice';
 import PlatformInfo from './PlatformInfo';
 import { openModal } from '../../store/modal/modalSlice';
 import TeamList from './TeamList';
+import IconClose from '../../assets/icons/Close';
+import { TimeSlot } from '../../api/project/types';
 
 const FloatingMenu = styled.div<{ $isOpen: boolean }>`
   position: absolute;
@@ -144,6 +147,24 @@ const TimeSlotItem = styled.div`
   border-radius: 4px;
   ${({ theme }) => getFontStyles('r_14')(theme)};
   color: ${(props) => props.theme.textColors.primary};
+  position: relative;
+
+  &:hover {
+    .remove-button {
+      opacity: 1;
+    }
+  }
+`;
+
+const RemoveButton = styled(Button)`
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  padding: 4px;
+  height: auto;
+  min-width: auto;
 `;
 
 const HeaderWithAction = styled.div`
@@ -195,6 +216,19 @@ const ProjectInfo: React.FC = () => {
 
   const handleAddTimeSlot = () => {
     dispatch(openModal({ type: 'ADD_TIME_SLOT' }));
+  };
+
+  const sortTimeSlots = (a: TimeSlot, b: TimeSlot): number => {
+    // First compare by day of week
+    if (a.dayOfWeek !== b.dayOfWeek) {
+      return a.dayOfWeek - b.dayOfWeek;
+    }
+    // If same day, compare by hour
+    if (a.hour !== b.hour) {
+      return a.hour - b.hour;
+    }
+    // If same hour, compare by minute
+    return a.minute - b.minute;
   };
 
   return (
@@ -265,34 +299,46 @@ const ProjectInfo: React.FC = () => {
                 Time Margin: {projectSchedule.timeMargin / 60000000000} minutes
               </Description>
               <TimeSlotList>
-                {projectSchedule.slots.map((slot, index) => (
-                  <TimeSlotItem key={index}>
-                    {`${
-                      slot.dayOfWeek === 0
-                        ? 'Sunday'
-                        : slot.dayOfWeek === 1
-                          ? 'Monday'
-                          : slot.dayOfWeek === 2
-                            ? 'Tuesday'
-                            : slot.dayOfWeek === 3
-                              ? 'Wednesday'
-                              : slot.dayOfWeek === 4
-                                ? 'Thursday'
-                                : slot.dayOfWeek === 5
-                                  ? 'Friday'
-                                  : 'Saturday'
-                    } at ${(() => {
-                      const date = new Date(
-                        Date.UTC(2024, 0, 7 + slot.dayOfWeek, slot.hour, slot.minute) // we use 2024 as a reference as we only need day hour, and minute
-                      );
-
-                      const localHour = date.getHours();
-                      const localMinute = date.getMinutes();
-
-                      return `${String(localHour).padStart(2, '0')}:${String(localMinute).padStart(2, '0')}`;
-                    })()}`}
-                  </TimeSlotItem>
-                ))}
+                {projectSchedule.slots
+                  .slice()
+                  .sort(sortTimeSlots)
+                  .map((slot, index) => (
+                    <TimeSlotItem key={index}>
+                      <RemoveButton
+                        className="remove-button"
+                        variant="off"
+                        icon={<IconClose size={16} />}
+                        onClick={() => {
+                          const date = new Date(
+                            Date.UTC(2024, 0, 7 + slot.dayOfWeek, slot.hour, slot.minute)
+                          );
+                          dispatch(removePostingTimeSlot(activeProject.id, date));
+                        }}
+                      />
+                      {`${
+                        slot.dayOfWeek === 0
+                          ? 'Sunday'
+                          : slot.dayOfWeek === 1
+                            ? 'Monday'
+                            : slot.dayOfWeek === 2
+                              ? 'Tuesday'
+                              : slot.dayOfWeek === 3
+                                ? 'Wednesday'
+                                : slot.dayOfWeek === 4
+                                  ? 'Thursday'
+                                  : slot.dayOfWeek === 5
+                                    ? 'Friday'
+                                    : 'Saturday'
+                      } at ${(() => {
+                        const date = new Date(
+                          Date.UTC(2024, 0, 7 + slot.dayOfWeek, slot.hour, slot.minute)
+                        );
+                        const localHour = date.getHours();
+                        const localMinute = date.getMinutes();
+                        return `${String(localHour).padStart(2, '0')}:${String(localMinute).padStart(2, '0')}`;
+                      })()}`}
+                    </TimeSlotItem>
+                  ))}
               </TimeSlotList>
             </>
           ) : (

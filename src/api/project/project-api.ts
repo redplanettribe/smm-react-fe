@@ -1,12 +1,6 @@
 import { ApiConfig, createApi, EndpointConfig } from '../api';
 import { Publisher } from '../publisher/types';
-import {
-  DefaultUserPlatformInfo,
-  GetProjectResponse,
-  Project,
-  TimeSlot,
-  WeeklyPostSchedule,
-} from './types';
+import { DefaultUserPlatformInfo, GetProjectResponse, Project, WeeklyPostSchedule } from './types';
 
 const projectApiConfig: ApiConfig<{
   createProject: EndpointConfig<{ name: string; description: string }, Project>;
@@ -28,6 +22,10 @@ const projectApiConfig: ApiConfig<{
   removeRoleFromUser: EndpointConfig<{ projectID: string; userID: string; role: number }, void>;
   getPostingSchedule: EndpointConfig<{ projectID: string }, WeeklyPostSchedule>;
   addPostingTimeSlot: EndpointConfig<
+    { projectID: string; day_of_week: number; hour: number; minute: number },
+    void
+  >;
+  removePostingTimeSlot: EndpointConfig<
     { projectID: string; day_of_week: number; hour: number; minute: number },
     void
   >;
@@ -110,6 +108,11 @@ const projectApiConfig: ApiConfig<{
     addPostingTimeSlot: {
       method: 'PATCH',
       path: '/{projectID}/add-time-slot',
+      pathValues: ['projectID'],
+    },
+    removePostingTimeSlot: {
+      method: 'PATCH',
+      path: '/{projectID}/remove-time-slot',
       pathValues: ['projectID'],
     },
   },

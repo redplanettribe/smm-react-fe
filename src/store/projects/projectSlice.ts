@@ -349,13 +349,11 @@ export const getPostingSchedule =
 export const addPostingTimeSlot =
   (projectID: string, date: Date): AppThunk =>
   async (dispatch) => {
-    console.log('Date', date);
     const slot: TimeSlot = {
       dayOfWeek: date.getUTCDay(),
       hour: date.getUTCHours(),
       minute: date.getUTCMinutes(),
     };
-    console.log('Time slot', slot);
     try {
       await projectApi.addPostingTimeSlot({
         projectID,
@@ -367,6 +365,27 @@ export const addPostingTimeSlot =
       dispatch(showNotification('Time slot added', 'success'));
     } catch (error) {
       dispatch(showNotification(`Failed to add time slot: ${error}`, 'error'));
+    }
+  };
+export const removePostingTimeSlot =
+  (projectID: string, date: Date): AppThunk =>
+  async (dispatch) => {
+    const slot: TimeSlot = {
+      dayOfWeek: date.getUTCDay(),
+      hour: date.getUTCHours(),
+      minute: date.getUTCMinutes(),
+    };
+    try {
+      await projectApi.removePostingTimeSlot({
+        projectID,
+        day_of_week: slot.dayOfWeek,
+        hour: slot.hour,
+        minute: slot.minute,
+      });
+      dispatch(getPostingSchedule(projectID));
+      dispatch(showNotification('Time slot removed', 'success'));
+    } catch (error) {
+      dispatch(showNotification(`Failed to remove time slot: ${error}`, 'error'));
     }
   };
 
