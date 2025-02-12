@@ -22,52 +22,60 @@ const Title = styled.h1`
   margin-bottom: 8px;
 `;
 
-// In LinkedinCallbackHandler component
-const LinkedinCallbackHandler: React.FC = () => {
+const XCallbackHandler: React.FC = () => {
   const project = useSelector(selectActiveProject);
   const user = useSelector(selectUser);
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
-  const code = new URLSearchParams(window.location.search).get('code');
+  const searchParams = new URLSearchParams(window.location.search);
+  const oAuthToken = searchParams.get('oauth_token');
+  const oAuthVerifier = searchParams.get('oauth_verifier');
   const hasAuthenticated = useRef(false);
 
   useEffect(() => {
     let mounted = true;
 
-    const authenticateWithLinkedin = async (code: string) => {
-      if (!code || !mounted || hasAuthenticated.current) return;
+    const authenticateWithX = async (token: string, verifier: string) => {
+      console.log('Authenticating to X');
+      console.log('OAuth Token:', token);
+      console.log('OAuth Verifier:', verifier);
+      if (!token || !verifier || !mounted || hasAuthenticated.current) return;
       hasAuthenticated.current = true;
+
       try {
         await publisherApi.authenticatePlatform({
           projectID: project.id,
           userID: user.id,
-          platformID: PlatformID.LINKEDIN,
-          params: { code },
+          platformID: PlatformID.X,
+          params: {
+            oauth_token: token,
+            oauth_verifier: verifier,
+          },
         });
 
         if (mounted) {
-          dispatch(showNotification('Successfully authenticated with LinkedIn', 'success'));
+          dispatch(showNotification('Successfully authenticated with X', 'success'));
         }
       } catch (error) {
         if (mounted) {
-          dispatch(showNotification('Failed to authenticate with LinkedIn', 'error'));
+          dispatch(showNotification('Failed to authenticate with X', 'error'));
         }
       }
     };
 
-    authenticateWithLinkedin(code || '');
+    authenticateWithX(oAuthToken || '', oAuthVerifier || '');
     navigate('/app/project');
 
     return () => {
       mounted = false;
     };
-  }, [code, project.id, user.id, navigate, dispatch]);
+  }, [oAuthToken, oAuthVerifier, project.id, user.id, navigate, dispatch]);
 
   return (
     <ContentArea>
-      <Title>Saving LinkedIn authentication data...</Title>
+      <Title>Saving X authentication data...</Title>
     </ContentArea>
   );
 };
 
-export default LinkedinCallbackHandler;
+export default XCallbackHandler;

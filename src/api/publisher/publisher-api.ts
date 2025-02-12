@@ -4,7 +4,7 @@ import { Publisher, PublishPostInfo } from './types';
 const publisherApiConfig: ApiConfig<{
   getAvailablePublishers: EndpointConfig<void, Publisher[]>;
   authenticatePlatform: EndpointConfig<
-    { projectID: string; userID: string; platformID: string; code: string },
+    { projectID: string; userID: string; platformID: string; params: any },
     void
   >;
   getPublishPostInfo: EndpointConfig<
@@ -30,8 +30,8 @@ const publisherApiConfig: ApiConfig<{
     },
     authenticatePlatform: {
       method: 'POST',
-      path: '/{projectID}/{userID}/{platformID}/authenticate/{code}',
-      pathValues: ['projectID', 'userID', 'platformID', 'code'],
+      path: '/{projectID}/{userID}/{platformID}/authenticate',
+      pathValues: ['projectID', 'userID', 'platformID'],
     },
     validatePostForPlatform: {
       method: 'GET',

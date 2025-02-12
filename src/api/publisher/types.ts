@@ -8,6 +8,7 @@ export interface Publisher {
 
 export enum PlatformID {
   LINKEDIN = 'linkedin',
+  X = 'x',
 }
 
 export enum PublishPostStatusEnum {
