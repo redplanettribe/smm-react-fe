@@ -32,12 +32,11 @@ const BoxContainer = styled.div`
     display: flex;
     flex-direction: column;
   `}
-
 `;
 const Form = styled.form`
-    width: 100%;
-    display: flex;
-    flex-direction: column;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Title = styled.h1`
@@ -58,7 +57,6 @@ const SubTitle = styled.h2`
   ${({ theme }) => getFontStyles('r_14')(theme)};
   color: ${({ theme }) => theme.textColors.secondary};
 `;
-
 
 const BtnBox = styled.div`
   display: flex;
@@ -91,7 +89,9 @@ const LinkText = styled.span`
 `;
 
 const SignUpPage: React.FC = () => {
-  const [name, setName] = useState('');
+  const [userName, setUserName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -103,26 +103,38 @@ const SignUpPage: React.FC = () => {
       dispatch(showNotification('Passwords do not match', 'error'));
       return;
     }
-    dispatch(signup(name, email, password));
+    dispatch(signup(userName, firstName, lastName, email, password));
   };
 
   return (
     <RedirectIfLoggedIn>
       <PageContainer>
         <BoxContainer>
-          <Form
-            onSubmit={(e) => handleSignUp(e)}
-          >
+          <Form onSubmit={(e) => handleSignUp(e)}>
             <TitleBox>
               <Title>Sign Up</Title>
               <SubTitle>Let's increase your social media reach</SubTitle>
             </TitleBox>
             <Input
-              label="Name"
-              placeholder="Enter your name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              label="Username"
+              placeholder="Enter your username"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
             />
+            <TwoColumn>
+              <Input
+                label="First Name"
+                placeholder="Enter your first name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+              />
+              <Input
+                label="Last Name"
+                placeholder="Enter your last name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+              />
+            </TwoColumn>
             <Input
               label="Email"
               placeholder="Enter your email"
@@ -150,7 +162,8 @@ const SignUpPage: React.FC = () => {
               <Button type="submit">Sign Up</Button>
             </BtnBox>
           </Form>
-          <SignInLink>Do you have an account already?{' '}
+          <SignInLink>
+            Do you have an account already?{' '}
             <Link to="/login">
               <LinkText>Sign In</LinkText>
             </Link>
@@ -158,7 +171,6 @@ const SignUpPage: React.FC = () => {
         </BoxContainer>
       </PageContainer>
     </RedirectIfLoggedIn>
-
   );
 };
 
